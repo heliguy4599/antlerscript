@@ -1,0 +1,39 @@
+$classname Test
+
+constructor() {}
+
+let factorial = Func(UInt i : UInt) {
+	if (i < 2: return 1)
+	return i * callee(i - 1)
+}
+
+@some_decorator
+let Func(:) do_stuff = {
+	factorial(20)
+
+	##Test comment one
+	# test comment two
+	let Item = Class(
+		let mut Int i
+		let mut Int j
+		let mut Int k
+
+		constructor(i, j, k) {}
+	)
+
+	let my_item = Item{10, 20, 30}
+	my_item.{
+		i = factorial(i)
+		j = factorial(j)
+		k = factorial(k)
+	}
+
+	print(my_item.(i, j, k))
+
+	let some_list = List(Int){ my_item.(i, j, k) }
+	let Int? first = some_list[0]
+	iterate some_list -> index, element {
+		print("Element is <element>")
+		if (Math.random_chance(0.5): break)
+	}
+}
