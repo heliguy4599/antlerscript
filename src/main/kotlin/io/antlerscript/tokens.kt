@@ -5,51 +5,57 @@ import java.io.RandomAccessFile
 import kotlin.text.isWhitespace
 
 // TODO: rename to SymbolType
-enum class OperatorType(val text: String) {
-	// mathematical
+enum class SymbolType(val text: String) {
+	// Mathematical
 	ADD("+"),
 	DIVIDE("/"),
-	FLOOR_DIVIDE("//"),
-	REMAINDER("%"),
-	MODULO("%%"),
-	MULTIPLY("*"),
 	EXPONENT("**"),
-	SUBTRACT("-"),
-	ASSIGN("="),
-	EQUALITY("=="),
-	INEQUALITY("!="),
-	IDENTITY("==="),
-	INIDENTITY("!=="),
-	CONCAT("++"),
-	DECORATE("@"),
-	COLON(":"),
-	ARGUMENT_SEPARATOR(","),
-	DOT("."),
-	DOLLAR_SIGN("$"),
+	FLOOR_DIVIDE("//"),
 	GREATER_THAN(">"),
 	LESS_THAN("<"),
-	QUESTION_MARK("?"),
-	DOUBLE_QUESTION_MARK("??"),
-	SEMICOLON(";"),
-	PIPE("|>"),
+	MODULO("%%"),
+	MULTIPLY("*"),
+	REMAINDER("%"),
+	SUBTRACT("-"),
 
-	// bitwise
-	BIT_SHIFT_LEFT("<<"),
-	BIT_SHIFT_RIGHT(">>"),
+	// Behavioral
+	ASSIGN("="),
+	ARGUMENT_SEPARATOR(","),
+	COLON(":"),
+	DECORATE("@"),
+	DOLLAR_SIGN("$"),
+	MEMBER_ACCESS("."),
+	PIPE("|>"),
+	SEMICOLON(";"),
+	LEFT_ARROW("<-"),
+	RIGHT_ARROW("->"),
+
+	// Logical
+	EQUALITY("=="),
+	IDENTITY("==="),
+	INEQUALITY("!="),
+	INIDENTITY("!=="),
+
+	// Bitwise
 	BIT_AND("&"),
 	BIT_OR("|"),
-	BIT_XOR("^"),
 	BIT_NOT("~"),
+	BIT_XOR("^"),
+	BIT_SHIFT_LEFT("<<"),
+	BIT_SHIFT_RIGHT(">>"),
 
-	// grouping
+	// Grouping
+	LEFT_CURLY_BRACE("{"),
+	RIGHT_CURLY_BRACE("}"),
 	LEFT_PAREN("("),
 	RIGHT_PAREN(")"),
 	LEFT_SQUARE_BRACKET("["),
 	RIGHT_SQUARE_BRACKET("]"),
-	LEFT_CURLY_BRACE("{"),
-	RIGHT_CURLY_BRACE("}"),
-	LEFT_ARROW("<-"),
-	RIGHT_ARROW("->"),
+
+	// Other
+	CONCAT("++"),
+	NULLABILITY("?"),
+	NULL_COALESCENCE("??"),
 }
 
 enum class KeywordType(val text: String) {
@@ -60,14 +66,14 @@ enum class KeywordType(val text: String) {
 	STATIC("static"),
 
 	// Class instructions
+	CAST("cast"),
 	CONSTRUCTOR("constructor"),
 	DESTRUCTOR("destructor"),
-	CAST("cast"),
 
 	// Boolean logic
 	AND("and"),
-	IS("is"), // Type checking
 	IN("in"), // iterable-contains check
+	IS("is"), // Type checking
 	NOT("not"),
 	OR("or"),
 
@@ -94,7 +100,7 @@ class NumericalToken(val value: Double) : Token() {
 	override fun toString() = value.toString()
 }
 
-class OperatorToken(val type: OperatorType) : Token() {
+class OperatorToken(val type: SymbolType) : Token() {
 	override fun toString() = type.text
 }
 
@@ -288,7 +294,7 @@ fun parseSymbol(file: RandomAccessFile): Token {
 		tokenBuffer.append(d)
 		val content = tokenBuffer.toString()
 
-		val opType = OperatorType.entries.firstOrNull({ it.text == content })
+		val opType = SymbolType.entries.firstOrNull({ it.text == content })
 		if (opType == null) {
 			tokenBuffer.deleteCharAt(tokenBuffer.length - 1)
 			file.seek(file.filePointer - 1)
@@ -299,7 +305,7 @@ fun parseSymbol(file: RandomAccessFile): Token {
 	val content = tokenBuffer.toString()
 	tokenBuffer.clear()
 
-	val opType = OperatorType.entries.first({ it.text == content })
+	val opType = SymbolType.entries.first({ it.text == content })
 	return OperatorToken(opType)
 }
 
