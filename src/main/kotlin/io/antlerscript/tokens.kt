@@ -38,7 +38,7 @@ enum class SymbolType(val text: String) {
 
 	// Bitwise
 	BIT_AND("&"),
-	BIT_OR("|"),
+	BIT_OR("|"), // Also type union
 	BIT_NOT("~"),
 	BIT_XOR("^"),
 	BIT_SHIFT_LEFT("<<"),
@@ -68,6 +68,7 @@ enum class KeywordType(val text: String) {
 	// Class instructions
 	CAST("cast"),
 	CONSTRUCTOR("constructor"),
+	PRIVATE_CONSTRUCTOR("__constructor"),
 	DESTRUCTOR("destructor"),
 
 	// Boolean logic
@@ -84,6 +85,10 @@ enum class KeywordType(val text: String) {
 	MATCH("match"),
 	RETURN("return"),
 	// ? maybe yield?
+}
+
+enum class FileDirective(val text: String) {
+	CLASS_NAME("classname"),
 }
 
 sealed class Token

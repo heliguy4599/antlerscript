@@ -2,6 +2,14 @@ $classname Test
 
 constructor() {}
 
+cast(Int) {
+	return 10
+}
+
+operator add(Self other : Self) {
+	return Self{}
+}
+
 let factorial = Func(UInt i : UInt) {
 	if (i < 2: return 1)
 	return i * callee(i - 1)
