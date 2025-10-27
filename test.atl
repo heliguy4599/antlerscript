@@ -1,6 +1,8 @@
 $classname Test
 
-constructor() {}
+let UInt j
+
+constructor(UInt i, j) {}
 
 cast(Int) {
 	return 10
