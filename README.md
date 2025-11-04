@@ -1,1 +1,1 @@
-A Kotlin implementation of Heliguy's AntlerScript programming language.
+A modern, duck-typed programming language focused simple syntax and ease of use targetting the JVM
