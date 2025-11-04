@@ -1,0 +1,61 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>antlerscript</groupId>
+  <artifactId>antlerscript</artifactId>
+  <version>0.1</version>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>9.9</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-util</artifactId>
+      <version>9.9</version>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4</artifactId>
+      <version>4.13.2</version>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+        <version>4.13.2</version>
+	<configuration>
+          <outputDirectory>src/main/java</outputDirectory>
+	  <visitor>true</visitor>
+	  <listener>false</listener>
+	</configuration>
+        <executions>
+          <execution>
+            <id>antlr</id>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+	<groupId>org.codehaus.mojo</groupId>
+	<artifactId>exec-maven-plugin</artifactId>
+	<version>3.1.0</version>
+	<configuration>
+	  <mainClass>Main</mainClass>
+	</configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
