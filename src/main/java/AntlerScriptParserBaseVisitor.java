@@ -1,4 +1,5 @@
 // Generated from AntlerScriptParser.g4 by ANTLR 4.13.2
+
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -7,7 +8,7 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * of the available methods.
  *
  * @param <T> The return type of the visit operation. Use {@link Void} for
- * operations with no return type.
+ *            operations with no return type.
  */
 @SuppressWarnings("CheckReturnValue")
 public class AntlerScriptParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements AntlerScriptParserVisitor<T> {
@@ -17,47 +18,74 @@ public class AntlerScriptParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitProgram(AntlerScriptParser.ProgramContext ctx) { return visitChildren(ctx); }
+	@Override
+	public T visitProgram(AntlerScriptParser.ProgramContext ctx) {
+		return visitChildren(ctx);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStat(AntlerScriptParser.StatContext ctx) { return visitChildren(ctx); }
+	@Override
+	public T visitStat(AntlerScriptParser.StatContext ctx) {
+		return visitChildren(ctx);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDef(AntlerScriptParser.DefContext ctx) { return visitChildren(ctx); }
+	@Override
+	public T visitDef(AntlerScriptParser.DefContext ctx) {
+		return visitChildren(ctx);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExpr(AntlerScriptParser.ExprContext ctx) { return visitChildren(ctx); }
+	@Override
+	public T visitExpr(AntlerScriptParser.ExprContext ctx) {
+		return visitChildren(ctx);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFunc(AntlerScriptParser.FuncContext ctx) { return visitChildren(ctx); }
+	@Override
+	public T visitFunc(AntlerScriptParser.FuncContext ctx) {
+		return visitChildren(ctx);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParams(AntlerScriptParser.ParamsContext ctx) { return visitChildren(ctx); }
+	@Override
+	public T visitParams(AntlerScriptParser.ParamsContext ctx) {
+		return visitChildren(ctx);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArgs(AntlerScriptParser.ArgsContext ctx) { return visitChildren(ctx); }
+	@Override
+	public T visitArgs(AntlerScriptParser.ArgsContext ctx) {
+		return visitChildren(ctx);
+	}
 }
