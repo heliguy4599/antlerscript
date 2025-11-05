@@ -1,0 +1,266 @@
+$namespace SomeNameSpace
+$classname SomeClass
+
+#///////////////////////////////////
+# TODO: heli, rework Antlerscript
+# to have classes be top level with
+# the `type` keyword
+#///////////////////////////////////
+
+
+extends One.Two.Three.Four.Five
+
+constructor(i, j, Int ...a){ print(j); print(j) }
+constructor(){}
+constructor(){}
+
+# Is there ... in constructor params?
+# Can it appear anywhere or just at the end?
+# is "j = 10" a valid way to specify params, or must there always be a type, except for initialization?
+
+let Int i = 0
+let j = 1
+
+# Needs to be assigned in constructor
+let Int innerClassMember
+
+# Can only have one at most
+constructor(Int i, innerClassMember, Int j) {
+  print(i, j)
+}
+
+let Int thereCanBeDeclarationsInBetween = 0
+
+# Can only have one at most (can be before constructor())
+__constructor() {}
+
+# Can't do file directives after code:
+#   $namespace Whatever
+
+let Func(Int a, Int b : Int) fn = Func(Int a, Int b : Int) {
+	return a + b
+}
+
+# const values are forward declared, so thats okay
+const fn1 = Func(:){fn2()}
+const fn2 = Func(:){fn1()}
+
+fn(b = 20, a = 30)
+fn(30, _)
+fn(_, _, 30)
+fn()
+fn(30)
+
+let Func(Int, Int : Int) fn = Func(a, b) {
+	return a + b
+}
+
+let fn = Func(Int a, Int b : Int) {
+	return a + b
+}
+
+let Func(Int a, Int b : Int) fn = { return a + b }
+
+const ls = List(Int){ 10, 20 }
+
+let casting = Func(:) {
+	120.5 as Float; some_obj as SomeClass
+}
+
+let misc = Func(:) {
+	print(ls[
+		2
+		+
+		3
+	])
+	let interpolated = "hello {some_var} <- that's a var"
+	(
+		2
+		+
+		3
+	)
+	# This aint allowed bitch
+	#   2
+	#   +
+	#   3
+	# But this is :D
+	print(
+		2
+		+
+		3
+	)
+	# But again, this isn't
+	#   print
+	#   (2 + 3)
+}
+
+let control_flow = Func(:) {
+	iterate ls -> index, elem { }
+	iterate ls -> elem {
+		continue
+	}
+	iterate ls {
+		break
+	}
+
+	loop from 0 to 10 { }
+	loop from 0 to 10 -> i { }
+	loop from 0 to 10 by 2 { }
+	loop from 0 to 10 by 2 -> u { }
+	loop to 10 by 2 { }
+	loop to 10 by 2 -> i {} 
+	loop to 10 { }
+	loop to 10 -> i { }
+	while true { }
+
+        # Semicolon needed between both statements (either newline or ;)
+        # while true { } print("hello")
+        while true { }; print("hello") # That is allowed, though
+
+	if (some_bool: {
+		# block level code
+	})
+	let x
+	# simple ternary
+	let x = if (some_bool: 10, else: 20)
+	# simple quterany
+	if (some_bool: 10, another_bool: 20, else: 30)
+	# more
+	if (some_bool: 10, else: { print("hi") })
+
+	{
+		print("lmao")
+	}
+
+	let i = 10
+	let x = switch(i,
+		5: {
+                  10
+                  +
+                  10
+			print("five")
+			print("five again")
+		},
+		10: print("ten"),
+		15: print("fifteen"),
+	)
+	
+	return
+}
+
+@a_decorator
+let class_stuff = Func(:) {
+	# This is abstract
+	let One = Class(
+		# This is an abstract  
+		let Int i
+	)
+
+	let Two = Class(
+		extends One
+		i = 10 # implement i
+
+		# constructor makes it concrete
+		constructor() {}
+	)
+
+	let A = Class(
+		let fn = Func(:) {
+			print("class A")
+		}
+	)
+	let B = Class(
+		let fn = Func(:) {
+			print("class B")
+		}
+	)
+	let Bottom = Class(
+		extends A, B
+		
+		let Int i
+		
+		capture(A).fn -> fn_a
+		capture(B).fn -> fn_b
+		
+		fn_b = Func(:) {
+			print("class Bottom")
+			super()
+		}
+		
+		let shake_it = Func(:) { print("shake that ass") }
+		
+		constructor(i) {}
+	)
+
+	# making instances :3c
+	let btm = Bottom{23}
+	btm.shake_it()
+        btm.throw_it_back()
+	btm.one().two().three(
+	).four()[0
+		:
+		-1
+ 	].Abcd?.maybe[-1]
+ 	btm.maybe_func?()
+ 	btm.maybe_list?[2]
+}
+
+@some_decorator()
+let math = Func(:) {
+	let i = 0
+	+i
+	-i
+	i + 1
+	# Assignments are expressions
+	i += 1
+	i - 1
+	i -= 1
+	i * 1
+	i *= 1
+	i / 1
+	i /= 1
+	i ** 1
+	i **= 1
+	i // 1
+	i //= 1
+	i % 1
+	i %= 1
+	i %% 1
+	i %%= 1
+	
+	let mut s = ""
+	s ++ "a string"
+	s ++= "a string"
+
+	let String? item = null
+	item ??= "hi"
+	print(item ?? "it was null")
+	item?.upper_case()?.a?.b?.c ?? 0
+	
+	i | 1
+	i |= 1
+	i & 1
+	i &= 1
+	i ~ 1
+	i ~= 1
+	i ^ 1
+	i ^= 1
+	i << 1
+	i <<= 1
+	i >> 1
+	i >>= 1
+	
+	i is Int
+	i in a_list
+	i > 2 and i < 5
+	i > 2 and not i > 4
+	i != 4 or some_bool
+}
+
+# Can't operate assignment operators, is, in, maybe []
+operator+(MyType mt : MyType) {
+  return MyType{inner_number + mt.inner_number}
+}
+
+# Can't have a declarator in the wild
+# @a_decorator
