@@ -6,7 +6,7 @@ options { tokenVocab=ExprLexer; }
 //-----------------------
 
 program
-    : file_directives* ( class_body | (statement SEMICOLON)+ )? EOF
+    : file_directives* ( class_header_inside | (statement SEMICOLON)* ) EOF
     ;
 
 file_directive: DIRECTIVE ID ;
@@ -15,7 +15,7 @@ file_directive: DIRECTIVE ID ;
 // CLASSES
 //-----------------------
 
-class_body
+class_header_inside
     : class_extends? class_member* constructor? class_member* private_constructor? class_member*
     | class_extends? class_member* private_constructor? class_member* constructor? class_member*
     ;
@@ -53,7 +53,9 @@ ellipsis
 
 // TODO
 class_member
-    :
+    : cast
+    | declaration
+    | typedef
     ;
 
 //-----------------------
@@ -61,6 +63,10 @@ class_member
 //-----------------------
 
 type
+    : type_or
+    ;
+
+type_or
     : type_and ( PIPE type_and )*
     ;
 
@@ -90,9 +96,21 @@ map_header
     : MAP LPAREN ( type COMMA type )? RPAREN
     ;
 
-// TODO: wait, if newlines are ignored inside of parentheses, what does that mean for inside of Class()? 
+func_header
+    : FUNC LPAREN func_params? COLON type? RPAREN
+    ;
+
+func_params
+    : func_param_elm ( COMMA func_param_elm )* ( COMMA ellipsis )? COMMA?
+    ;
+
+func_param_elm
+    : type symbol ( EQUAL expression )?
+    ;
+
 class_header
-    : CLASS LPAREN
+    : CLASS LPAREN class_header_inside RPAREN
+    ;
 
 //-----------------------
 // EXPRESSIONS
@@ -234,7 +252,7 @@ expression_atom
     | SUPER
     | lambda
     | LPAREN expression RPAREN
-    ; 
+    ;
 
 //-----------------------
 // STATEMENTS
@@ -242,7 +260,7 @@ expression_atom
 
 statement
     : 
-    | expression
+    | DEFER? expression
     | BREAK
     | CONTINUE
     | RETURN expression?
@@ -250,7 +268,8 @@ statement
     | while
     | iterate
     | declaration
-    | statement_block
+    | typedef
+    | DEFER? statement_block
     ;
 
 statement_block
@@ -272,4 +291,8 @@ iterate
 declaration
     : ( CONST | LET MUT? ) type? SYMBOL ASSIGN expression
     | ( CONST | LET MUT? ) type SYMBOL
+    ;
+
+typedef
+    : TYPE SYMBOL EQUAL type
     ;
