@@ -2,12 +2,7 @@ $namespace SomeNameSpace
 $classname SomeClass
 
 #///////////////////////////////////
-# TODO: heli, rework if statements
-# to be normal (and has elif):
-# if true { "if" } elif { "elif" } else { "else" }
-# For the ternary/cond-like thing
-# it's like our current if:
-# cond(false: "never", true: 10)
+# TODO: Laz, let me know about blocks and semicolons. See line #129
 #///////////////////////////////////
 
 extends One.Two.Three.Four.Five
@@ -74,7 +69,8 @@ let casting = Func(:) {
 }
 
 let misc = Func(Int a:) {
-	let Int | Sr i = if (a == 10: print("hello"); 10, b > 10: "lmao")
+	let Int | String i = if (a == 10: 27, else: "lmao")
+	# i is now either `27` or `"lmao"`
 	{
 		defer print("3rd")
 		defer print("2nd")
@@ -126,39 +122,65 @@ let control_flow = Func(:) {
 	loop to 10 -> i { }
 	while true { }
 
-        # Semicolon needed between both statements (either newline or ;)
-        # while true { } print("hello")
-        while true { }; print("hello") # That is allowed, though
+	##################################
+	##################################
+	##################################
+	##################################
+	# LAZZZZZZZZZZZZZZZZZZZZZZZZZZZZ #
+	##################################
+	##################################
+	################################## | | | | | | | | | | | |
+	################################## v v v v v v v v v v v v
 
-	if (some_bool: {
-		# block level code
-	})
-	let x
-	# simple ternary
-	let x = if (some_bool: 10, else: 20)
-	# simple quterany
-	if (some_bool: 10, another_bool: 20, else: 30)
-	# more
-	if (some_bool: 10, else: { print("hi") })
+	# Semicolon needed between both statements (either newline or ;)
+	# while true { } print("hello")
+	while true { }; print("hello") # That is allowed, though
 
-	{
-		print("lmao")
+	# if statements
+	if some_bool_expr {
+		print("this code block runs when true")
+	} elif another_bool_expr {
+		print("this block runs when the first was false, but the second is true")
+	} else {
+		print("this block runs when all of the tests were false")
 	}
 
-	let i = 10
-	let x = switch(i,
-		5: {
-                  10
-                  +
-                  10
-			print("five")
-			print("five again")
-		},
-		10: print("ten"),
-		15: print("fifteen"),
+	# if some_bool_expr {
+		# code
+	# } else if another_bool { # THIS LINE IS INVALID, MUST BE 'elif'
+		# code
+	# }
+
+	# if expressions (like our old if, but without codeblocks)
+	#   each branch can only contain one expression, no statements allowed!
+	let mut value = if (x > 0: "bigger", x < 0: "smaller", else: "zero")
+
+	# let invalid = if (x > 0: "a string")
+	# this is invalid, as this if-expr doesn't always equate to a value. Add an else-branch to fix it
+
+	# match statements
+	match some_int case 10 {
+		print("ten")
+	} case 20 {
+		print("twenty")
+	} case 30, 40 {
+		print("thirty or forty")
+	} else {
+		print("the number didn't match any of our checks")
+	}
+
+	# match expressions (like match statements, but an expression, similar to if expressions)
+	#   each branch can only contain one expression, no statements allowed!
+	let value = match (
+		x,
+		case 10: "ten",
+		case 20: "twenty",
+		case 30, 40: "thirty or forty",
+		else: "the number didn't match any of our checks",
 	)
-	
-	return
+
+	# let invalid = match (x, case 5: "five")
+	# this is invalid, as this match-expr doesn't always equate to a value. Add an else-branch to fix it
 }
 
 @a_decorator
@@ -208,7 +230,7 @@ let class_stuff = Func(:) {
 	# making instances :3c
 	let btm = Bottom{23}
 	btm.shake_it()
-        btm.throw_it_back()
+	btm.throw_it_back()
 	btm.one().two().three(
 	).four()[0
 		:
@@ -272,7 +294,7 @@ let math = Func(:) {
 
 # Can't operate assignment operators, is, in, maybe []
 operator+(MyType mt : MyType) {
-  return MyType{inner_number + mt.inner_number}
+	return MyType{inner_number + mt.inner_number}
 }
 
 # Can't have a declarator in the wild
