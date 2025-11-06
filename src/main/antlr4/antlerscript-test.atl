@@ -2,12 +2,6 @@ $namespace SomeNameSpace
 $classname SomeClass
 
 #///////////////////////////////////
-# TODO: heli, rework Antlerscript
-# to have classes be top level with
-# the `type` keyword
-#///////////////////////////////////
-
-#///////////////////////////////////
 # TODO: heli, rework if statements
 # to be normal (and has elif):
 # if true { "if" } elif { "elif" } else { "else" }
@@ -170,12 +164,12 @@ let control_flow = Func(:) {
 @a_decorator
 let class_stuff = Func(:) {
 	# This is abstract
-	let One = Class(
+	type One = Class(
 		# This is an abstract  
 		let Int i
 	)
 
-	let Two = Class(
+	type Two = Class(
 		extends One
 		i = 10 # implement i
 
@@ -183,17 +177,17 @@ let class_stuff = Func(:) {
 		constructor() {}
 	)
 
-	let A = Class(
+	type A = Class(
 		let fn = Func(:) {
 			print("class A")
 		}
 	)
-	let B = Class(
+	type B = Class(
 		let fn = Func(:) {
 			print("class B")
 		}
 	)
-	let Bottom = Class(
+	type Bottom = Class(
 		extends A, B
 		
 		let Int i
