@@ -1,10 +1,6 @@
 parser grammar AntlerScriptParser;
 options { tokenVocab=AntlerScriptLexer; }
 
-@header {
-import static AntlerScriptLexer.ignoreSemicolons;
-}
-
 //-----------------------
 // FILES
 //-----------------------
@@ -322,7 +318,7 @@ select
     ;
 
 keypair_list
-    : { ignoreSemicolons.pollFirst(); ignoreSemicolons.push(true); }
+    : { AntlerScriptLexer.ignoreSemicolons.pollFirst(); AntlerScriptLexer.ignoreSemicolons.push(true); }
     keypair_clause ( ',' keypair_clause )* ','?
     ;
 

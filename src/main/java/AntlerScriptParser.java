@@ -1,7 +1,4 @@
 // Generated from AntlerScriptParser.g4 by ANTLR 4.13.2
-
-import static AntlerScriptLexer.ignoreSemicolons;
-
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -4479,7 +4476,7 @@ public class AntlerScriptParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			 ignoreSemicolons.pollFirst(); ignoreSemicolons.push(true); 
+			 AntlerScriptLexer.ignoreSemicolons.pollFirst(); AntlerScriptLexer.ignoreSemicolons.push(true); 
 			setState(711);
 			keypair_clause();
 			setState(716);

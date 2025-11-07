@@ -244,7 +244,7 @@ public class AntlerScriptLexer extends Lexer {
 	private boolean SEMICOLON_sempred(RuleContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return  ignoreSemicolons.peekFirst() != true; /* also ignore newlines in global (null) */ ;
+			return  ignoreSemicolons.peekFirst() != Boolean.TRUE ;
 		}
 		return true;
 	}

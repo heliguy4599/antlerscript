@@ -102,7 +102,7 @@ TO: 'to' ;
 BY: 'by' ;
 
 // Characters
-SEMICOLON: ( ';' | NEWLINE )+ { ignoreSemicolons.peekFirst() != true; /* also ignore newlines in global (null) */ }? ;
+SEMICOLON: ( ';' | NEWLINE )+ { ignoreSemicolons.peekFirst() != Boolean.TRUE }? ;
 LPAREN: '(' { ignoreSemicolons.push(true); } ;
 RPAREN: ')' { ignoreSemicolons.pollFirst(); } ;
 LBRACK: '[' { ignoreSemicolons.push(true); } ;
