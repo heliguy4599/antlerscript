@@ -295,10 +295,6 @@ argument_elm
     | ( SYMBOL '=' )? expression
     ;
 
-dictionary_arguments
-    : 
-    ;
-
 expression_atom
     : SYMBOL
     | STRING

@@ -652,18 +652,6 @@ public class AntlerScriptParserBaseListener implements AntlerScriptParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDictionary_arguments(AntlerScriptParser.Dictionary_argumentsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDictionary_arguments(AntlerScriptParser.Dictionary_argumentsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterExpression_atom(AntlerScriptParser.Expression_atomContext ctx) { }
 	/**
 	 * {@inheritDoc}

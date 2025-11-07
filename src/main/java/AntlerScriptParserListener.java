@@ -537,16 +537,6 @@ public interface AntlerScriptParserListener extends ParseTreeListener {
 	 */
 	void exitArgument_elm(AntlerScriptParser.Argument_elmContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AntlerScriptParser#dictionary_arguments}.
-	 * @param ctx the parse tree
-	 */
-	void enterDictionary_arguments(AntlerScriptParser.Dictionary_argumentsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AntlerScriptParser#dictionary_arguments}.
-	 * @param ctx the parse tree
-	 */
-	void exitDictionary_arguments(AntlerScriptParser.Dictionary_argumentsContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link AntlerScriptParser#expression_atom}.
 	 * @param ctx the parse tree
 	 */
