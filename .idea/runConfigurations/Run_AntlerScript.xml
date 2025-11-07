@@ -14,7 +14,7 @@
               <option value="clean" />
               <option value="compile" />
               <option value="exec:java" />
-              <option value="-Dexec.args=test.fawn" />
+              <option value="-Dexec.args=first-ever-program.alt" />
             </list>
           </option>
           <option name="multimoduleDir" />
