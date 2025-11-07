@@ -1,7 +1,12 @@
 lexer grammar AntlerScriptLexer;
 
+@header {
+import java.util.Deque;
+import java.util.ArrayDeque;
+}
+
 @members {
-    val inBracketStack = ArrayDeque<Boolean>()
+	public static Deque<Boolean> ignoreSemicolons = new ArrayDeque<>();
 }
 
 fragment UNICODE_LETTER: [\p{L}\p{Emoji}] ;
@@ -52,11 +57,14 @@ ARRAY: 'Array' ;
 AS: 'as' ;
 BREAK: 'break' ;
 CAPTURE: 'capture' ;
+CASE: 'case' ;
+CAST: 'cast' ;
 CLASS: 'Class' ;
 CONST: 'const' ;
 CONSTRUCTOR: 'constructor' ;
 CONTINUE: 'continue' ;
 DEFER: 'defer' ;
+ELIF: 'elif' ;
 ELLIPSIS: '...' ;
 ELSE: 'else' ;
 EXTENDS: 'extends' ;
@@ -77,6 +85,7 @@ OPERATOR: 'operator';
 OR: 'or' ;
 PRIVATE_CONSTRUCTOR: '__constructor' ;
 RETURN: 'return' ;
+SELECT: 'select' ;
 SUPER: 'super' ;
 SWITCH: 'switch' ;
 TRUE: 'true' ;
@@ -88,14 +97,18 @@ YIELD: 'yield' ;
 // Symbol
 SYMBOL: IDENTIFIER ;
 
+FROM: 'from' ;
+TO: 'to' ;
+BY: 'by' ;
+
 // Characters
-SEMICOLON: ( ';' | NEWLINE )+ { inBracketStack.lastOrNull() != true /* also ignore newlines in global (null) */ }? ;
-LPAREN: '(' { inBracketStack.addLast(true) } ;
-RPAREN: ')' { inBracketStack.removeLastOrNull() } ;
-LBRACK: '[' { inBracketStack.addLast(true) } ;
-RBRACK: ']' { inBracketStack.removeLastOrNull() } ;
-LCURLY: '{' { inBracketStack.addLast(false) } ;
-RCURLY: '}' { inBracketStack.removeLastOrNull() } ;
+SEMICOLON: ( ';' | NEWLINE )+ { ignoreSemicolons.peekFirst() != true; /* also ignore newlines in global (null) */ }? ;
+LPAREN: '(' { ignoreSemicolons.push(true); } ;
+RPAREN: ')' { ignoreSemicolons.pollFirst(); } ;
+LBRACK: '[' { ignoreSemicolons.push(true); } ;
+RBRACK: ']' { ignoreSemicolons.pollFirst(); } ;
+LCURLY: '{' { ignoreSemicolons.push(false); } ;
+RCURLY: '}' { ignoreSemicolons.pollFirst(); } ;
 NULL_ACCESS: '?.' ;
 QMARK: '?' ;
 RARROW: '->' ;

@@ -1,10 +1,6 @@
 $namespace SomeNameSpace
 $classname SomeClass
 
-#///////////////////////////////////
-# TODO: Laz, let me know about blocks and semicolons. See line #129
-#///////////////////////////////////
-
 extends One.Two.Three.Four.Five
 
 constructor(i, j, Int ...a){ print(j); print(j) }
@@ -69,7 +65,7 @@ let casting = Func(:) {
 }
 
 let misc = Func(Int a:) {
-	let Int | String i = if (a == 10: 27, else: "lmao")
+	let Int | String i = select (a == 10: 27, true: "lmao")
 	# i is now either `27` or `"lmao"`
 	{
 		defer print("3rd")
@@ -122,18 +118,6 @@ let control_flow = Func(:) {
 	loop to 10 -> i { }
 	while true { }
 
-	##################################
-	##################################
-	##################################
-	##################################
-	# LAZZZZZZZZZZZZZZZZZZZZZZZZZZZZ #
-	##################################
-	##################################
-	################################## | | | | | | | | | | | |
-	################################## v v v v v v v v v v v v
-
-	# Semicolon needed between both statements (either newline or ;)
-	# while true { } print("hello")
 	while true { }; print("hello") # That is allowed, though
 
 	# if statements
@@ -153,34 +137,21 @@ let control_flow = Func(:) {
 
 	# if expressions (like our old if, but without codeblocks)
 	#   each branch can only contain one expression, no statements allowed!
-	let mut value = if (x > 0: "bigger", x < 0: "smaller", else: "zero")
+	let mut value = select (x > 0: "bigger", x < 0: "smaller", true: "zero")
 
-	# let invalid = if (x > 0: "a string")
-	# this is invalid, as this if-expr doesn't always equate to a value. Add an else-branch to fix it
+	select(false: "never", false: "still never", true: "always")
+	select [x] (10: "if x is 10", 20: "if x is 20", 30: "if x is 30", x: "always")
 
-	# match statements
-	match some_int case 10 {
+	# switch statements
+	switch some_int case 10 {
 		print("ten")
 	} case 20 {
-		print("twenty")
-	} case 30, 40 {
-		print("thirty or forty")
+		print("definitely twenty")
+	} case 20, 30, 40 {
+		print("maybe twenty, thirty or forty")
 	} else {
 		print("the number didn't match any of our checks")
 	}
-
-	# match expressions (like match statements, but an expression, similar to if expressions)
-	#   each branch can only contain one expression, no statements allowed!
-	let value = match (
-		x,
-		case 10: "ten",
-		case 20: "twenty",
-		case 30, 40: "thirty or forty",
-		else: "the number didn't match any of our checks",
-	)
-
-	# let invalid = match (x, case 5: "five")
-	# this is invalid, as this match-expr doesn't always equate to a value. Add an else-branch to fix it
 }
 
 @a_decorator
@@ -216,6 +187,7 @@ let class_stuff = Func(:) {
 		
 		capture(A).fn -> fn_a
 		capture(B).fn -> fn_b
+		capture(B).fn -> fn_b = Func(:){}
 		
 		fn_b = Func(:) {
 			print("class Bottom")
@@ -233,7 +205,7 @@ let class_stuff = Func(:) {
 	btm.throw_it_back()
 	btm.one().two().three(
 	).four()[0
-		:
+		+
 		-1
  	].Abcd?.maybe[-1]
  	btm.maybe_func?()
@@ -292,9 +264,16 @@ let math = Func(:) {
 	i != 4 or some_bool
 }
 
-# Can't operate assignment operators, is, in, maybe []
+# Can't operate assignment operators, is, in, ., ?.
 operator+(MyType mt : MyType) {
 	return MyType{inner_number + mt.inner_number}
+
+	# Dictionary
+	let my_map = Map(Int, String){
+		10: "hi",
+		2 * 3 + 6: "a" ++ "b",
+		Math.randint(): some_thing as String,
+	}
 }
 
 # Can't have a declarator in the wild

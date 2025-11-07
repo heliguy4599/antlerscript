@@ -1,31 +1,40 @@
-parser grammar ExprParser;
-options { tokenVocab=ExprLexer; }
+parser grammar AntlerScriptParser;
+options { tokenVocab=AntlerScriptLexer; }
+
+@header {
+import static AntlerScriptLexer.ignoreSemicolons;
+}
 
 //-----------------------
 // FILES
 //-----------------------
 
 program
-    : file_directives* ( class_header_inside | (statement SEMICOLON)* ) EOF
+    : file_directive* ( class_top_level | ( statement SEMICOLON )+ ) EOF
     ;
 
-file_directive: DIRECTIVE ID ;
+file_directive: DIRECTIVE SYMBOL ;
 
 //-----------------------
 // CLASSES
 //-----------------------
 
+class_top_level
+    : SEMICOLON* class_extends ( SEMICOLON+ class_member ( SEMICOLON+ class_member )* SEMICOLON* )?
+    | SEMICOLON* class_member ( SEMICOLON+ class_member )* SEMICOLON*
+    ;
+
 class_header_inside
-    : class_extends? class_member* constructor? class_member* private_constructor? class_member*
-    | class_extends? class_member* private_constructor? class_member* constructor? class_member*
+    : class_extends ( ',' class_member ( ',' class_member )* ','? )?
+    | class_member ( ',' class_member )* ','?
     ;
 
 class_extends
-    : EXTENDS class_extends_access ( COMMA class_extends_access )*
+    : EXTENDS class_extends_access ( ',' class_extends_access )*
     ;
 
 class_extends_access
-    : SYMBOL ( DOT SYMBOL )*
+    : SYMBOL ( '.' SYMBOL )*
     ;
 
 constructor
@@ -37,25 +46,60 @@ private_constructor
     ;
 
 constructor_params
-    : LPAREN constructor_params_elm ( COMMA constructor_params_elm )* ( COMMA ellipsis )? RPAREN
-    | LPAREN RPAREN
-    | LPAREN ellipsis RPAREN
+    : '(' constructor_params_elm ( ',' constructor_params_elm )* ( ',' ellipsis )? ')'
+    | '(' ')'
+    | '(' ellipsis ')'
     ;
 
 constructor_params_elm
-    : symbol
-    | type symbol ( EQUAL expression )?
+    : SYMBOL
+    | type SYMBOL ( '=' expression )?
     ;
 
 ellipsis
-    : type ELLIPSIS symbol
+    : type '...' SYMBOL
     ;
 
-// TODO
 class_member
     : cast
     | declaration
-    | typedef
+    | operator_overload
+    | constructor
+    | private_constructor
+    | capture
+    | extends_assign
+    ;
+
+cast
+    : CAST '(' type ')' statement_block
+    ;
+
+operator_overload
+    : OPERATOR overridable '(' type SYMBOL ':' type ')' statement_block
+    ;
+
+overridable
+    : '+'
+    | '-'
+    | '*'
+    | '/'
+    | '%'
+    | '<'
+    | '>'
+    | '++'
+    | '**'
+    | '//'
+    | '%%'
+    | '=='
+    | '[' ']'
+    ;
+
+capture
+    : CAPTURE '(' class_extends_access ')' '.' SYMBOL '->' ( SYMBOL | extends_assign )
+    ;
+
+extends_assign
+    : SYMBOL '=' expression
     ;
 
 //-----------------------
@@ -81,35 +125,39 @@ type_atomic
     | map_header
     | class_header
     | func_header
-    | LPAREN type LPAREN
+    | '(' type ')'
     ;
 
 list_header
-    : LIST LPAREN type? RPAREN
+    : LIST '(' type? ')'
     ;
 
 array_header
-    : ARRAY LPAREN type? RPAREN
+    : ARRAY '(' type? ')'
     ;
 
 map_header
-    : MAP LPAREN ( type COMMA type )? RPAREN
+    : MAP '(' ( type ',' type )? ')'
     ;
 
 func_header
-    : FUNC LPAREN func_params? COLON type? RPAREN
+    : FUNC '(' func_params? ':' type? ')'
     ;
 
 func_params
-    : func_param_elm ( COMMA func_param_elm )* ( COMMA ellipsis )? COMMA?
+    : func_param_elm ( ',' func_param_elm )* ( ',' ellipsis )? ','?
     ;
 
 func_param_elm
-    : type symbol ( EQUAL expression )?
+    : type SYMBOL ( '==' expression )?
+    ;
+
+lambda
+    : func_header statement_block
     ;
 
 class_header
-    : CLASS LPAREN class_header_inside RPAREN
+    : CLASS '(' class_header_inside ')'
     ;
 
 //-----------------------
@@ -125,23 +173,23 @@ expression_assignment
     ;
 
 expression_assignment_right
-    : PLUS_EQ expression_assignment
-    | MINUS_EQ expression_assignment
-    | STAR_EQ expression_assignment
-    | DOUBLE_STAR_EQ expression_assignment
-    | SLASH_EQ expression_assignment
-    | DOUBLE_SLASH_EQ expression_assignment
-    | PERCENT_EQ expression_assignment
-    | DOUBLE_PERCENT_EQ expression_assignment
-    | PIPE_EQ expression_assignment
-    | AMP_EQ expression_assignment
-    | TILDE_EQ expression_assignment
-    | CARRET_EQ expression_assignment
-    | BIT_LSHIFT_EQ expression_assignment
-    | BIT_RSHIFT_EQ expression_assignment
-    | DOUBLE_PLUS_EQ expression_assignment
-    | DOUBLE_QMARK_EQ expression_assignment
-    | EQUAL expression_assignment
+    : '+=' expression_assignment
+    | '-=' expression_assignment
+    | '*=' expression_assignment
+    | '**=' expression_assignment
+    | '/=' expression_assignment
+    | '//=' expression_assignment
+    | '%=' expression_assignment
+    | '%%=' expression_assignment
+    | '|=' expression_assignment
+    | '&=' expression_assignment
+    | '~=' expression_assignment
+    | '^=' expression_assignment
+    | '<<=' expression_assignment
+    | '>>=' expression_assignment
+    | '++=' expression_assignment
+    | '??=' expression_assignment
+    | '=' expression_assignment
     ;
 
 expression_logical_or
@@ -161,26 +209,26 @@ expression_cmp
     ;
 
 expression_cmp_right
-    : LESSER_THAN expression_bit_or
-    | GREATER_THAN expression_bit_or
-    | LESSER_THAN_EQ expression_bit_or
-    | GREATER_THAN_EQ expression_bit_or
-    | DOUBLE_EQUAL expression_bit_or
-    | NOT_EQUAL expression_bit_or
+    : '<' expression_bit_or
+    | '>' expression_bit_or
+    | '<=' expression_bit_or
+    | '>=' expression_bit_or
+    | '==' expression_bit_or
+    | '!=' expression_bit_or
     | IN expression_bit_or
     | IS expression_bit_or
     ;
 
 expression_bit_or
-    : expression_bit_xor ( PIPE expression_bit_xor )*
+    : expression_bit_xor ( '|' expression_bit_xor )*
     ;
 
 expression_bit_xor
-    : expression_bit_and ( CARRET expression_bit_and )*
+    : expression_bit_and ( '^' expression_bit_and )*
     ;
 
 expression_bit_and
-    : expression_bit_shift ( AMP expression_bit_shift )*
+    : expression_bit_shift ( '&' expression_bit_shift )*
     ;
 
 expression_bit_shift
@@ -188,8 +236,8 @@ expression_bit_shift
     ;
 
 expression_bit_shift_right
-    : BIT_LSHIFT expression_add
-    | BIT_RSHIFT expression_add
+    : '<<' expression_add
+    | '>>' expression_add
     ;
 
 expression_add
@@ -197,9 +245,9 @@ expression_add
     ;
 
 expression_add_right
-    : PLUS expression_mult
-    | MINUS expression_mult
-    | DOUBLE_PLUS expression_mult
+    : '+' expression_mult
+    | '-' expression_mult
+    | '++' expression_mult
     ;
 
 expression_mult
@@ -207,12 +255,12 @@ expression_mult
     ;
 
 expression_mult_right
-    : STAR expression_unary
-    | DOUBLE_STAR expression_unary
-    | SLASH expression_unary
-    | DOUBLE_SLASH expression_unary
-    | PERCENT expression_unary
-    | DOUBLE_PERCENT expression_unary
+    : '*' expression_unary
+    | '**' expression_unary
+    | '/' expression_unary
+    | '//' expression_unary
+    | '%' expression_unary
+    | '%%' expression_unary
     ;
 
 expression_unary
@@ -220,25 +268,39 @@ expression_unary
     ;
 
 expression_unary_op
-    : PLUS
-    | MINUS
-    | TILDE
-    | NOT
+    : '+'
+    | '-'
+    | '~'
+    | NOT 
     ;
 
 expression_exp
-    : expression_postfix ( DOUBLE_STAR expression_postfix )*
+    : expression_postfix ( '**' expression_postfix )*
+    ;
 
 expression_postfix
     : expression_atom expression_access*
     ;
 
 expression_access
-    : LBRACK expression RBRACK
-    | LPAREN arguments? RPAREN
-    | LCURLY arguments? RCURLY
-    | DOT SYMBOL
-    | NULL_ACCESS SYMBOL
+    : '[' expression ']'
+    | '(' arguments? ')'
+    | '{' ( keypair_list | arguments )? '}'
+    | '.' SYMBOL
+    | '?.' SYMBOL
+    ;
+
+arguments
+    : argument_elm ( ',' argument_elm )* ','?
+    ;
+
+argument_elm
+    : '_'
+    | ( SYMBOL '=' )? expression
+    ;
+
+dictionary_arguments
+    : 
     ;
 
 expression_atom
@@ -251,7 +313,21 @@ expression_atom
     | NULL
     | SUPER
     | lambda
-    | LPAREN expression RPAREN
+    | select
+    | '(' expression ')'
+    ;
+    
+select
+    : SELECT ( '[' expression ']' )? '(' keypair_list ')'
+    ;
+
+keypair_list
+    : { ignoreSemicolons.pollFirst(); ignoreSemicolons.push(true); }
+    keypair_clause ( ',' keypair_clause )* ','?
+    ;
+
+keypair_clause
+    : expression ':' expression
     ;
 
 //-----------------------
@@ -269,15 +345,17 @@ statement
     | iterate
     | declaration
     | typedef
+    | if
+    | switch
     | DEFER? statement_block
     ;
 
 statement_block
-    : LCURLY SEMICOLON* ( statement ( SEMICOLON+ statement )* SEMICOLON* )? RCURLY
+    : '{' SEMICOLON* ( statement ( SEMICOLON+ statement )* SEMICOLON* )? '}'
     ;
 
 loop
-    : LOOP ( 'from' expression )? 'to' expression ( 'by' expression' )? ( RARROW SYMBOL )? statement_block
+    : LOOP ( 'from' expression )? 'to' expression ( 'by' expression )? ( '->' SYMBOL )? statement_block
     ;
 
 while
@@ -285,14 +363,34 @@ while
     ;
     
 iterate
-    : ITERATE expression ( RARROW SYMBOL ( COMMA SYMBOL )? )? statement_block
+    : ITERATE expression ( '->' SYMBOL ( ',' SYMBOL )? )? statement_block
     ;
 
 declaration
-    : ( CONST | LET MUT? ) type? SYMBOL ASSIGN expression
+    : ( CONST | LET MUT? ) type? SYMBOL '=' expression
     | ( CONST | LET MUT? ) type SYMBOL
     ;
 
 typedef
-    : TYPE SYMBOL EQUAL type
+    : TYPE SYMBOL '=' type
+    ;
+
+if
+    : IF expression statement_block elif* else?
+    ;
+
+elif
+    : ELIF expression statement_block
+    ;
+
+else
+    : ELSE statement_block
+    ;
+
+switch
+    : SWITCH expression case+ else?
+    ;
+
+case
+    : CASE expression ( ',' expression )* statement_block
     ;
