@@ -12,15 +12,14 @@ import java.util.ArrayDeque;
 fragment UNICODE_LETTER: [\p{L}\p{Emoji}] ;
 fragment UNICODE_NUMBER: [\p{N}] ;
 fragment IDENTIFIER: ( UNICODE_LETTER | '_' ) ( UNICODE_LETTER | UNICODE_NUMBER | '_' )* ;
-fragment NEWLINE: '\r' | '\r'? '\n' ;
 
 DIRECTIVE: '$' IDENTIFIER ;
 ANNOTATION: '@' IDENTIFIER ;
 
 // Numbers
 fragment DEC_INTEGER: [0-9] ( '_'? [0-9] )* ;
-fragment BIN_INTEGER: '0b' [01] ( '_'? [01] )* ;
-fragment HEX_INTEGER: '0x' [0-9A-F] ( '_'? [0-9A-F] )* ;
+fragment BIN_INTEGER: [01] ( '_'? [01] )* ;
+fragment HEX_INTEGER: [0-9A-F] ( '_'? [0-9A-F] )* ;
 fragment EXPONENT_BASE10: 'e' ( '+' | '-' )? DEC_INTEGER;
 fragment EXPONENT_BASE16: ( 'e' | 'p' )  ( '+' | '-' )? DEC_INTEGER;
 fragment INTEGER_SUFFIX
@@ -33,19 +32,19 @@ fragment FLOAT_SUFFIX
 
 INTEGER
     : DEC_INTEGER INTEGER_SUFFIX?
-    | HEX_INTEGER INTEGER_SUFFIX?
-    | BIN_INTEGER INTEGER_SUFFIX?
+    | '0x' HEX_INTEGER INTEGER_SUFFIX?
+    | '0b' BIN_INTEGER INTEGER_SUFFIX?
     ;
 
 FLOAT
     : DEC_INTEGER ( '.' DEC_INTEGER | EXPONENT_BASE10 ) FLOAT_SUFFIX?
     | DEC_INTEGER '.' DEC_INTEGER EXPONENT_BASE10 FLOAT_SUFFIX?
-    | HEX_INTEGER ( '.' HEX_INTEGER | EXPONENT_BASE16 ) FLOAT_SUFFIX?
-    | HEX_INTEGER '.' HEX_INTEGER EXPONENT_BASE16 FLOAT_SUFFIX?
+    | '0x' HEX_INTEGER ( '.' HEX_INTEGER | EXPONENT_BASE16 ) FLOAT_SUFFIX?
+    | '0x' HEX_INTEGER '.' HEX_INTEGER EXPONENT_BASE16 FLOAT_SUFFIX?
     ;
 
 // ANTLR4 doesn't support vertical tabs
-WHITESPACE: [ \t\f]+   -> channel(HIDDEN);
+WHITESPACE: [ \t\f\u000B]+   -> channel(HIDDEN);
 COMMENT: '#' ~[\n\r]*  -> channel(HIDDEN);
 
 RAW_STRING: '\\"' .*? '"' ;
@@ -56,6 +55,7 @@ AND: 'and' ;
 ARRAY: 'Array' ;
 AS: 'as' ;
 BREAK: 'break' ;
+BY: 'by' ;
 CAPTURE: 'capture' ;
 CASE: 'case' ;
 CAST: 'cast' ;
@@ -69,6 +69,7 @@ ELLIPSIS: '...' ;
 ELSE: 'else' ;
 EXTENDS: 'extends' ;
 FALSE: 'false' ;
+FROM: 'from' ;
 FUNC: 'Func' ;
 IF: 'if' ;
 IN: 'in' ;
@@ -88,21 +89,15 @@ RETURN: 'return' ;
 SELECT: 'select' ;
 SUPER: 'super' ;
 SWITCH: 'switch' ;
+TO: 'to' ;
 TRUE: 'true' ;
 TYPE: 'type' ;
 UNDERSCORE: '_' ;
 WHILE: 'while' ;
-YIELD: 'yield' ;
-
-// Symbol
-SYMBOL: IDENTIFIER ;
-
-FROM: 'from' ;
-TO: 'to' ;
-BY: 'by' ;
 
 // Characters
-SEMICOLON: ( ';' | NEWLINE )+ { ignoreSemicolons.peekFirst() != Boolean.TRUE }? ;
+NEWLINE: '\r' | '\r'? '\n' { ignoreSemicolons.peekFirst() != Boolean.TRUE }? ;
+SEMICOLON: ';';
 LPAREN: '(' { ignoreSemicolons.push(true); } ;
 RPAREN: ')' { ignoreSemicolons.pollFirst(); } ;
 LBRACK: '[' { ignoreSemicolons.push(true); } ;
@@ -154,3 +149,6 @@ BIT_LSHIFT_EQ: '<<=';
 BIT_RSHIFT_EQ: '>>=';
 DOUBLE_PLUS_EQ: '++=';
 DOUBLE_QMARK_EQ: '??=';
+
+// Symbol
+SYMBOL: IDENTIFIER ;

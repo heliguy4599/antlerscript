@@ -7,6 +7,26 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface AntlerScriptParserListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#symbol}.
+	 * @param ctx the parse tree
+	 */
+	void enterSymbol(AntlerScriptParser.SymbolContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#symbol}.
+	 * @param ctx the parse tree
+	 */
+	void exitSymbol(AntlerScriptParser.SymbolContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#semicolon}.
+	 * @param ctx the parse tree
+	 */
+	void enterSemicolon(AntlerScriptParser.SemicolonContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#semicolon}.
+	 * @param ctx the parse tree
+	 */
+	void exitSemicolon(AntlerScriptParser.SemicolonContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link AntlerScriptParser#program}.
 	 * @param ctx the parse tree
 	 */
@@ -107,15 +127,15 @@ public interface AntlerScriptParserListener extends ParseTreeListener {
 	 */
 	void exitConstructor_params_elm(AntlerScriptParser.Constructor_params_elmContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AntlerScriptParser#ellipsis}.
+	 * Enter a parse tree produced by {@link AntlerScriptParser#var_args}.
 	 * @param ctx the parse tree
 	 */
-	void enterEllipsis(AntlerScriptParser.EllipsisContext ctx);
+	void enterVar_args(AntlerScriptParser.Var_argsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link AntlerScriptParser#ellipsis}.
+	 * Exit a parse tree produced by {@link AntlerScriptParser#var_args}.
 	 * @param ctx the parse tree
 	 */
-	void exitEllipsis(AntlerScriptParser.EllipsisContext ctx);
+	void exitVar_args(AntlerScriptParser.Var_argsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AntlerScriptParser#class_member}.
 	 * @param ctx the parse tree

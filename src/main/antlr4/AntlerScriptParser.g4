@@ -1,15 +1,27 @@
 parser grammar AntlerScriptParser;
 options { tokenVocab=AntlerScriptLexer; }
 
+symbol
+    : SYMBOL
+    | FROM
+    | TO
+    | BY
+    ;
+
+semicolon
+    : NEWLINE+
+    | SEMICOLON
+    ;
+
 //-----------------------
 // FILES
 //-----------------------
 
 program
-    : file_directive* ( class_top_level | ( statement SEMICOLON )+ ) EOF
+    : file_directive* ( class_top_level | statement ( semicolon statement )* semicolon* ) EOF
     ;
 
-file_directive: DIRECTIVE SYMBOL ;
+file_directive: DIRECTIVE symbol ;
 
 //-----------------------
 // CLASSES
@@ -30,7 +42,7 @@ class_extends
     ;
 
 class_extends_access
-    : SYMBOL ( '.' SYMBOL )*
+    : symbol ( '.' symbol )*
     ;
 
 constructor
@@ -42,18 +54,18 @@ private_constructor
     ;
 
 constructor_params
-    : '(' constructor_params_elm ( ',' constructor_params_elm )* ( ',' ellipsis )? ')'
+    : '(' constructor_params_elm ( ',' constructor_params_elm )* ( ',' var_args )? ')'
     | '(' ')'
-    | '(' ellipsis ')'
+    | '(' var_args ')'
     ;
 
 constructor_params_elm
-    : SYMBOL
-    | type SYMBOL ( '=' expression )?
+    : symbol
+    | type symbol ( '=' expression )?
     ;
 
-ellipsis
-    : type '...' SYMBOL
+var_args
+    : type '...' symbol
     ;
 
 class_member
@@ -71,7 +83,7 @@ cast
     ;
 
 operator_overload
-    : OPERATOR overridable '(' type SYMBOL ':' type ')' statement_block
+    : OPERATOR overridable '(' type symbol ':' type ')' statement_block
     ;
 
 overridable
@@ -91,11 +103,11 @@ overridable
     ;
 
 capture
-    : CAPTURE '(' class_extends_access ')' '.' SYMBOL '->' ( SYMBOL | extends_assign )
+    : CAPTURE '(' class_extends_access ')' '.' symbol '->' ( symbol | extends_assign )
     ;
 
 extends_assign
-    : SYMBOL '=' expression
+    : symbol '=' expression
     ;
 
 //-----------------------
@@ -115,7 +127,7 @@ type_and
     ;
 
 type_atomic
-    : SYMBOL
+    : symbol
     | list_header
     | array_header
     | map_header
@@ -141,11 +153,11 @@ func_header
     ;
 
 func_params
-    : func_param_elm ( ',' func_param_elm )* ( ',' ellipsis )? ','?
+    : func_param_elm ( ',' func_param_elm )* ( ',' var_args )? ','?
     ;
 
 func_param_elm
-    : type SYMBOL ( '==' expression )?
+    : type symbol ( '=' expression )?
     ;
 
 lambda
@@ -282,8 +294,8 @@ expression_access
     : '[' expression ']'
     | '(' arguments? ')'
     | '{' ( keypair_list | arguments )? '}'
-    | '.' SYMBOL
-    | '?.' SYMBOL
+    | '.' symbol
+    | '?.' symbol
     ;
 
 arguments
@@ -292,11 +304,11 @@ arguments
 
 argument_elm
     : '_'
-    | ( SYMBOL '=' )? expression
+    | ( symbol '=' )? expression
     ;
 
 expression_atom
-    : SYMBOL
+    : symbol
     | STRING
     | FLOAT
     | INTEGER
@@ -347,7 +359,7 @@ statement_block
     ;
 
 loop
-    : LOOP ( 'from' expression )? 'to' expression ( 'by' expression )? ( '->' SYMBOL )? statement_block
+    : LOOP ( 'from' expression )? 'to' expression ( 'by' expression )? ( '->' symbol )? statement_block
     ;
 
 while
@@ -355,16 +367,16 @@ while
     ;
     
 iterate
-    : ITERATE expression ( '->' SYMBOL ( ',' SYMBOL )? )? statement_block
+    : ITERATE expression ( '->' symbol ( ',' symbol )? )? statement_block
     ;
 
 declaration
-    : ( CONST | LET MUT? ) type? SYMBOL '=' expression
-    | ( CONST | LET MUT? ) type SYMBOL
+    : ( CONST | LET MUT? ) type? symbol '=' expression
+    | ( CONST | LET MUT? ) type symbol
     ;
 
 typedef
-    : TYPE SYMBOL '=' type
+    : TYPE symbol '=' type
     ;
 
 if

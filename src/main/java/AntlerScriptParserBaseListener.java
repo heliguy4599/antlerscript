@@ -16,6 +16,30 @@ public class AntlerScriptParserBaseListener implements AntlerScriptParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSymbol(AntlerScriptParser.SymbolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSymbol(AntlerScriptParser.SymbolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSemicolon(AntlerScriptParser.SemicolonContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSemicolon(AntlerScriptParser.SemicolonContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterProgram(AntlerScriptParser.ProgramContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -136,13 +160,13 @@ public class AntlerScriptParserBaseListener implements AntlerScriptParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEllipsis(AntlerScriptParser.EllipsisContext ctx) { }
+	@Override public void enterVar_args(AntlerScriptParser.Var_argsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEllipsis(AntlerScriptParser.EllipsisContext ctx) { }
+	@Override public void exitVar_args(AntlerScriptParser.Var_argsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
