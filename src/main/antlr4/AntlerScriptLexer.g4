@@ -96,7 +96,7 @@ UNDERSCORE: '_' ;
 WHILE: 'while' ;
 
 // Characters
-NEWLINE: '\r' | '\r'? '\n' { ignoreSemicolons.peekFirst() != Boolean.TRUE }? ;
+NEWLINE: ( '\r' | '\r'? '\n' ) { ignoreSemicolons.peekFirst() != Boolean.TRUE }? ;
 SEMICOLON: ';';
 LPAREN: '(' { ignoreSemicolons.push(true); } ;
 RPAREN: ')' { ignoreSemicolons.pollFirst(); } ;
