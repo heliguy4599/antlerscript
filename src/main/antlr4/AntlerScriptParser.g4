@@ -28,8 +28,8 @@ file_directive: DIRECTIVE symbol ;
 //-----------------------
 
 class_top_level
-    : SEMICOLON* class_extends ( SEMICOLON+ class_member ( SEMICOLON+ class_member )* SEMICOLON* )?
-    | SEMICOLON* class_member ( SEMICOLON+ class_member )* SEMICOLON*
+    : semicolon* class_extends ( semicolon+ class_member ( semicolon+ class_member )* semicolon* )?
+    | semicolon* class_member ( semicolon+ class_member )* semicolon*
     ;
 
 class_header_inside
@@ -355,7 +355,7 @@ statement
     ;
 
 statement_block
-    : '{' SEMICOLON* ( statement ( SEMICOLON+ statement )* SEMICOLON* )? '}'
+    : '{' semicolon* ( statement ( semicolon+ statement )* semicolon* )? '}'
     ;
 
 loop
