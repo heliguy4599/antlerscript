@@ -321,7 +321,7 @@ class CSTTest {
 
 		@Test
 		void fail_statement_if_else_elif() {
-			testInputNoRule("if 2 + 2 {} else {} elif 2 + 2", "if_");
+			testInputPartialMatch("if 2 + 2 {} else {} elif 2 + 2", "if_");
 		}
 	}
 
