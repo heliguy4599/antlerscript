@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Testing the ANTLR4-generated lexer")
 class LexerTest {
+	// Type alias class
 	abstract class L extends AntlerScriptLexer {
 		L(CharStream input) {
 			super(input);
@@ -168,6 +169,7 @@ class LexerTest {
 		testInput("0xFe-10", L.FLOAT);
 
 		testInput("0xF.Fe10", L.FLOAT);
+		testInput("0xF.Fe10f", L.FLOAT);
 		testInput("0xF.Fe10f8", L.FLOAT);
 		testInput("0xF.Fe10f16", L.FLOAT);
 		testInput("0xF.Fe10f32", L.FLOAT);
@@ -175,6 +177,7 @@ class LexerTest {
 		testInput("0xF.Fe10f128", L.FLOAT);
 
 		testInput("0xF.Fe+10", L.FLOAT);
+		testInput("0xF.Fe+10f", L.FLOAT);
 		testInput("0xF.Fe+10f8", L.FLOAT);
 		testInput("0xF.Fe+10f16", L.FLOAT);
 		testInput("0xF.Fe+10f32", L.FLOAT);
@@ -182,6 +185,7 @@ class LexerTest {
 		testInput("0xF.Fe+10f128", L.FLOAT);
 
 		testInput("0xF.Fe-10", L.FLOAT);
+		testInput("0xF.Fe-10f", L.FLOAT);
 		testInput("0xF.Fe-10f8", L.FLOAT);
 		testInput("0xF.Fe-10f16", L.FLOAT);
 		testInput("0xF.Fe-10f32", L.FLOAT);
@@ -196,6 +200,7 @@ class LexerTest {
 		testInput("0xF.Fp10f128", L.FLOAT);
 
 		testInput("0xF.Fp+10", L.FLOAT);
+		testInput("0xF.Fp+10f", L.FLOAT);
 		testInput("0xF.Fp+10f8", L.FLOAT);
 		testInput("0xF.Fp+10f16", L.FLOAT);
 		testInput("0xF.Fp+10f32", L.FLOAT);
@@ -203,6 +208,7 @@ class LexerTest {
 		testInput("0xF.Fp+10f128", L.FLOAT);
 
 		testInput("0xF.Fp-10", L.FLOAT);
+		testInput("0xF.Fp-10f", L.FLOAT);
 		testInput("0xF.Fp-10f8", L.FLOAT);
 		testInput("0xF.Fp-10f16", L.FLOAT);
 		testInput("0xF.Fp-10f32", L.FLOAT);
@@ -445,7 +451,8 @@ class LexerTest {
 		testInput("\u000B \f\t\u000B \t\f\u000B \f\t\u000B",
 			  L.WHITESPACE);
 	}
-	
+
+	// TODO: add more symbol testing
 	@Test
 	void symbol() {
 		testInput("myVar", L.SYMBOL);
