@@ -22,6 +22,11 @@ class LexerTest {
 		assertEquals(v.getDisplayName(expectedTokenType),
 			     v.getDisplayName(next.getType()));
 	}
+
+	@BeforeEach
+	void setup() {
+		AntlerScriptLexer.ignoreSemicolons.clear();
+	}
     
 	@Test
 	void directive() {
@@ -218,9 +223,9 @@ class LexerTest {
 	
 	@Test
 	void rawString() {
-		testInput("\\\"hello\"", L.RAW_STRING);
-		testInput("\\\"hello\\\"", L.RAW_STRING);
-		testInput("\\\"he\n\nllo\"", L.RAW_STRING);
+		testInput("`hello`", L.RAW_STRING);
+		testInput("`hello`", L.RAW_STRING);
+		testInput("`he\n\nllo`", L.RAW_STRING);
 	}
 	
 	@Test
@@ -637,6 +642,11 @@ class LexerTest {
 	@Test
 	void doubleEqual() {
 		testInput("==", L.DOUBLE_EQUAL);
+	}
+	
+	@Test
+	void dotEqual() {
+		testInput(".=", L.DOT_EQUAL);
 	}
 	
 	@Test

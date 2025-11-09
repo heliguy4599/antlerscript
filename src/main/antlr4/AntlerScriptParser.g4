@@ -9,7 +9,7 @@ symbol
     ;
 
 semicolon
-    : NEWLINE+
+    : NEWLINE
     | SEMICOLON
     ;
 
@@ -165,7 +165,7 @@ lambda
     ;
 
 class_header
-    : CLASS '(' class_header_inside ')'
+    : CLASS '(' class_header_inside? ')'
     ;
 
 //-----------------------
@@ -197,11 +197,17 @@ expression_assignment_right
     | '>>=' expression_assignment
     | '++=' expression_assignment
     | '??=' expression_assignment
+    | '.=' expression_assignment
     | '=' expression_assignment
     ;
 
 expression_logical_or
-    : expression_logical_and ( OR expression_logical_and )*
+    : expression_logical_and expression_logical_or_right?
+    ;
+
+expression_logical_or_right
+    : OR expression_logical_or
+    | '??' expression_logical_or
     ;
 
 expression_logical_and
@@ -209,7 +215,7 @@ expression_logical_and
     ;
 
 expression_logical_not
-    : NOT? expression_cmp
+    : NOT* expression_cmp
     ;
 
 expression_cmp
@@ -272,14 +278,13 @@ expression_mult_right
     ;
 
 expression_unary
-    : expression_unary_op? expression_exp
+    : expression_unary_op* expression_exp
     ;
 
 expression_unary_op
     : '+'
     | '-'
     | '~'
-    | NOT 
     ;
 
 expression_exp
@@ -293,7 +298,6 @@ expression_postfix
 expression_access
     : '[' expression ']'
     | '(' arguments? ')'
-    | '{' ( keypair_list | arguments )? '}'
     | '.' symbol
     | '?.' symbol
     ;
@@ -310,15 +314,59 @@ argument_elm
 expression_atom
     : symbol
     | STRING
+    | RAW_STRING
     | FLOAT
     | INTEGER
     | TRUE
     | FALSE
     | NULL
     | SUPER
+    | new_object_instance
+    | new_list_instance
+    | new_array_instance
+    | new_map_instance
+    | new_class_instance
     | lambda
     | select
     | '(' expression ')'
+    ;
+
+new_object_instance
+    : symbol object_instantiation_args
+    ;
+
+new_list_instance
+    : list_header object_instantiation_args
+    ;
+
+new_array_instance
+    : array_header object_instantiation_args
+    ;
+
+new_class_instance
+    : class_header object_instantiation_args
+    ;
+
+object_instantiation_args
+    :
+    '{'
+    {
+        AntlerScriptLexer.ignoreSemicolons.pollFirst();
+        AntlerScriptLexer.ignoreSemicolons.push(true);
+    }
+    arguments?
+    '}'
+    ;
+
+new_map_instance
+    : map_header
+    '{'
+    {
+        AntlerScriptLexer.ignoreSemicolons.pollFirst();
+        AntlerScriptLexer.ignoreSemicolons.push(true);
+    }
+    keypair_list?
+    '}'
     ;
     
 select
@@ -326,8 +374,7 @@ select
     ;
 
 keypair_list
-    : { AntlerScriptLexer.ignoreSemicolons.pollFirst(); AntlerScriptLexer.ignoreSemicolons.push(true); }
-    keypair_clause ( ',' keypair_clause )* ','?
+    : keypair_clause ( ',' keypair_clause )* ','?
     ;
 
 keypair_clause

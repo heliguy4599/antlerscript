@@ -436,6 +436,18 @@ public class AntlerScriptParserBaseListener implements AntlerScriptParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterExpression_logical_or_right(AntlerScriptParser.Expression_logical_or_rightContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExpression_logical_or_right(AntlerScriptParser.Expression_logical_or_rightContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExpression_logical_and(AntlerScriptParser.Expression_logical_andContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -683,6 +695,78 @@ public class AntlerScriptParserBaseListener implements AntlerScriptParserListene
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExpression_atom(AntlerScriptParser.Expression_atomContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNew_object_instance(AntlerScriptParser.New_object_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNew_object_instance(AntlerScriptParser.New_object_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNew_list_instance(AntlerScriptParser.New_list_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNew_list_instance(AntlerScriptParser.New_list_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNew_array_instance(AntlerScriptParser.New_array_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNew_array_instance(AntlerScriptParser.New_array_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNew_class_instance(AntlerScriptParser.New_class_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNew_class_instance(AntlerScriptParser.New_class_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterObject_instantiation_args(AntlerScriptParser.Object_instantiation_argsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitObject_instantiation_args(AntlerScriptParser.Object_instantiation_argsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNew_map_instance(AntlerScriptParser.New_map_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNew_map_instance(AntlerScriptParser.New_map_instanceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

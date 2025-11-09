@@ -357,6 +357,16 @@ public interface AntlerScriptParserListener extends ParseTreeListener {
 	 */
 	void exitExpression_logical_or(AntlerScriptParser.Expression_logical_orContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#expression_logical_or_right}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpression_logical_or_right(AntlerScriptParser.Expression_logical_or_rightContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#expression_logical_or_right}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpression_logical_or_right(AntlerScriptParser.Expression_logical_or_rightContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link AntlerScriptParser#expression_logical_and}.
 	 * @param ctx the parse tree
 	 */
@@ -566,6 +576,66 @@ public interface AntlerScriptParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpression_atom(AntlerScriptParser.Expression_atomContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#new_object_instance}.
+	 * @param ctx the parse tree
+	 */
+	void enterNew_object_instance(AntlerScriptParser.New_object_instanceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#new_object_instance}.
+	 * @param ctx the parse tree
+	 */
+	void exitNew_object_instance(AntlerScriptParser.New_object_instanceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#new_list_instance}.
+	 * @param ctx the parse tree
+	 */
+	void enterNew_list_instance(AntlerScriptParser.New_list_instanceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#new_list_instance}.
+	 * @param ctx the parse tree
+	 */
+	void exitNew_list_instance(AntlerScriptParser.New_list_instanceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#new_array_instance}.
+	 * @param ctx the parse tree
+	 */
+	void enterNew_array_instance(AntlerScriptParser.New_array_instanceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#new_array_instance}.
+	 * @param ctx the parse tree
+	 */
+	void exitNew_array_instance(AntlerScriptParser.New_array_instanceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#new_class_instance}.
+	 * @param ctx the parse tree
+	 */
+	void enterNew_class_instance(AntlerScriptParser.New_class_instanceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#new_class_instance}.
+	 * @param ctx the parse tree
+	 */
+	void exitNew_class_instance(AntlerScriptParser.New_class_instanceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#object_instantiation_args}.
+	 * @param ctx the parse tree
+	 */
+	void enterObject_instantiation_args(AntlerScriptParser.Object_instantiation_argsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#object_instantiation_args}.
+	 * @param ctx the parse tree
+	 */
+	void exitObject_instantiation_args(AntlerScriptParser.Object_instantiation_argsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#new_map_instance}.
+	 * @param ctx the parse tree
+	 */
+	void enterNew_map_instance(AntlerScriptParser.New_map_instanceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#new_map_instance}.
+	 * @param ctx the parse tree
+	 */
+	void exitNew_map_instance(AntlerScriptParser.New_map_instanceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AntlerScriptParser#select}.
 	 * @param ctx the parse tree

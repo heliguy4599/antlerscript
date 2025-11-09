@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 }
 
 @members {
-	public static Deque<Boolean> ignoreSemicolons = new ArrayDeque<>();
+	public static final Deque<Boolean> ignoreSemicolons = new ArrayDeque<>();
 }
 
 fragment UNICODE_LETTER: [\p{L}\p{Emoji}] ;
@@ -47,7 +47,7 @@ FLOAT
 WHITESPACE: [ \t\f\u000B]+   -> channel(HIDDEN);
 COMMENT: '#' ~[\n\r]*  -> channel(HIDDEN);
 
-RAW_STRING: '\\"' .*? '"' ;
+RAW_STRING: '`' .*? '`' ;
 STRING: '"' ( ~[\\] | '\\' . )* '"' ;
 
 // Keywords
@@ -96,7 +96,10 @@ UNDERSCORE: '_' ;
 WHILE: 'while' ;
 
 // Characters
-NEWLINE: ( '\r' | '\r'? '\n' ) { ignoreSemicolons.peekFirst() != Boolean.TRUE }? ;
+
+NEWLINE : ( '\r' | '\r'? '\n' ) { ignoreSemicolons.peekFirst() != Boolean.TRUE }? ;
+NEWLINE_SKIP : ( '\r' | '\r'? '\n' ) -> channel(HIDDEN) ;
+
 SEMICOLON: ';';
 LPAREN: '(' { ignoreSemicolons.push(true); } ;
 RPAREN: ')' { ignoreSemicolons.pollFirst(); } ;
@@ -130,6 +133,7 @@ DOUBLE_STAR: '**' ;
 DOUBLE_SLASH: '//' ;
 DOUBLE_PERCENT: '%%' ;
 DOUBLE_EQUAL: '==' ;
+DOT_EQUAL: '.=' ;
 NOT_EQUAL: '!=' ;
 PLUS_EQ: '+=';
 MINUS_EQ: '-=';

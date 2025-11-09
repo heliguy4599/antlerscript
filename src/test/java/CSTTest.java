@@ -1,50 +1,64 @@
 import java.lang.reflect.*;
 
 import org.antlr.v4.runtime.*;
+
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// Test starting rule
-// class_extends_access
-// : SYMBOL ( '.' SYMBOL )*
-// ;
-
-
 @DisplayName("Testing the ANTLR4-generated concrete syntax tree (CST)")
 class CSTTest {
-	static void testInput(String input, String ruleName) {
+	static AntlerScriptParser getNewParser(String input) {
 		CharStream charStream = CharStreams.fromString(input);
 		AntlerScriptLexer lexer = new AntlerScriptLexer(charStream);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		AntlerScriptParser parser = new AntlerScriptParser(tokens);
+		return new AntlerScriptParser(tokens);
+	}
+
+	static String parsedGetText(AntlerScriptParser parser) {
+		TokenStream tokenStream = parser.getTokenStream();
+		int size = tokenStream.size() - 1; // Ignore EOF
+		StringBuilder matched = new StringBuilder();
+		for (int i = 0; i < size; i++) {
+			Token token = tokenStream.get(i);
+			matched.append(token.getText());
+		}
+		return matched.toString();
+	}
+	
+	static void assertInputMatchesParsed(String input, AntlerScriptParser parser) {
+		assertEquals(input, parsedGetText(parser));
+	}
+	
+	static void assertInputNotMatchesParsed(String input, AntlerScriptParser parser) {
+		assertNotEquals(input, parsedGetText(parser));
+	}
+
+	static void testInput(String input, String ruleName) {
+		AntlerScriptParser parser = getNewParser(input);
 		assertDoesNotThrow(() -> {
 			Method rule = parser.getClass().getMethod(ruleName);
 			ParserRuleContext context = (ParserRuleContext) rule.invoke(parser);
-			assertEquals(0, parser.getNumberOfSyntaxErrors());
 			assertNull(context.exception);
-			assertEquals(input.replaceAll("[ \\t\\f\\u000B]+", ""), context.getText());
 		});
+		assertEquals(0, parser.getNumberOfSyntaxErrors());
+		assertInputMatchesParsed(input, parser);
 	}
 
 	static void testInputNoRule(String input, String ruleName) {
-		CharStream charStream = CharStreams.fromString(input);
-		AntlerScriptLexer lexer = new AntlerScriptLexer(charStream);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		AntlerScriptParser parser = new AntlerScriptParser(tokens);
+		AntlerScriptParser parser = getNewParser(input);
 		assertDoesNotThrow(() -> {
 			Method rule = parser.getClass().getMethod(ruleName);
 			ParserRuleContext context = (ParserRuleContext) rule.invoke(parser);
-			assertNotEquals(0, parser.getNumberOfSyntaxErrors());
 			assertNotNull(context.exception);
 		});
+		assertNotEquals(0, parser.getNumberOfSyntaxErrors());
 	}
 
 	static void testInputPartialMatch(String input, String ruleName) {
-		CharStream charStream = CharStreams.fromString(input);
-		AntlerScriptLexer lexer = new AntlerScriptLexer(charStream);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		AntlerScriptParser parser = new AntlerScriptParser(tokens);
+		AntlerScriptParser parser = getNewParser(input);
 		assertDoesNotThrow(() -> {
 			Method rule = parser.getClass().getMethod(ruleName);
 			ParserRuleContext context = (ParserRuleContext) rule.invoke(parser);
@@ -52,6 +66,13 @@ class CSTTest {
 			assertNull(context.exception);
 			assertNotEquals(input.replaceAll("[ \\t\\f\\u000B]+", ""), context.getText());
 		});
+		assertEquals(0, parser.getNumberOfSyntaxErrors());
+		assertInputNotMatchesParsed(input, parser);
+	}
+
+	@BeforeEach
+	void setup() {
+		AntlerScriptLexer.ignoreSemicolons.clear();
 	}
 
 	@Test
@@ -302,5 +323,301 @@ class CSTTest {
 		void fail_statement_if_else_elif() {
 			testInputNoRule("if 2 + 2 {} else {} elif 2 + 2", "if_");
 		}
+	}
+
+	@Nested
+	@DisplayName("Expressions")
+	class Expression {
+		@ParameterizedTest
+		@CsvSource({
+			".=,  expression_assignment",
+			"+=,  expression_assignment",
+			"-=,  expression_assignment",
+			"*=,  expression_assignment",
+			"**=, expression_assignment",
+			"/=,  expression_assignment",
+			"//=, expression_assignment",
+			"%=,  expression_assignment",
+			"%%=, expression_assignment",
+			"|=,  expression_assignment",
+			"&=,  expression_assignment",
+			"~=,  expression_assignment",
+			"^=,  expression_assignment",
+			"<<=, expression_assignment",
+			">>=, expression_assignment",
+			"+=+, expression_assignment",
+			"??=, expression_assignment",
+			"=,   expression_assignment",
+			"or,  expression_logical_or",
+			"??,  expression_logical_or",
+			"and,  expression_logical_and",
+			"<,  expression_cmp",
+			">,  expression_cmp",
+			"<=,  expression_cmp",
+			">=,  expression_cmp",
+			"==,  expression_cmp",
+			"!=,  expression_cmp",
+			"is,  expression_cmp",
+			"in,  expression_cmp",
+			"|,  expression_bit_or",
+			"^,  expression_bit_xor",
+			"&,  expression_bit_and",
+			"<<,  expression_bit_shift",
+			">>,  expression_bit_shift",
+			"+,  expression_add",
+			"++,  expression_add",
+			"-,  expression_add",
+			"*,  expression_mult",
+			"**,  expression_mult",
+			"/,  expression_mult",
+			"//,  expression_mult",
+			"%,  expression_mult",
+			"%%,  expression_mult",
+			"**,  expression_exp",
+		})
+		void binary(String op, String rule) {
+			testInput("i" + op + "i", rule);
+			testInput("i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i", rule);
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"((x + y)\n * (a\n - b)) / (c ** 2)",
+		})
+		void expression(String expr) {
+			testInput(expr, "expression");
+		}		
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"+",
+			"-",
+			"~",
+			"not",
+		})
+		void unary(String op) {
+			testInput(op + "0", "expression_unary");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"\"this is a string\"",
+			"`this is a raw string`",
+			"10",
+			"10.20",
+			"true",
+			"false",
+			"null",
+			"super",
+			"to",
+			"from",
+			"by",
+			"myVariable",
+			"MyObject{}",
+			"List(){}",
+			"Array(){}",
+			"Class(){}",
+			"Map(){}",
+			"🪐",
+			"(1 + -1 * ~1 ** 1)",
+			"Func(:){}",
+			"select(true: true)"
+		})
+		void atom(String word) {
+			testInput(word, "expression_atom");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"select(true: true)",
+			"select[0](0: \"is zero\", true: \"is not zero\")",
+			"select[0](0: \"is zero\", true: \"is not zero\",)",
+			"select[0](0: \"is zero\",\ntrue: \"is not zero\",\n)",
+		})
+		void select(String expr) {
+			testInput(expr, "expression_postfix");
+		}
+
+		@Test
+		void indexing() {
+			testInput("x[10]", "expression_postfix");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"x()",
+			"x(_)",
+			"x(_, _,\n_)",
+			"x(1+1,\ntrue, false)",
+			"x(first=\"first\", false, _)",
+		})
+		void function_call(String expr) {
+			testInput(expr, "expression_postfix");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"MyOjbect{}",
+			"MyOjbect{_}",
+			"MyOjbect{_, _,\n_}",
+			"MyOjbect{1+1,\ntrue, false}",
+			"MyOjbect{first=\"first\", false, _}",
+		})
+		void new_object_instance(String expr) {
+			testInput(expr, "expression_atom");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"List(){}",
+			"List(){_}",
+			"List(){_, _,\n_}",
+			"List(){1+1,\ntrue, false}",
+			"List(){first=\"first\", false, _}",
+		})
+		void new_list_instance(String expr) {
+			testInput(expr, "expression_atom");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"Array(){}",
+			"Array(){_}",
+			"Array(){_, _,\n_}",
+			"Array(){1+1,\ntrue, false}",
+			"Array(){first=\"first\", false, _}",
+		})
+		void new_array_instance(String expr) {
+			testInput(expr, "expression_atom");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"Class(){}",
+			"Class(){_}",
+			"Class(){_, _,\n_}",
+			"Class(){1+1,\ntrue, false}",
+			"Class(){first=\"first\", false, _}",
+		})
+		void new_class_instancing(String expr) {
+			testInput(expr, "expression_atom");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"Map(){}",
+			"Map(){true: false}",
+			"Map(){true: false,\nfalse: true}",
+		})
+		void new_map_instance(String expr) {
+			testInput(expr, "expression_atom");
+		}
+
+		@Test
+		void member_access() {
+			testInput("x.y.z", "expression_postfix");
+		}
+
+		@Test
+		void null_dereferencing() {
+			testInput("x?.y?.z", "expression_postfix");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"((a + b) * (c - d)) / (e ** 2)",
+			"(x * y + z) ** (a - b * c)",
+			"((a / b) ** c) * ((d + e) - f)",
+			"obj.method().field[0].nested?.value",
+			"data[i][j].transform().result?.output",
+			"api.get(\"users\")[0]?.name.toLowerCase()",
+			"compute((x + y) * 2, transform(a, b, c), result ?? default)",
+			"map(list, Func(Int x: Int){x ** 2})",
+			"filter(data, Func(Int item: bool){item.value > threshold and item.active})",
+			"((flags & MASK) | NEW_BIT) ^ (old_flags << 2)",
+			"(bits >> 4) & 0xFF | ((high & 0xF0) << 8)",
+			"~(a & b) | (c ^ d) & (e | f)",
+			"x > 0 and x < 100 or x == -1",
+			"a >= b and b >= c and c >= d",
+			"(value in range) and (myType is ValidType) and (status != Error)",
+			"user?.name ?? profile?.displayName ?? \"Anonymous\"",
+			"config?.settings?.theme ?? defaults.theme ?? \"dark\"",
+			"data[key] ?? cache[key] ?? fetch(key) ?? null",
+			"result += compute(x) * factor ?? default_value",
+			"matrix[i][j] *= scale_factor + offset",
+			"accumulator.= transform(value, Func(Int v: Int){v ** 2})",
+			"not not not not not true",
+			"-(+x) * ~(flags & mask)",
+			"not (enabled and not disabled)",
+			"-velocity.y + ~~Math.floor(delta * 60)",
+			"prefix ++ middle ++ suffix ++ extension",
+			"path ++ \"/\" ++ filename ++ \".txt\"",
+			"List(){1, 2, 3, 4}[2] + Array(int){x, y, z}.length()",
+			"Map(){\"x\": 10, \"y\": 20}[key] ?? 0",
+			"select[condition](true: positive_result, false: negative_result)",
+			"select[x > 0](true: x ** 2, false: -x) + offset",
+			"numbers.map(Func(Int n: Int){return n}, int{n * 2 + 1})",
+			"items.filter(Func(Int x: bool){x.valid and not x.expired})",
+			"Class(x = value, y = other){compute(), transform(), validate()}",
+			"Config{host=\"localhost\", port=8080, secure=true}",
+			"Math.sqrt(x ** 2 + y ** 2) / magnitude",
+			"(sin(angle) * radius) + (cos(angle) * radius)",
+			"((((a))))",
+			"list[0][1][2].value",
+			"func()()(arg1, arg2)",
+			"~flags[i] & (mask << shift) | (data >> bits) ^ constant",
+			"(base + offset * scale) ** exponent / divisor % modulo",
+			"player.position.x += velocity.x * deltaTime * speed_multiplier",
+			"total = items.map(Func(Int i: Int){}).sum() * (1.0 - discount)",
+			"isValid = (age >= 18) and (email != \"\") and (terms_accepted)",
+			"(x +\ny -\nz)",
+			"a[\n0\n][\n1\n]",
+			"(enabled or force_run) and not (disabled or error_state)",
+			"((a and b) or (c and d)) and not (e or f)",
+			"x += y *= z **= 2",
+			"flags |= mask &= ~disabled_bits",
+			"builder.withName(name).withAge(age).withEmail(email).build()",
+			"query.match(\"*\").from(\"users\").where(condition).limit(10)",
+			"a + b * c ** d / e - f % g",
+			"x << 2 + y >> 3 & mask | flags",
+			"not a and b or c and not d",
+		})
+		void complexExpression(String expr) {
+			testInput(expr, "expression");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p",
+			"x[0][1][2][3][4][5]",
+			"f()()()()()",
+			"a + b + c + d + e + f + g + h + i + j",
+			"x * y * z * w * v * u * t * s",
+			"a and b and c and d and e and f",
+			"x or y or z or w or v or u",
+			"obj.deep.nested[i].method(a, b, c)[j]?.field.value",
+		})
+		void deeplyNestedExpression(String expr) {
+			testInput(expr, "expression");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"((x += 1) *= 2) **= 3",
+			"a = b = c = d = e = 0",
+			"x += y -= z *= w /= v %= 2",
+			"a ?? b ?? c ?? d ?? e ?? f ?? null",
+			"x?.y?.z ?? w?.v?.u ?? fallback",
+			"total += items[i].price * (1.0 + tax_rate) ?? 0",
+			"accumulator.= transform(Func(Int x: Int){x + offset})",
+		})
+		void assignmentExpression(String expr) {
+			testInput(expr, "expression");
+		}
+	}
+
+	@Test
+	void keypair_clause() {
+		testInput("\"key\" : value", "keypair_clause");
 	}
 }
