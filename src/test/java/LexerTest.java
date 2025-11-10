@@ -696,12 +696,12 @@ class LexerTest {
 
 	@Test
 	void lesserThanEq() {
-		testInput("<=", L.LESSER_THAN_EQ);
+		testInput("<=", L.LESSER_OR_EQ);
 	}
 
 	@Test
 	void greaterThanEq() {
-		testInput(">=", L.GREATER_THAN_EQ);
+		testInput(">=", L.GREATER_OR_EQ);
 	}
 
 	@Test

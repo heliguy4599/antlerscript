@@ -297,12 +297,11 @@ expression_mult
 	;
 
 expression_mult_right
-	: operator='*' expression_unary
-	| operator='**' expression_unary
-	| operator='/' expression_unary
-	| operator='//' expression_unary
-	| operator='%' expression_unary
-	| operator='%%' expression_unary
+	: '*' expression_unary
+	| '/' expression_unary
+	| '//' expression_unary
+	| '%' expression_unary
+	| '%%' expression_unary
 	;
 
 expression_unary
