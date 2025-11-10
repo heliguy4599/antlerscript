@@ -86,6 +86,8 @@ OPERATOR: 'operator';
 OR: 'or' ;
 PRIVATE_CONSTRUCTOR: '__constructor' ;
 RETURN: 'return' ;
+SELF_CLASS: 'Self' ;
+SELF_INSTANCE: 'self' ;
 SELECT: 'select' ;
 SUPER: 'super' ;
 SWITCH: 'switch' ;

@@ -133,6 +133,7 @@ type_atomic
     | map_header
     | class_header
     | func_header
+    | SELF_CLASS
     | '(' type ')'
     ;
 
@@ -321,6 +322,7 @@ expression_atom
     | FALSE
     | NULL
     | SUPER
+    | SELF_INSTANCE
     | new_object_instance
     | new_list_instance
     | new_array_instance
