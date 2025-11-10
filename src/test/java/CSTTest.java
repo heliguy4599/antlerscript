@@ -75,11 +75,102 @@ class CSTTest {
 		AntlerScriptLexer.ignoreSemicolons.clear();
 	}
 
-	@Test
-	void class_extends_access() {
-		testInput("myObj", "class_extends_access");
-		testInput("myObj.myVar", "class_extends_access");
-		testInput("myObj.myVar0.myVar1.myVar2.myVar3.myVar4.myVar5.myVar6.myVar7.myVar8.myVar9.myVar10.myVar11.myVar12.myVar13.myVar14.myVar15.myVar16.myVar17.myVar18.myVar19.myVar20.myVar21.myVar22.myVar23.myVar24.myVar25.myVar26.myVar27.myVar28.myVar29.myVar30.myVar31.myVar32.myVar33.myVar34.myVar35.myVar36.myVar37.myVar38.myVar39.myVar40.myVar41.myVar42.myVar43.myVar44.myVar45.myVar46.myVar47.myVar48.myVar49.myVar50.myVar51.myVar52.myVar53.myVar54.myVar55", "class_extends_access");
+	@Nested
+	@DisplayName("Classes")
+	class Classes {
+		// class_top_level
+
+		// class_header_inside
+
+		@Test
+		void class_extends() {
+			testInput("extends Obj", "class_extends");
+			testInput("extends Obj.Obj", "class_extends");
+		}
+
+		@Test
+		void class_extends_access() {
+			testInput("myObj", "class_extends_access");
+			testInput("myObj.myVar", "class_extends_access");
+			testInput("myObj.myVar0.myVar1.myVar2.myVar3.myVar4.myVar5.myVar6.myVar7.myVar8.myVar9.myVar10.myVar11.myVar12.myVar13.myVar14.myVar15.myVar16.myVar17.myVar18.myVar19.myVar20.myVar21.myVar22.myVar23.myVar24.myVar25.myVar26.myVar27.myVar28.myVar29.myVar30.myVar31.myVar32.myVar33.myVar34.myVar35.myVar36.myVar37.myVar38.myVar39.myVar40.myVar41.myVar42.myVar43.myVar44.myVar45.myVar46.myVar47.myVar48.myVar49.myVar50.myVar51.myVar52.myVar53.myVar54.myVar55", "class_extends_access");
+		}
+
+		@Test
+		void class_constructor() {
+			testInput("constructor(Int i, j, Int ... args) { 2 + 2 }", "constructor");
+		}
+
+		@Test
+		void class_private_constructor() {
+			testInput("__constructor(Int i, j, Int ... args) { 2 + 2 }", "private_constructor");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"(Int i)",
+			"(i)",
+			"(Int ... i)",
+			"(j, Int _i, Float ... a_float)",
+			"()",
+			"(String ... text)",
+		})
+		void class_constructor_params(String input) {
+			testInput(input, "constructor_params");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"a_symbol",
+			"Int something",
+			"Int thingie = 2 + 2",
+		})
+		void class_constructor_params_elm(String input) {
+			testInput(input, "constructor_params_elm");
+		}
+
+		@Test
+		void class_case() {
+			testInput("cast(Int) { 2 + 2 }", "cast");
+		}
+
+		@Test
+		void class_operator_overload() {
+			testInput("operator + (Int thing: Int) { 2 + 2 }", "operator_overload");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"+",
+			"-",
+			"*",
+			"/",
+			"%",
+			"<",
+			">",
+			"++",
+			"**",
+			"//",
+			"%%",
+			"==",
+			"[]",
+		})
+		void class_overridable(String input) {
+			testInput(input, "overridable");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"capture (Thing.A).B -> C",
+			"capture (Other).item -> whatever = 2 + 2",
+		})
+		void class_capture(String input) {
+			testInput(input, "capture");
+		}
+
+		@Test
+		void class_extends_assign() {
+			testInput("four = 2 + 2", "extends_assign");
+		}
 	}
 
 	@Nested
@@ -284,11 +375,7 @@ class CSTTest {
 		void defer_statement_block() {
 			testInput("defer { 2 + 2 }", "statement");
 		}
-	}
 
-	@Nested
-	@DisplayName("NegativeStatements")
-	class NegativeStatements {
 		@Test
 		void fail_statement_break() {
 			testInputPartialMatch("break 5", "statement");
@@ -409,6 +496,7 @@ class CSTTest {
 			"false",
 			"null",
 			"super",
+			"self",
 			"to",
 			"from",
 			"by",
@@ -619,5 +707,10 @@ class CSTTest {
 	@Test
 	void keypair_clause() {
 		testInput("\"key\" : value", "keypair_clause");
+	}
+
+	@Test
+	void var_args() {
+		testInput("Int ... argument", "var_args");
 	}
 }
