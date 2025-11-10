@@ -1,6 +1,8 @@
+import java.io.*;
 import java.lang.reflect.*;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.*;
@@ -10,11 +12,28 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Testing the ANTLR4-generated concrete syntax tree (CST)")
 class CSTTest {
+	// testInput: Input fully matches rule with no errors or leftover tokens
+	// testInputNoRule: Input fails to match rule (ANTLR errors suppressed)
+	// testInputPartialMatch: Input partially matches but leaves unparsed tokens (ANTLR errors suppressed)
+	// testInputNoRulePrintErr: Same as testInputNoRule but prints errors for debugging
+	// testInputPartialMatchPrintErr: Same as testInputPartialMatch but prints errors for debugging
+
+	// Custom exception to catch ANTLR4 exceptions
+	// This hack is needed because not all ANTLR4 exceptions share the same
+	// ANTLR4 parent class
+	static class ParseException extends Exception {
+		public ParseException(String message) {
+			super(message);
+		}
+	}
+
 	static AntlerScriptParser getNewParser(String input) {
 		CharStream charStream = CharStreams.fromString(input);
 		AntlerScriptLexer lexer = new AntlerScriptLexer(charStream);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		return new AntlerScriptParser(tokens);
+		AntlerScriptParser parser = new AntlerScriptParser(tokens);
+		parser.setErrorHandler(new BailErrorStrategy());
+		return parser;
 	}
 
 	static String parsedGetText(AntlerScriptParser parser) {
@@ -27,12 +46,12 @@ class CSTTest {
 		}
 		return matched.toString();
 	}
-	
+
 	static void assertInputMatchesParsed(String input, AntlerScriptParser parser) {
 		assertEquals(input, parsedGetText(parser));
 	}
-	
-	static void assertInputNotMatchesParsed(String input, AntlerScriptParser parser) {
+
+	static void assertInputDoesNotMatchParsed(String input, AntlerScriptParser parser) {
 		assertNotEquals(input, parsedGetText(parser));
 	}
 
@@ -47,27 +66,60 @@ class CSTTest {
 		assertInputMatchesParsed(input, parser);
 	}
 
-	static void testInputNoRule(String input, String ruleName) {
+	static void parseRule(AntlerScriptParser parser, String ruleName) throws Exception {
+		Method rule = parser.getClass().getMethod(ruleName);
+		try {
+			rule.invoke(parser);
+		} catch (InvocationTargetException e) {
+			Throwable cause = e.getCause();
+
+			if (cause instanceof RecognitionException
+			    || cause instanceof ParseCancellationException) {
+				throw new ParseException(cause.getMessage());
+			}
+
+			throw new RuntimeException(cause);
+		}
+	}
+
+	static void testInputNoRulePrintErr(String input, String ruleName) {
+		AntlerScriptParser parser = getNewParser(input);
+		assertThrows(ParseException.class, () -> {
+			parseRule(parser, ruleName);
+		});
+	}
+
+	static void testInputPartialMatchPrintErr(String input, String ruleName) {
 		AntlerScriptParser parser = getNewParser(input);
 		assertDoesNotThrow(() -> {
-			Method rule = parser.getClass().getMethod(ruleName);
-			ParserRuleContext context = (ParserRuleContext) rule.invoke(parser);
-			assertNotNull(context.exception);
+			parseRule(parser, ruleName);
 		});
-		assertNotEquals(0, parser.getNumberOfSyntaxErrors());
+		assertEquals(0, parser.getNumberOfSyntaxErrors());
+		assertInputDoesNotMatchParsed(input, parser);
 	}
 
 	static void testInputPartialMatch(String input, String ruleName) {
-		AntlerScriptParser parser = getNewParser(input);
-		assertDoesNotThrow(() -> {
-			Method rule = parser.getClass().getMethod(ruleName);
-			ParserRuleContext context = (ParserRuleContext) rule.invoke(parser);
-			assertEquals(0, parser.getNumberOfSyntaxErrors());
-			assertNull(context.exception);
-			assertNotEquals(input.replaceAll("[ \\t\\f\\u000B]+", ""), context.getText());
-		});
-		assertEquals(0, parser.getNumberOfSyntaxErrors());
-		assertInputNotMatchesParsed(input, parser);
+		PrintStream originalErr = System.err;
+		try (PrintStream nullStream = new PrintStream(new OutputStream() {
+			public void write(int b) {}
+		})) {
+			System.setErr(nullStream);
+			testInputPartialMatchPrintErr(input, ruleName);
+		} finally {
+			System.setErr(originalErr);
+		}
+	}
+
+	static void testInputNoRule(String input, String ruleName) {
+		PrintStream originalErr = System.err;
+		try (PrintStream nullStream = new PrintStream(new OutputStream() {
+			public void write(int b) {}
+		})) {
+			System.setErr(nullStream);
+			testInputNoRulePrintErr(input, ruleName);
+		} finally {
+			System.setErr(originalErr);
+		}
 	}
 
 	@BeforeEach
@@ -473,7 +525,7 @@ class CSTTest {
 		})
 		void expression(String expr) {
 			testInput(expr, "expression");
-		}		
+		}
 
 		@ParameterizedTest
 		@ValueSource(strings = {
@@ -702,11 +754,81 @@ class CSTTest {
 		void assignmentExpression(String expr) {
 			testInput(expr, "expression");
 		}
+
+		@Test
+		void keypair_clause() {
+			testInput("\"key\" : value", "keypair_clause");
+		}
 	}
 
-	@Test
-	void keypair_clause() {
-		testInput("\"key\" : value", "keypair_clause");
+	@Nested
+	@DisplayName("Types")
+	class Type {
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"Symbol",
+			"Int",
+			"I",
+			"List()",
+			"List(Int)",
+			"List(( Int | Float ) & Pineapple)",
+			"Array()",
+			"Array(Int)",
+			"Array(( Int | Float ) & Pineapple)",
+			"Array()",
+			"Array(Int)",
+			"Map()",
+			"Map(Int, Int)",
+			"Map(Int, ( Int | Float ) & Pineapple)",
+			"Map(( Int | Float ) & Pineapple, Int)",
+			"Map(( Int | Float ) & Pineapple, ( Int | Float ) & Pineapple)",
+			"Func(:)",
+			"Func(: Int)",
+			"Func(Int a: Int)",
+			"Func(Int a, Int b = 0: Int)",
+			"Func(( Int | Float ) & Pineapple a = 0, ( Int | Float ) & Pineapple b = 0: ( Int | Float ) & Pineapple)",
+			"Class()",
+			"Class(let Int a)",
+			"Class(let ( Int | Float ) & Pineapple a = 0,)",
+
+		})
+		void atomic(String type) {
+			testInput(type, "type_atomic");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"_",
+			"(Int &)",
+			"(Int & & Int)",
+			"(Int |)",
+			"(Int | | Int)",
+			"List(",
+			"List(Int Int",
+			"List(( Int | Float  & Pineapple",
+			"Array(",
+			"Array(Int",
+			"Array(( Int | Float  & Pineapple",
+			"Array(",
+			"Array(Int",
+			"Map(",
+			"Map(Int, Int",
+			"Map(Int, ( Int | Float  & Pineapple",
+			"Map(( Int | Float  & Pineapple, Int",
+			"Map(( Int | Float  & Pineapple, ( Int | Float  & Pineapple",
+			"Func(:",
+			"Func(: Int",
+			"Func(Int a: Int",
+			"Func(Int a, Int b = 0: Int",
+			"Func(( Int | Float  & Pineapple a = 0, ( Int | Float  & Pineapple b = 0: ( Int | Float  & Pineapple",
+			"Class(",
+			"Class(let Int a",
+			"Class(let ( Int | Float  & Pineapple a = 0,",
+
+		})
+		void fail_atomic(String type) {
+			testInputNoRule(type, "type_atomic");
+		}
 	}
 
 	@Test
