@@ -4843,8 +4843,9 @@ public class AntlerScriptParser extends Parser {
 			setState(754);
 			match(LCURLY);
 
-			        AntlerScriptLexer.ignoreSemicolons.pollFirst();
-			        AntlerScriptLexer.ignoreSemicolons.push(true);
+			        AntlerScriptLexer lexer = (AntlerScriptLexer)_input.getTokenSource();
+			        lexer.ignoreSemicolons.pollFirst();
+			        lexer.ignoreSemicolons.push(true);
 			    
 			setState(757);
 			_errHandler.sync(this);
@@ -4907,8 +4908,9 @@ public class AntlerScriptParser extends Parser {
 			setState(762);
 			match(LCURLY);
 
-			        AntlerScriptLexer.ignoreSemicolons.pollFirst();
-			        AntlerScriptLexer.ignoreSemicolons.push(true);
+			        AntlerScriptLexer lexer = (AntlerScriptLexer)_input.getTokenSource();
+			        lexer.ignoreSemicolons.pollFirst();
+			        lexer.ignoreSemicolons.push(true);
 			    
 			setState(765);
 			_errHandler.sync(this);

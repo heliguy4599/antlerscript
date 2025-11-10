@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 }
 
 @members {
-	public static final Deque<Boolean> ignoreSemicolons = new ArrayDeque<>();
+	public final Deque<Boolean> ignoreSemicolons = new ArrayDeque<>();
 }
 
 fragment UNICODE_LETTER: [\p{L}\p{Emoji}] ;

@@ -353,8 +353,9 @@ object_instantiation_args
     :
     '{'
     {
-        AntlerScriptLexer.ignoreSemicolons.pollFirst();
-        AntlerScriptLexer.ignoreSemicolons.push(true);
+        AntlerScriptLexer lexer = (AntlerScriptLexer)_input.getTokenSource();
+        lexer.ignoreSemicolons.pollFirst();
+        lexer.ignoreSemicolons.push(true);
     }
     arguments?
     '}'
@@ -364,8 +365,9 @@ new_map_instance
     : map_header
     '{'
     {
-        AntlerScriptLexer.ignoreSemicolons.pollFirst();
-        AntlerScriptLexer.ignoreSemicolons.push(true);
+        AntlerScriptLexer lexer = (AntlerScriptLexer)_input.getTokenSource();
+        lexer.ignoreSemicolons.pollFirst();
+        lexer.ignoreSemicolons.push(true);
     }
     keypair_list?
     '}'

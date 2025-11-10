@@ -22,11 +22,6 @@ class LexerTest {
 		assertEquals(v.getDisplayName(expectedTokenType),
 			     v.getDisplayName(next.getType()));
 	}
-
-	@BeforeEach
-	void setup() {
-		AntlerScriptLexer.ignoreSemicolons.clear();
-	}
     
 	@Test
 	void directive() {

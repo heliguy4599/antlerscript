@@ -122,11 +122,6 @@ class CSTTest {
 		}
 	}
 
-	@BeforeEach
-	void setup() {
-		AntlerScriptLexer.ignoreSemicolons.clear();
-	}
-
 	@Nested
 	@DisplayName("Classes")
 	class Classes {

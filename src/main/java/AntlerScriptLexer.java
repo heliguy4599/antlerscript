@@ -145,7 +145,7 @@ public class AntlerScriptLexer extends Lexer {
 	}
 
 
-		public static final Deque<Boolean> ignoreSemicolons = new ArrayDeque<>();
+		public final Deque<Boolean> ignoreSemicolons = new ArrayDeque<>();
 
 
 	public AntlerScriptLexer(CharStream input) {
