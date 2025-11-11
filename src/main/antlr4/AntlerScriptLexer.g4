@@ -23,11 +23,11 @@ fragment HEX_INTEGER: [0-9A-F] ( '_'? [0-9A-F] )* ;
 fragment EXPONENT_BASE10: 'e' ( '+' | '-' )? DEC_INTEGER;
 fragment EXPONENT_BASE16: ( 'e' | 'p' )  ( '+' | '-' )? DEC_INTEGER;
 fragment INTEGER_SUFFIX
-	: 'i' ( '8' | '16' | '32' | '64' | '128' )?
-	| 'u' ( '8' | '16' | '32' | '64' | '128' )?
+	: 'i' ( '8' | '16' | '32' | '64' )?
+	| 'u' ( '8' | '16' | '32' | '64' )?
 	;
 fragment FLOAT_SUFFIX
-	: 'f' ( '8' | '16' | '32' | '64' | '128' )?
+	: 'f' ( '8' | '16' | '32' | '64' )?
 	;
 
 INTEGER
@@ -85,7 +85,6 @@ NOT: 'not' ;
 NULL: 'null' ;
 OPERATOR: 'operator';
 OR: 'or' ;
-PRIVATE_CONSTRUCTOR: '__constructor' ;
 RETURN: 'return' ;
 SELF_CLASS: 'Self' ;
 SELF_INSTANCE: 'self' ;

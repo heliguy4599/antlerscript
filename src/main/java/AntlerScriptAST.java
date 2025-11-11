@@ -1,6 +1,6 @@
 import java.util.*;
 
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.Token;
 
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -168,7 +168,7 @@ public class AntlerScriptAST {
 
 		public FunctionType(Token[] tokens, List<FunctionParameter> parameters, Type returnType) {
 			super(tokens);
-			this.parameters = parameters;
+			this.parameters = parameters != null ? parameters : new ArrayList<>();
 			this.returnType = returnType;
 		}
 
@@ -183,7 +183,7 @@ public class AntlerScriptAST {
 
 		public ClassType(Token[] tokens, List<ClassMember> members) {
 			super(tokens);
-			this.members = members;
+			this.members = members != null ? members : new ArrayList<>();
 		}
 
 		@Override
@@ -238,7 +238,7 @@ public class AntlerScriptAST {
 
 		public StatementBlock(Token[] tokens, List<Statement> statements, boolean isDeferred) {
 			super(tokens);
-			this.statements = statements;
+			this.statements = statements != null ? statements : new ArrayList<>();
 			this.isDeferred = isDeferred;
 		}
 
@@ -339,7 +339,7 @@ public class AntlerScriptAST {
 
 			this.condition = condition;
 			this.thenBranch = thenBranch;
-			this.elifBranches = elifBranches;
+			this.elifBranches = elifBranches != null ? elifBranches : new ArrayList<>();
 			this.elseBranch = elseBranch;
 		}
 
@@ -596,7 +596,7 @@ public class AntlerScriptAST {
 			assert function != null;
 
 			this.function = function;
-			this.arguments = arguments;
+			this.arguments = arguments != null ? arguments : new ArrayList<>();
 		}
 
 		@Override
@@ -624,11 +624,16 @@ public class AntlerScriptAST {
 	}
 
 	public class IntExpression extends Expression {
-		public final int value;
+		public final long value;
+		public final byte precision;
 
-		public IntExpression(Token[] tokens, int value) {
+		public IntExpression(Token[] tokens, long value, byte precision) {
 			super(tokens);
+
+			assert precision == 8 || precision == 16 || precision == 32 || precision == 64;
+
 			this.value = value;
+			this.precision = precision;
 		}
 
 		@Override
@@ -639,10 +644,15 @@ public class AntlerScriptAST {
 
 	public class FloatExpression extends Expression {
 		public final double value;
+		public final byte precision;
 
-		public FloatExpression(Token[] tokens, double value) {
+		public FloatExpression(Token[] tokens, double value, byte precision) {
 			super(tokens);
+
+			assert precision == 8 || precision == 16 || precision == 32 || precision == 64;
+
 			this.value = value;
+			this.precision = precision;
 		}
 
 		@Override
@@ -686,7 +696,7 @@ public class AntlerScriptAST {
 
 	public class BooleanExpression extends Expression {
 		public final boolean value;
-		
+
 		public BooleanExpression(Token[] tokens, boolean value) {
 			super(tokens);
 			this.value = value;
@@ -720,14 +730,125 @@ public class AntlerScriptAST {
 		}
 	}
 
+	public class LambdaExpression extends Expression {
+		public final FunctionType type;
+		public final StatementBlock body;
+
+		public LambdaExpression(Token[] tokens, FunctionType type, StatementBlock body) {
+			super(tokens);
+
+			assert type != null;
+			assert body != null;
+
+			this.type = type;
+			this.body = body;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitLambdaExpression(this);
+		}
+	}
+
+	public class SelectExpression extends Expression {
+		public final Expression match;
+		public final List<KeyValuePair> branches;
+
+		public SelectExpression(Token[] tokens, Expression match, List<KeyValuePair> branches) {
+			super(tokens);
+
+			assert branches != null;
+			assert branches.size() > 0;
+
+			this.match = match;
+			this.branches = branches;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitSelectExpression(this);
+		}
+	}
+
+	public class NewMapExpression extends Expression {
+		public final MapType type;
+		public final List<KeyValuePair> keyValuePairs;
+
+		public NewMapExpression(Token[] tokens, MapType type, List<KeyValuePair> keyValuePairs) {
+			super(tokens);
+
+			assert type != null;
+
+			this.type = type;
+			this.keyValuePairs = keyValuePairs != null ? keyValuePairs : new ArrayList<>();
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitNewMapExpression(this);
+		}
+	}
+
+	public class NewListExpression extends Expression {
+		public final ListType type;
+		public final List<Argument> elements;
+
+		public NewListExpression(Token[] tokens, ListType type, List<Argument> elements) {
+			super(tokens);
+
+			assert type != null;
+
+			this.type = type;
+			this.elements = elements != null ? elements : new ArrayList<>();
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitNewListExpression(this);
+		}
+	}
+
+	public class NewArrayExpression extends Expression {
+		public final ArrayType type;
+		public final List<Argument> elements;
+
+		public NewArrayExpression(Token[] tokens, ArrayType type, List<Argument> elements) {
+			super(tokens);
+
+			assert type != null;
+
+			this.type = type;
+			this.elements = elements != null ? elements : new ArrayList<>();
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitNewArrayExpression(this);
+		}
+	}
+
+	public class NewObjectExpression extends Expression {
+		public final String symbol;
+		public final List<Argument> arguments;
+
+		public NewObjectExpression(Token[] tokens, String symbol, List<Argument> arguments) {
+			super(tokens);
+
+			assert symbol != null;
+			assert symbol.length() > 0;
+
+			this.symbol = symbol;
+			this.arguments = arguments != null ? arguments : new ArrayList<>();
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitNewObjectExpression(this);
+		}
+	}
+
 	// TODO:
-	// new_object_instance
-	// new_list_instance
-	// new_array_instance
-	// new_map_instance
 	// new_class_instance
-	// lambda
-	// select
 
 	// ====================
 	// UTILITIES
@@ -735,14 +856,56 @@ public class AntlerScriptAST {
 
 	// TODO: parameters
 
+	public class ConstructorParameter {
+		public final Type type;
+		public final String symbol;
+		public final Expression initialValue;
+		public final boolean isVarArgs;
+
+		ConstructorParameter(Type type, String symbol, Expression initialValue, boolean isVarArgs) {
+			assert symbol != null;
+			assert symbol.length() > 0;
+
+			if (type == null) {
+				assert !isVarArgs;
+				assert initialValue == null;
+			} else if (isVarArgs) {
+				assert initialValue == null;
+			}
+
+			this.type = type;
+			this.symbol = symbol;
+			this.initialValue = initialValue;
+			this.isVarArgs = isVarArgs;
+		}
+	}
+
+	public class FunctionParameter {
+		public final Type type;
+		public final String symbol;
+		public final Expression initialValue;
+		public final boolean isVarArgs;
+
+		FunctionParameter(Type type, String symbol, Expression initialValue, boolean isVarArgs) {
+			assert type != null;
+			assert symbol != null;
+			assert symbol.length() > 0;
+			assert (isVarArgs && initialValue == null) || !isVarArgs;
+
+			this.type = type;
+			this.symbol = symbol;
+			this.initialValue = initialValue;
+			this.isVarArgs = isVarArgs;
+		}
+	}
+
 	public class Argument {
 		public final Expression value;
 		public final String keyword;
 		public final boolean isBlank;
 
 		Argument(Expression value, String keyword, boolean isBlank) {
-			assert (value != null && !isBlank)
-				|| (value == null && keyword == null && isBlank);
+			assert (value != null && !isBlank) || (value == null && keyword == null && isBlank);
 
 			this.value = value;
 			this.keyword = keyword;
@@ -751,17 +914,30 @@ public class AntlerScriptAST {
 	}
 
 	public class ClassName {
-		public final List<String> parts;
+		public final List<String> symbols;
 
-		public ClassName(List<String> parts) {
-			assert parts != null;
-			assert parts.size() > 0;
+		public ClassName(List<String> symbols) {
+			assert symbols != null;
+			assert symbols.size() > 0;
 
-			this.parts = parts;
+			this.symbols = symbols;
 		}
 
 		public String toString() {
-			return String.join(".", parts);
+			return String.join(".", symbols);
+		}
+	}
+
+	public class KeyValuePair {
+		public final Expression left;
+		public final Expression right;
+
+		KeyValuePair(Expression left, Expression right) {
+			assert left != null;
+			assert right != null;
+
+			this.left = left;
+			this.right = right;
 		}
 	}
 
@@ -844,5 +1020,17 @@ public class AntlerScriptAST {
 		T visitBooleanExpression(BooleanExpression node);
 
 		T visitStringExpression(StringExpression node);
+
+		T visitLambdaExpression(LambdaExpression node);
+
+		T visitSelectExpression(SelectExpression node);
+
+		T visitNewMapExpression(NewMapExpression node);
+
+		T visitNewListExpression(NewListExpression node);
+
+		T visitNewArrayExpression(NewArrayExpression node);
+
+		T visitNewObjectExpression(NewObjectExpression node);
 	}
 }
