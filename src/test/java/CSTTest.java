@@ -125,14 +125,14 @@ class CSTTest {
 	@Nested
 	@DisplayName("Classes")
 	class Classes {
-		// class_top_level
+		// TODO: class_top_level
 
-		// class_header_inside
+		// TODO: class_header_inside
 
 		@Test
 		void class_extends() {
 			testInput("extends Obj", "class_extends");
-			testInput("extends Obj.Obj", "class_extends");
+			testInput("extends Obj.Obj, Obj.Obj", "class_extends");
 		}
 
 		@Test
@@ -217,6 +217,38 @@ class CSTTest {
 		@Test
 		void class_extends_assign() {
 			testInput("four = 2 + 2", "extends_assign");
+		}
+	}
+
+	@Nested
+	@DisplayName("Enums")
+	class Enums {
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"ONE, TWO, THREE",
+			"extends One",
+			"extends One, TWO, THREE",
+			"extends One.Two, THREE",
+		})
+		void enum_header_inside(String input) {
+			testInput(input, "enum_header_inside");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"",
+			"extends, Two",
+		})
+		void fail_enum_header_inside_no_rule(String input) {
+			testInputNoRule(input, "enum_header_inside");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"ONE, extends Two",
+		})
+		void fail_enum_header_inside_partial_match(String input) {
+			testInputPartialMatch(input, "enum_header_inside");
 		}
 	}
 
@@ -785,7 +817,9 @@ class CSTTest {
 			"Class()",
 			"Class(let Int a)",
 			"Class(let ( Int | Float ) & Pineapple a = 0,)",
-
+			"Enum(ONE, TWO)",
+			"Enum(extends Other)",
+			"Enum(extends Other, ONE, TWO)",
 		})
 		void atomic(String type) {
 			testInput(type, "type_atomic");
@@ -819,7 +853,12 @@ class CSTTest {
 			"Class(",
 			"Class(let Int a",
 			"Class(let ( Int | Float  & Pineapple a = 0,",
-
+			"Enum(",
+			"Enum()",
+			"Enum(extends Other",
+			"Enum(One Two)",
+			"Enum(One",
+			"Enum(One, Two",
 		})
 		void fail_atomic(String type) {
 			testInputNoRule(type, "type_atomic");
