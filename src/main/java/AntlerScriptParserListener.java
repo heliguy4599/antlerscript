@@ -667,15 +667,149 @@ public interface AntlerScriptParserListener extends ParseTreeListener {
 	 */
 	void exitKeypair_clause(AntlerScriptParser.Keypair_clauseContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AntlerScriptParser#statement}.
+	 * Enter a parse tree produced by the {@code expressionStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void enterStatement(AntlerScriptParser.StatementContext ctx);
+	void enterExpressionStatement(AntlerScriptParser.ExpressionStatementContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link AntlerScriptParser#statement}.
+	 * Exit a parse tree produced by the {@code expressionStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
 	 * @param ctx the parse tree
 	 */
-	void exitStatement(AntlerScriptParser.StatementContext ctx);
+	void exitExpressionStatement(AntlerScriptParser.ExpressionStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code breakStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterBreakStatement(AntlerScriptParser.BreakStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code breakStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitBreakStatement(AntlerScriptParser.BreakStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code continueStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterContinueStatement(AntlerScriptParser.ContinueStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code continueStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitContinueStatement(AntlerScriptParser.ContinueStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code returnStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnStatement(AntlerScriptParser.ReturnStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code returnStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnStatement(AntlerScriptParser.ReturnStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code loopStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterLoopStatement(AntlerScriptParser.LoopStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code loopStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitLoopStatement(AntlerScriptParser.LoopStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code whileStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStatement(AntlerScriptParser.WhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code whileStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStatement(AntlerScriptParser.WhileStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code iterateStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIterateStatement(AntlerScriptParser.IterateStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code iterateStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIterateStatement(AntlerScriptParser.IterateStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code declarationStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclarationStatement(AntlerScriptParser.DeclarationStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code declarationStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclarationStatement(AntlerScriptParser.DeclarationStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code typedefStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypedefStatement(AntlerScriptParser.TypedefStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code typedefStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypedefStatement(AntlerScriptParser.TypedefStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ifStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfStatement(AntlerScriptParser.IfStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ifStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfStatement(AntlerScriptParser.IfStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code switchStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterSwitchStatement(AntlerScriptParser.SwitchStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code switchStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitSwitchStatement(AntlerScriptParser.SwitchStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code statementBlock}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatementBlock(AntlerScriptParser.StatementBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code statementBlock}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatementBlock(AntlerScriptParser.StatementBlockContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AntlerScriptParser#statement_block}.
 	 * @param ctx the parse tree
@@ -717,15 +851,53 @@ public interface AntlerScriptParserListener extends ParseTreeListener {
 	 */
 	void exitIterate(AntlerScriptParser.IterateContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link AntlerScriptParser#declaration}.
+	 * Enter a parse tree produced by the {@code letDeclaration}
+	 * labeled alternative in {@link AntlerScriptParser#declaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterDeclaration(AntlerScriptParser.DeclarationContext ctx);
+	void enterLetDeclaration(AntlerScriptParser.LetDeclarationContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link AntlerScriptParser#declaration}.
+	 * Exit a parse tree produced by the {@code letDeclaration}
+	 * labeled alternative in {@link AntlerScriptParser#declaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitDeclaration(AntlerScriptParser.DeclarationContext ctx);
+	void exitLetDeclaration(AntlerScriptParser.LetDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code letDefinition}
+	 * labeled alternative in {@link AntlerScriptParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterLetDefinition(AntlerScriptParser.LetDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code letDefinition}
+	 * labeled alternative in {@link AntlerScriptParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitLetDefinition(AntlerScriptParser.LetDefinitionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code constDeclaration}
+	 * labeled alternative in {@link AntlerScriptParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstDeclaration(AntlerScriptParser.ConstDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code constDeclaration}
+	 * labeled alternative in {@link AntlerScriptParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstDeclaration(AntlerScriptParser.ConstDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code constDefinition}
+	 * labeled alternative in {@link AntlerScriptParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstDefinition(AntlerScriptParser.ConstDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code constDefinition}
+	 * labeled alternative in {@link AntlerScriptParser#declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstDefinition(AntlerScriptParser.ConstDefinitionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AntlerScriptParser#typedef}.
 	 * @param ctx the parse tree

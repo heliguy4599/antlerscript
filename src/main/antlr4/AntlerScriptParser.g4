@@ -390,40 +390,41 @@ keypair_clause
 //-----------------------
 
 statement
-    : 
-    | DEFER? expression
-    | BREAK
-    | CONTINUE
-    | RETURN expression?
-    | loop
-    | while
-    | iterate
-    | declaration
-    | typedef
-    | if
-    | switch
-    | DEFER? statement_block
+    : DEFER? expression		# expressionStatement
+    | BREAK  			# breakStatement
+    | CONTINUE			# continueStatement
+    | RETURN expression?	# returnStatement
+    | loop   			# loopStatement
+    | while			# whileStatement
+    | iterate			# iterateStatement
+    | declaration		# declarationStatement
+    | typedef			# typedefStatement
+    | if			# ifStatement
+    | switch			# switchStatement
+    | DEFER? statement_block	# statementBlock
     ;
 
 statement_block
-    : '{' semicolon* ( statement ( semicolon+ statement )* semicolon* )? '}'
+    : '{' semicolon* ( stmt=statement ( semicolon+ stmt=statement )* semicolon* )? '}'
     ;
 
 loop
-    : LOOP ( 'from' expression )? 'to' expression ( 'by' expression )? ( '->' symbol )? statement_block
+    : LOOP ( 'from' from=expression )? 'to' to=expression ( 'by' by=expression )? ( '->' iterator=symbol )? block=statement_block
     ;
 
 while
-    : WHILE expression statement_block
+    : WHILE test=expression block=statement_block
     ;
     
 iterate
-    : ITERATE expression ( '->' symbol ( ',' symbol )? )? statement_block
+    : ITERATE iterable=expression ( '->' ( element=symbol | index=symbol ',' element=symbol ) )? block=statement_block
     ;
 
 declaration
-    : ( CONST | LET MUT? ) type? symbol '=' expression
-    | ( CONST | LET MUT? ) type symbol
+    : LET isMutable=MUT? variableType=type variableName=symbol					# letDeclaration
+    | LET isMutable=MUT? variableType=type? variableName=symbol '=' initialValue=expression	# letDefinition
+    | CONST variableType=type variableName=symbol						# constDeclaration
+    | CONST variableType=type? variableName=symbol '=' initialValue=expression			# constDefinition
     ;
 
 typedef
@@ -431,21 +432,21 @@ typedef
     ;
 
 if
-    : IF expression statement_block elif* else?
+    : IF test=expression block=statement_block elif* else?
     ;
 
 elif
-    : ELIF expression statement_block
+    : ELIF test=expression block=statement_block
     ;
 
 else
-    : ELSE statement_block
+    : ELSE block=statement_block
     ;
 
 switch
-    : SWITCH expression case+ else?
+    : SWITCH test=expression cases=case+ catchAll=else?
     ;
 
 case
-    : CASE expression ( ',' expression )* statement_block
+    : CASE matches=expression ( ',' matches=expression )* block=statement_block
     ;
