@@ -244,6 +244,18 @@ public class AntlerScriptParserBaseListener implements AntlerScriptParserListene
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterEnum_header_inside(AntlerScriptParser.Enum_header_insideContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEnum_header_inside(AntlerScriptParser.Enum_header_insideContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterType(AntlerScriptParser.TypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -383,6 +395,18 @@ public class AntlerScriptParserBaseListener implements AntlerScriptParserListene
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitClass_header(AntlerScriptParser.Class_headerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEnum_header(AntlerScriptParser.Enum_headerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEnum_header(AntlerScriptParser.Enum_headerContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

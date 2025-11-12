@@ -67,6 +67,7 @@ DEFER: 'defer' ;
 ELIF: 'elif' ;
 ELLIPSIS: '...' ;
 ELSE: 'else' ;
+ENUM: 'Enum' ;
 EXTENDS: 'extends' ;
 FALSE: 'false' ;
 FROM: 'from' ;

@@ -111,6 +111,15 @@ extends_assign
     ;
 
 //-----------------------
+// ENUMS
+//-----------------------
+
+enum_header_inside
+    : EXTENDS class_extends_access ( ',' symbol ( ',' symbol )* ','? )?
+    | symbol ( ',' symbol )* ','?
+    ;
+
+//-----------------------
 // TYPES
 //-----------------------
 
@@ -132,6 +141,7 @@ type_atomic
     | array_header
     | map_header
     | class_header
+    | enum_header
     | func_header
     | SELF_CLASS
     | '(' type ')'
@@ -167,6 +177,10 @@ lambda
 
 class_header
     : CLASS '(' class_header_inside? ')'
+    ;
+
+enum_header
+    : ENUM '(' enum_header_inside ')'
     ;
 
 //-----------------------

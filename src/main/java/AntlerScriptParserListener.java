@@ -197,6 +197,16 @@ public interface AntlerScriptParserListener extends ParseTreeListener {
 	 */
 	void exitExtends_assign(AntlerScriptParser.Extends_assignContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#enum_header_inside}.
+	 * @param ctx the parse tree
+	 */
+	void enterEnum_header_inside(AntlerScriptParser.Enum_header_insideContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#enum_header_inside}.
+	 * @param ctx the parse tree
+	 */
+	void exitEnum_header_inside(AntlerScriptParser.Enum_header_insideContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link AntlerScriptParser#type}.
 	 * @param ctx the parse tree
 	 */
@@ -316,6 +326,16 @@ public interface AntlerScriptParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitClass_header(AntlerScriptParser.Class_headerContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link AntlerScriptParser#enum_header}.
+	 * @param ctx the parse tree
+	 */
+	void enterEnum_header(AntlerScriptParser.Enum_headerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AntlerScriptParser#enum_header}.
+	 * @param ctx the parse tree
+	 */
+	void exitEnum_header(AntlerScriptParser.Enum_headerContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link AntlerScriptParser#expression}.
 	 * @param ctx the parse tree
