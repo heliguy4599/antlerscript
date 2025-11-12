@@ -23,25 +23,25 @@ fragment HEX_INTEGER: [0-9A-F] ( '_'? [0-9A-F] )* ;
 fragment EXPONENT_BASE10: 'e' ( '+' | '-' )? DEC_INTEGER;
 fragment EXPONENT_BASE16: ( 'e' | 'p' )  ( '+' | '-' )? DEC_INTEGER;
 fragment INTEGER_SUFFIX
-    : 'i' ( '8' | '16' | '32' | '64' | '128' )?
-    | 'u' ( '8' | '16' | '32' | '64' | '128' )?
-    ;
+	: 'i' ( '8' | '16' | '32' | '64' | '128' )?
+	| 'u' ( '8' | '16' | '32' | '64' | '128' )?
+	;
 fragment FLOAT_SUFFIX
-    : 'f' ( '8' | '16' | '32' | '64' | '128' )?
-    ;
+	: 'f' ( '8' | '16' | '32' | '64' | '128' )?
+	;
 
 INTEGER
-    : DEC_INTEGER INTEGER_SUFFIX?
-    | '0x' HEX_INTEGER INTEGER_SUFFIX?
-    | '0b' BIN_INTEGER INTEGER_SUFFIX?
-    ;
+	: DEC_INTEGER INTEGER_SUFFIX?
+	| '0x' HEX_INTEGER INTEGER_SUFFIX?
+	| '0b' BIN_INTEGER INTEGER_SUFFIX?
+	;
 
 FLOAT
-    : DEC_INTEGER ( '.' DEC_INTEGER | EXPONENT_BASE10 ) FLOAT_SUFFIX?
-    | DEC_INTEGER '.' DEC_INTEGER EXPONENT_BASE10 FLOAT_SUFFIX?
-    | '0x' HEX_INTEGER ( '.' HEX_INTEGER | EXPONENT_BASE16 ) FLOAT_SUFFIX?
-    | '0x' HEX_INTEGER '.' HEX_INTEGER EXPONENT_BASE16 FLOAT_SUFFIX?
-    ;
+	: DEC_INTEGER ( '.' DEC_INTEGER | EXPONENT_BASE10 ) FLOAT_SUFFIX?
+	| DEC_INTEGER '.' DEC_INTEGER EXPONENT_BASE10 FLOAT_SUFFIX?
+	| '0x' HEX_INTEGER ( '.' HEX_INTEGER | EXPONENT_BASE16 ) FLOAT_SUFFIX?
+	| '0x' HEX_INTEGER '.' HEX_INTEGER EXPONENT_BASE16 FLOAT_SUFFIX?
+	;
 
 // ANTLR4 doesn't support vertical tabs
 WHITESPACE: [ \t\f\u000B]+   -> channel(HIDDEN);
