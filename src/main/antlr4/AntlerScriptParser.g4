@@ -2,10 +2,10 @@ parser grammar AntlerScriptParser;
 options { tokenVocab=AntlerScriptLexer; }
 
 symbol
-	: SYMBOL
-	| FROM
-	| TO
-	| BY
+	: name=SYMBOL
+	| name=FROM
+	| name=TO
+	| name=BY
 	;
 
 semicolon
@@ -21,7 +21,9 @@ program
 	: file_directive* ( class_top_level | statement ( semicolon statement )* semicolon* ) EOF
 	;
 
-file_directive: DIRECTIVE symbol ;
+file_directive
+	: DIRECTIVE symbol
+	;
 
 //-----------------------
 // CLASSES
@@ -49,10 +51,6 @@ constructor
 	: CONSTRUCTOR constructor_params statement_block
 	;
 
-private_constructor
-	: PRIVATE_CONSTRUCTOR constructor_params statement_block
-	;
-
 constructor_params
 	: '(' constructor_params_elm ( ',' constructor_params_elm )* ( ',' var_args )? ')'
 	| '(' ')'
@@ -69,13 +67,12 @@ var_args
 	;
 
 class_member
-	: cast
-	| declaration
-	| operator_overload
-	| constructor
-	| private_constructor
-	| capture
-	| extends_assign
+	: cast			# castClassMemeber
+	| declaration		# declarationClassMember
+	| operator_overload	# operatorOverloadClassMember
+	| constructor		# constructorClassMember
+	| capture		# captureClassMember
+	| extends_assign	# extendsClassMember
 	;
 
 cast
@@ -87,19 +84,19 @@ operator_overload
 	;
 
 overridable
-	: '+'
-	| '-'
-	| '*'
-	| '/'
-	| '%'
-	| '<'
-	| '>'
-	| '++'
-	| '**'
-	| '//'
-	| '%%'
-	| '=='
-	| '[' ']'
+	: operator='+'
+	| operator='-'
+	| operator='*'
+	| operator='/'
+	| operator='%'
+	| operator='<'
+	| operator='>'
+	| operator='++'
+	| operator='**'
+	| operator='//'
+	| operator='%%'
+	| operator='=='
+	| operator='[' ']'
 	;
 
 capture
@@ -136,15 +133,15 @@ type_and
 	;
 
 type_atomic
-	: symbol
-	| list_header
-	| array_header
-	| map_header
-	| class_header
-	| enum_header
-	| func_header
-	| SELF_CLASS
-	| '(' type ')'
+	: symbol	# symbolType
+	| list_header	# listType
+	| array_header	# arrayType
+	| map_header	# mapType
+	| class_header	# classType
+	| enum_header	# enumType
+	| func_header	# funcType
+	| SELF_CLASS	# selfType
+	| '(' type ')'	# typeGroup
 	;
 
 list_header
@@ -196,24 +193,24 @@ expression_assignment
 	;
 
 expression_assignment_right
-	: '+=' expression_assignment
-	| '-=' expression_assignment
-	| '*=' expression_assignment
-	| '**=' expression_assignment
-	| '/=' expression_assignment
-	| '//=' expression_assignment
-	| '%=' expression_assignment
-	| '%%=' expression_assignment
-	| '|=' expression_assignment
-	| '&=' expression_assignment
-	| '~=' expression_assignment
-	| '^=' expression_assignment
-	| '<<=' expression_assignment
-	| '>>=' expression_assignment
-	| '++=' expression_assignment
-	| '??=' expression_assignment
-	| '.=' expression_assignment
-	| '=' expression_assignment
+	: operator='+=' expression_assignment
+	| operator='-=' expression_assignment
+	| operator='*=' expression_assignment
+	| operator='**=' expression_assignment
+	| operator='/=' expression_assignment
+	| operator='//=' expression_assignment
+	| operator='%=' expression_assignment
+	| operator='%%=' expression_assignment
+	| operator='|=' expression_assignment
+	| operator='&=' expression_assignment
+	| operator='~=' expression_assignment
+	| operator='^=' expression_assignment
+	| operator='<<=' expression_assignment
+	| operator='>>=' expression_assignment
+	| operator='++=' expression_assignment
+	| operator='??=' expression_assignment
+	| operator='.=' expression_assignment
+	| operator='=' expression_assignment
 	;
 
 expression_logical_or
@@ -221,16 +218,20 @@ expression_logical_or
 	;
 
 expression_logical_or_right
-	: OR expression_logical_or
-	| '??' expression_logical_or
+	: operator=OR expression_logical_or
+	| operator='??' expression_logical_or
 	;
 
 expression_logical_and
-	: expression_logical_not ( AND expression_logical_not )*
+	: expression_logical_not expression_logical_and_right*
+	;
+
+expression_logical_and_right
+	: operator=AND expression_logical_not
 	;
 
 expression_logical_not
-	: NOT* expression_cmp
+	: operators=NOT* expression_cmp
 	;
 
 expression_cmp
@@ -238,26 +239,38 @@ expression_cmp
 	;
 
 expression_cmp_right
-	: '<' expression_bit_or
-	| '>' expression_bit_or
-	| '<=' expression_bit_or
-	| '>=' expression_bit_or
-	| '==' expression_bit_or
-	| '!=' expression_bit_or
-	| IN expression_bit_or
-	| IS expression_bit_or
+	: operator='<' expression_bit_or
+	| operator='>' expression_bit_or
+	| operator='<=' expression_bit_or
+	| operator='>=' expression_bit_or
+	| operator='==' expression_bit_or
+	| operator='!=' expression_bit_or
+	| operator=IN expression_bit_or
+	| operator=IS expression_bit_or
 	;
 
 expression_bit_or
-	: expression_bit_xor ( '|' expression_bit_xor )*
+	: expression_bit_xor expression_bit_or_right*
+	;
+
+expression_bit_or_right
+	: operator='|' expression_bit_xor
 	;
 
 expression_bit_xor
-	: expression_bit_and ( '^' expression_bit_and )*
+	: expression_bit_and expression_bit_xor_right*
+	;
+
+expression_bit_xor_right
+	: operator='^' expression_bit_and
 	;
 
 expression_bit_and
-	: expression_bit_shift ( '&' expression_bit_shift )*
+	: expression_bit_shift expression_bit_and_right*
+	;
+
+expression_bit_and_right
+	: operator='&' expression_bit_shift
 	;
 
 expression_bit_shift
@@ -265,8 +278,8 @@ expression_bit_shift
 	;
 
 expression_bit_shift_right
-	: '<<' expression_add
-	| '>>' expression_add
+	: operator='<<' expression_add
+	| operator='>>' expression_add
 	;
 
 expression_add
@@ -274,9 +287,9 @@ expression_add
 	;
 
 expression_add_right
-	: '+' expression_mult
-	| '-' expression_mult
-	| '++' expression_mult
+	: operator='+' expression_mult
+	| operator='-' expression_mult
+	| operator='++' expression_mult
 	;
 
 expression_mult
@@ -284,12 +297,12 @@ expression_mult
 	;
 
 expression_mult_right
-	: '*' expression_unary
-	| '**' expression_unary
-	| '/' expression_unary
-	| '//' expression_unary
-	| '%' expression_unary
-	| '%%' expression_unary
+	: operator='*' expression_unary
+	| operator='**' expression_unary
+	| operator='/' expression_unary
+	| operator='//' expression_unary
+	| operator='%' expression_unary
+	| operator='%%' expression_unary
 	;
 
 expression_unary
@@ -297,13 +310,17 @@ expression_unary
 	;
 
 expression_unary_op
-	: '+'
-	| '-'
-	| '~'
+	: operator='+'
+	| operator='-'
+	| operator='~'
 	;
 
 expression_exp
-	: expression_postfix ( '**' expression_postfix )*
+	: expression_postfix expression_exp_right*
+	;
+
+expression_exp_right
+	: '**' expression_postfix
 	;
 
 expression_postfix
@@ -311,10 +328,10 @@ expression_postfix
 	;
 
 expression_access
-	: '[' expression ']'
-	| '(' arguments? ')'
-	| '.' symbol
-	| '?.' symbol
+	: '[' expression ']'	# indexAccess
+	| '(' arguments? ')'	# functionCall
+	| '.' symbol		# memberAccess
+	| '?.' symbol		# nullishAccess
 	;
 
 arguments
@@ -322,29 +339,29 @@ arguments
 	;
 
 argument_elm
-	: '_'
-	| ( symbol '=' )? expression
+	: '_'				# discardArgument
+	| ( symbol '=' )? expression	# expressionArgument
 	;
 
 expression_atom
-	: symbol		#symbolExpression
-	| STRING		#stringExpression
-	| RAW_STRING		#rawStringExpression
-	| FLOAT			#floatExpression
-	| INTEGER		#integerExpression
-	| TRUE			#trueExpression
-	| FALSE			#falseExpression
-	| NULL			#nullExpression
-	| SUPER			#superExpression
-	| SELF_INSTANCE		#selfInstanceExpression
-	| new_object_instance	#newObjectExpression
-	| new_list_instance	#newListExpression
-	| new_array_instance	#newArrayExpression
-	| new_map_instance	#newMapExpression
-	| new_class_instance	#newClassInstance
-	| lambda		#lambdaExpression
-	| select		#selectExpression
-	| '(' expression ')'	#groupedExpression
+	: symbol		# symbolExpression
+	| STRING		# stringExpression
+	| RAW_STRING		# rawStringExpression
+	| FLOAT			# floatExpression
+	| INTEGER		# integerExpression
+	| TRUE			# trueExpression
+	| FALSE			# falseExpression
+	| NULL			# nullExpression
+	| SUPER			# superExpression
+	| SELF_INSTANCE		# selfInstanceExpression
+	| new_object_instance	# newObjectExpression
+	| new_list_instance	# newListExpression
+	| new_array_instance	# newArrayExpression
+	| new_map_instance	# newMapExpression
+	| new_class_instance	# newClassInstance
+	| lambda		# lambdaExpression
+	| select		# selectExpression
+	| '(' expression ')'	# groupedExpression
 	;
 
 new_object_instance
@@ -388,29 +405,16 @@ new_map_instance
 	;
 
 select
-<<<<<<< HEAD
-	: SELECT ( '[' expression ']' )? '(' keypair_list ')'
+	: SELECT ( '[' value=expression ']' )? '(' keypair_list ')'
 	;
 
 keypair_list
-	: keypair_clause ( ',' keypair_clause )* ','?
+	: keypairs=keypair_clause ( ',' keypairs=keypair_clause )* ','?
 	;
 
 keypair_clause
-	: expression ':' expression
+	: key=expression ':' value=expression
 	;
-=======
-    : SELECT ( '[' value=expression ']' )? '(' keypair_list ')'
-    ;
-
-keypair_list
-    : keypairs=keypair_clause ( ',' keypairs=keypair_clause )* ','?
-    ;
-
-keypair_clause
-    : key=expression ':' value=expression
-    ;
->>>>>>> 6b6bc7f (Added rule labels to expression atoms)
 
 //-----------------------
 // STATEMENTS
@@ -420,13 +424,13 @@ statement
 	: DEFER? expression		# expressionStatement
 	| BREAK  			# breakStatement
 	| CONTINUE			# continueStatement
-	| RETURN expression?	# returnStatement
+	| RETURN expression?		# returnStatement
 	| loop   			# loopStatement
-	| while			# whileStatement
+	| while				# whileStatement
 	| iterate			# iterateStatement
-	| declaration		# declarationStatement
+	| declaration			# declarationStatement
 	| typedef			# typedefStatement
-	| if			# ifStatement
+	| if				# ifStatement
 	| switch			# switchStatement
 	| DEFER? statement_block	# statementBlock
 	;
@@ -448,10 +452,10 @@ iterate
 	;
 
 declaration
-	: LET isMutable=MUT? variableType=type variableName=symbol					# letDeclaration
+	: LET isMutable=MUT? variableType=type variableName=symbol				# letDeclaration
 	| LET isMutable=MUT? variableType=type? variableName=symbol '=' initialValue=expression	# letDefinition
 	| CONST variableType=type variableName=symbol						# constDeclaration
-	| CONST variableType=type? variableName=symbol '=' initialValue=expression			# constDefinition
+	| CONST variableType=type? variableName=symbol '=' initialValue=expression		# constDefinition
 	;
 
 typedef
