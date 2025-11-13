@@ -431,7 +431,7 @@ statement
 	| typedef			# typedefStatement
 	| if				# ifStatement
 	| switch			# switchStatement
-	| DEFER? statement_block	# statementBlock
+	| DEFER? statement_block	# statementBlockStatement
 	;
 
 statement_block

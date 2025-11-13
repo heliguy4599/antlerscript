@@ -21,12 +21,12 @@ public class Main {
 
 			// Parser
 			AntlerScriptParser parser = new AntlerScriptParser(tokens);
-			ParseTree tree = parser.program();
+			ParseTree tree = parser.statement();
 			System.out.println(tree.toStringTree(parser));
 
 			// AST
-			// AntlerScriptVisitor visitor = new AntlerScriptVisitor();
-			// visitor.visit(tree); // Runs the code
+			CstToAstConverter conv = new CstToAstConverter();
+			conv.visit(tree);
 		} catch (IOException e) {
 			System.err.println("Error reading file: " + e.getMessage());
 		}

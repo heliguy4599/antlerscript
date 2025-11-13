@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Testing the ANTLR4-generated concrete syntax tree (CST)")
-class CSTTest {
+class CstTest {
 	// testInput: Input fully matches rule with no errors or leftover tokens
 	// testInputNoRule: Input fails to match rule (ANTLR errors suppressed)
 	// testInputPartialMatch: Input partially matches but leaves unparsed tokens (ANTLR errors suppressed)

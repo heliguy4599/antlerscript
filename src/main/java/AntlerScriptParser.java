@@ -190,12 +190,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_symbol; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSymbol(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSymbol(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSymbol(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -258,12 +255,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_semicolon; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSemicolon(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSemicolon(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSemicolon(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -326,12 +320,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_program; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterProgram(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitProgram(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitProgram(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -431,12 +422,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_file_directive; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterFile_directive(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitFile_directive(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitFile_directive(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -485,12 +473,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_class_top_level; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterClass_top_level(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitClass_top_level(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitClass_top_level(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -690,12 +675,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_class_header_inside; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterClass_header_inside(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitClass_header_inside(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitClass_header_inside(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -832,12 +814,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_class_extends; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterClass_extends(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitClass_extends(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitClass_extends(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -900,12 +879,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_class_extends_access; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterClass_extends_access(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitClass_extends_access(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitClass_extends_access(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -961,12 +937,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_constructor; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterConstructor(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitConstructor(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitConstructor(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1017,12 +990,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_constructor_params; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterConstructor_params(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitConstructor_params(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitConstructor_params(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1126,12 +1096,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_constructor_params_elm; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterConstructor_params_elm(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitConstructor_params_elm(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitConstructor_params_elm(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1198,12 +1165,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_var_args; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterVar_args(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitVar_args(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitVar_args(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1251,12 +1215,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public CastClassMemeberContext(Class_memberContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterCastClassMemeber(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitCastClassMemeber(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitCastClassMemeber(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -1266,12 +1227,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public ConstructorClassMemberContext(Class_memberContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterConstructorClassMember(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitConstructorClassMember(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitConstructorClassMember(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -1281,12 +1239,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public ExtendsClassMemberContext(Class_memberContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExtendsClassMember(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExtendsClassMember(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExtendsClassMember(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -1296,12 +1251,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public OperatorOverloadClassMemberContext(Class_memberContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterOperatorOverloadClassMember(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitOperatorOverloadClassMember(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitOperatorOverloadClassMember(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -1311,12 +1263,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public CaptureClassMemberContext(Class_memberContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterCaptureClassMember(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitCaptureClassMember(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitCaptureClassMember(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -1326,12 +1275,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public DeclarationClassMemberContext(Class_memberContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterDeclarationClassMember(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitDeclarationClassMember(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitDeclarationClassMember(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1425,12 +1371,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_cast; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterCast(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitCast(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitCast(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1489,12 +1432,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_operator_overload; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterOperator_overload(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitOperator_overload(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitOperator_overload(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1557,12 +1497,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_overridable; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterOverridable(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitOverridable(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitOverridable(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1705,12 +1642,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_capture; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterCapture(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitCapture(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitCapture(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1777,12 +1711,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_extends_assign; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExtends_assign(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExtends_assign(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExtends_assign(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1832,12 +1763,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_enum_header_inside; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterEnum_header_inside(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitEnum_header_inside(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitEnum_header_inside(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1962,12 +1890,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_type; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2009,12 +1934,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_type_or; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterType_or(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitType_or(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitType_or(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2073,12 +1995,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_type_and; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterType_and(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitType_and(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitType_and(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2139,12 +2058,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public ArrayTypeContext(Type_atomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterArrayType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitArrayType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitArrayType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -2156,12 +2072,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode RPAREN() { return getToken(AntlerScriptParser.RPAREN, 0); }
 		public TypeGroupContext(Type_atomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterTypeGroup(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitTypeGroup(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitTypeGroup(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -2171,12 +2084,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public EnumTypeContext(Type_atomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterEnumType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitEnumType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitEnumType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -2186,12 +2096,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public MapTypeContext(Type_atomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterMapType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitMapType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitMapType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -2199,12 +2106,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode SELF_CLASS() { return getToken(AntlerScriptParser.SELF_CLASS, 0); }
 		public SelfTypeContext(Type_atomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSelfType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSelfType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSelfType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -2214,12 +2118,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public ListTypeContext(Type_atomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterListType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitListType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitListType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -2229,12 +2130,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public SymbolTypeContext(Type_atomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSymbolType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSymbolType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSymbolType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -2244,12 +2142,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public ClassTypeContext(Type_atomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterClassType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitClassType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitClassType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -2259,12 +2154,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public FuncTypeContext(Type_atomicContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterFuncType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitFuncType(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitFuncType(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2382,12 +2274,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_list_header; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterList_header(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitList_header(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitList_header(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2440,12 +2329,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_array_header; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterArray_header(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitArray_header(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitArray_header(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2502,12 +2388,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_map_header; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterMap_header(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitMap_header(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitMap_header(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2568,12 +2451,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_func_header; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterFunc_header(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitFunc_header(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitFunc_header(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2645,12 +2525,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_func_params; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterFunc_params(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitFunc_params(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitFunc_params(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2734,12 +2611,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_func_param_elm; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterFunc_param_elm(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitFunc_param_elm(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitFunc_param_elm(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2792,12 +2666,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_lambda; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterLambda(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitLambda(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitLambda(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2837,12 +2708,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_class_header; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterClass_header(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitClass_header(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitClass_header(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2895,12 +2763,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_enum_header; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterEnum_header(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitEnum_header(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitEnum_header(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2941,12 +2806,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2984,12 +2846,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_assignment; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_assignment(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_assignment(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_assignment(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3054,12 +2913,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_assignment_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_assignment_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_assignment_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_assignment_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3260,12 +3116,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_logical_or; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_logical_or(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_logical_or(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_logical_or(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3314,12 +3167,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_logical_or_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_logical_or_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_logical_or_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_logical_or_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3379,12 +3229,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_logical_and; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_logical_and(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_logical_and(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_logical_and(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3436,12 +3283,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_logical_and_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_logical_and_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_logical_and_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_logical_and_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3483,12 +3327,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_logical_not; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_logical_not(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_logical_not(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_logical_not(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3544,12 +3385,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_cmp; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_cmp(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_cmp(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_cmp(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3608,12 +3446,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_cmp_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_cmp_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_cmp_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_cmp_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3727,12 +3562,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_bit_or; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_bit_or(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_bit_or(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_bit_or(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3784,12 +3616,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_bit_or_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_bit_or_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_bit_or_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_bit_or_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3832,12 +3661,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_bit_xor; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_bit_xor(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_bit_xor(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_bit_xor(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3889,12 +3715,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_bit_xor_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_bit_xor_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_bit_xor_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_bit_xor_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3937,12 +3760,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_bit_and; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_bit_and(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_bit_and(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_bit_and(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3994,12 +3814,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_bit_and_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_bit_and_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_bit_and_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_bit_and_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4042,12 +3859,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_bit_shift; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_bit_shift(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_bit_shift(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_bit_shift(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4100,12 +3914,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_bit_shift_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_bit_shift_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_bit_shift_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_bit_shift_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4165,12 +3976,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_add; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_add(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_add(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_add(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4224,12 +4032,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_add_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_add_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_add_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_add_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4298,12 +4103,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_mult; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_mult(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_mult(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_mult(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4358,12 +4160,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_mult_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_mult_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_mult_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_mult_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4450,12 +4249,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_unary; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_unary(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_unary(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_unary(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4506,12 +4302,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_unary_op; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_unary_op(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_unary_op(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_unary_op(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4574,12 +4367,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_exp; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_exp(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_exp(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_exp(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4630,12 +4420,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_exp_right; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_exp_right(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_exp_right(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_exp_right(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4678,12 +4465,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_expression_postfix; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpression_postfix(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpression_postfix(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpression_postfix(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4744,12 +4528,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode RBRACK() { return getToken(AntlerScriptParser.RBRACK, 0); }
 		public IndexAccessContext(Expression_accessContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterIndexAccess(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitIndexAccess(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitIndexAccess(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -4760,12 +4541,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public MemberAccessContext(Expression_accessContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterMemberAccess(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitMemberAccess(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitMemberAccess(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -4777,12 +4555,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public FunctionCallContext(Expression_accessContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterFunctionCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitFunctionCall(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitFunctionCall(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -4793,12 +4568,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public NullishAccessContext(Expression_accessContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNullishAccess(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNullishAccess(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNullishAccess(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4894,12 +4666,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_arguments; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterArguments(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitArguments(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitArguments(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -4977,12 +4746,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode EQUAL() { return getToken(AntlerScriptParser.EQUAL, 0); }
 		public ExpressionArgumentContext(Argument_elmContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpressionArgument(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpressionArgument(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpressionArgument(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -4990,12 +4756,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode UNDERSCORE() { return getToken(AntlerScriptParser.UNDERSCORE, 0); }
 		public DiscardArgumentContext(Argument_elmContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterDiscardArgument(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitDiscardArgument(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitDiscardArgument(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5091,12 +4854,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public LambdaExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterLambdaExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitLambdaExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitLambdaExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5104,12 +4864,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode RAW_STRING() { return getToken(AntlerScriptParser.RAW_STRING, 0); }
 		public RawStringExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterRawStringExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitRawStringExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitRawStringExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5117,12 +4874,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode FALSE() { return getToken(AntlerScriptParser.FALSE, 0); }
 		public FalseExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterFalseExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitFalseExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitFalseExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5132,12 +4886,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public NewClassInstanceContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNewClassInstance(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNewClassInstance(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNewClassInstance(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5145,12 +4896,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode INTEGER() { return getToken(AntlerScriptParser.INTEGER, 0); }
 		public IntegerExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterIntegerExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitIntegerExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitIntegerExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5158,12 +4906,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode SUPER() { return getToken(AntlerScriptParser.SUPER, 0); }
 		public SuperExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSuperExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSuperExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSuperExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5173,12 +4918,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public NewListExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNewListExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNewListExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNewListExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5188,12 +4930,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public SelectExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSelectExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSelectExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSelectExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5205,12 +4944,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode RPAREN() { return getToken(AntlerScriptParser.RPAREN, 0); }
 		public GroupedExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterGroupedExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitGroupedExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitGroupedExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5220,12 +4956,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public SymbolExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSymbolExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSymbolExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSymbolExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5233,12 +4966,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode STRING() { return getToken(AntlerScriptParser.STRING, 0); }
 		public StringExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterStringExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitStringExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitStringExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5248,12 +4978,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public NewObjectExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNewObjectExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNewObjectExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNewObjectExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5261,12 +4988,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode TRUE() { return getToken(AntlerScriptParser.TRUE, 0); }
 		public TrueExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterTrueExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitTrueExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitTrueExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5274,12 +4998,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode NULL() { return getToken(AntlerScriptParser.NULL, 0); }
 		public NullExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNullExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNullExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNullExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5287,12 +5008,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode SELF_INSTANCE() { return getToken(AntlerScriptParser.SELF_INSTANCE, 0); }
 		public SelfInstanceExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSelfInstanceExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSelfInstanceExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSelfInstanceExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5302,12 +5020,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public NewArrayExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNewArrayExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNewArrayExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNewArrayExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5315,12 +5030,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode FLOAT() { return getToken(AntlerScriptParser.FLOAT, 0); }
 		public FloatExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterFloatExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitFloatExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitFloatExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -5330,12 +5042,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public NewMapExpressionContext(Expression_atomContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNewMapExpression(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNewMapExpression(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNewMapExpression(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5520,12 +5229,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_new_object_instance; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNew_object_instance(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNew_object_instance(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNew_object_instance(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5565,12 +5271,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_new_list_instance; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNew_list_instance(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNew_list_instance(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNew_list_instance(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5610,12 +5313,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_new_array_instance; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNew_array_instance(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNew_array_instance(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNew_array_instance(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5655,12 +5355,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_new_class_instance; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNew_class_instance(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNew_class_instance(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNew_class_instance(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5699,12 +5396,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_object_instantiation_args; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterObject_instantiation_args(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitObject_instantiation_args(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitObject_instantiation_args(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5762,12 +5456,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_new_map_instance; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterNew_map_instance(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitNew_map_instance(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitNew_map_instance(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5831,12 +5522,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_select; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSelect(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSelect(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSelect(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5900,12 +5588,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_keypair_list; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterKeypair_list(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitKeypair_list(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitKeypair_list(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -5976,12 +5661,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_keypair_clause; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterKeypair_clause(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitKeypair_clause(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitKeypair_clause(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6029,12 +5711,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public WhileStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterWhileStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitWhileStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitWhileStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6044,12 +5723,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public DeclarationStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterDeclarationStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitDeclarationStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitDeclarationStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6059,28 +5735,22 @@ public class AntlerScriptParser extends Parser {
 		}
 		public TypedefStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterTypedefStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitTypedefStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitTypedefStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class StatementBlockContext extends StatementContext {
+	public static class StatementBlockStatementContext extends StatementContext {
 		public Statement_blockContext statement_block() {
 			return getRuleContext(Statement_blockContext.class,0);
 		}
 		public TerminalNode DEFER() { return getToken(AntlerScriptParser.DEFER, 0); }
-		public StatementBlockContext(StatementContext ctx) { copyFrom(ctx); }
+		public StatementBlockStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterStatementBlock(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitStatementBlock(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitStatementBlockStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6090,12 +5760,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public IterateStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterIterateStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitIterateStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitIterateStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6103,12 +5770,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode BREAK() { return getToken(AntlerScriptParser.BREAK, 0); }
 		public BreakStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterBreakStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitBreakStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitBreakStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6119,12 +5783,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode DEFER() { return getToken(AntlerScriptParser.DEFER, 0); }
 		public ExpressionStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterExpressionStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitExpressionStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitExpressionStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6132,12 +5793,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode CONTINUE() { return getToken(AntlerScriptParser.CONTINUE, 0); }
 		public ContinueStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterContinueStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitContinueStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitContinueStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6147,12 +5805,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public LoopStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterLoopStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitLoopStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitLoopStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6163,12 +5818,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public ReturnStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterReturnStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitReturnStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitReturnStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6178,12 +5830,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public IfStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterIfStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitIfStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitIfStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6193,12 +5842,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public SwitchStatementContext(StatementContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSwitchStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSwitchStatement(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSwitchStatement(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6319,7 +5965,7 @@ public class AntlerScriptParser extends Parser {
 				}
 				break;
 			case 12:
-				_localctx = new StatementBlockContext(_localctx);
+				_localctx = new StatementBlockStatementContext(_localctx);
 				enterOuterAlt(_localctx, 12);
 				{
 				setState(870);
@@ -6371,12 +6017,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_statement_block; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterStatement_block(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitStatement_block(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitStatement_block(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6502,12 +6145,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_loop; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterLoop(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitLoop(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitLoop(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6591,12 +6231,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_while; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterWhile(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitWhile(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitWhile(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6651,12 +6288,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_iterate; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterIterate(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitIterate(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitIterate(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6741,12 +6375,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public ConstDeclarationContext(DeclarationContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterConstDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitConstDeclaration(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitConstDeclaration(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6769,12 +6400,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public LetDefinitionContext(DeclarationContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterLetDefinition(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitLetDefinition(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitLetDefinition(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6795,12 +6423,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		public ConstDefinitionContext(DeclarationContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterConstDefinition(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitConstDefinition(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitConstDefinition(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
@@ -6818,12 +6443,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode MUT() { return getToken(AntlerScriptParser.MUT, 0); }
 		public LetDeclarationContext(DeclarationContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterLetDeclaration(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitLetDeclaration(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitLetDeclaration(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -6955,12 +6577,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_typedef; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterTypedef(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitTypedef(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitTypedef(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7016,12 +6635,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_if; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterIf(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitIf(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitIf(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7091,12 +6707,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_elif; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterElif(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitElif(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitElif(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7137,12 +6750,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_else; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterElse(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitElse(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitElse(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7192,12 +6802,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_switch; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterSwitch(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitSwitch(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitSwitch(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -7272,12 +6879,9 @@ public class AntlerScriptParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_case; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).enterCase(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AntlerScriptParserListener ) ((AntlerScriptParserListener)listener).exitCase(this);
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitCase(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
