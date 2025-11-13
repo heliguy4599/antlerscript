@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2945966a-30a3-47d3-bd50-01b1831b16e2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/CstTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/CstTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="2945966a-30a3-47d3-bd50-01b1831b16e2" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,20 +22,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Debug",
-    "Maven.(Clean) Test AntlerScript.executor": "Run",
-    "Maven.antlerscript [clean,compile,exec:java...].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "settings.editor.selected.configurable": "project.propVCSSupport.CommitDialog"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Debug&quot;,
+    &quot;Maven.(Clean) Test AntlerScript.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.antlerscript [clean,compile,exec:java...].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.CommitDialog&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Maven.(Clean) Test AntlerScript">
     <configuration name="(Clean) Test AntlerScript" type="MavenRunConfiguration" factoryName="Maven">
       <MavenSettings>
@@ -106,8 +103,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Maven.antlerscript [clean,compile,exec:java...]" />
       <item itemvalue="Maven.(Clean) Test AntlerScript" />
+      <item itemvalue="Maven.antlerscript [clean,compile,exec:java...]" />
     </list>
   </component>
   <component name="TaskManager">
@@ -134,13 +131,30 @@
       <option name="project" value="LOCAL" />
       <updated>1763061540815</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="More Idea crud">
+      <option name="closed" value="true" />
+      <created>1763063261677</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1763063261677</updated>
+    </task>
+    <task id="LOCAL-00004" summary="More Idea crud">
+      <option name="closed" value="true" />
+      <created>1763064597029</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1763064597029</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Idea crud" />
-    <option name="LAST_COMMIT_MESSAGE" value="Idea crud" />
+    <MESSAGE value="More Idea crud" />
+    <option name="LAST_COMMIT_MESSAGE" value="More Idea crud" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -152,11 +166,6 @@
             <option name="lambda-ordinal" value="-1" />
           </properties>
           <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/CstToAstConverter.java</url>
-          <line>38</line>
-          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
