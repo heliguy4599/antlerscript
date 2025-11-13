@@ -408,7 +408,7 @@ select
 	;
 
 keypair_list
-	: keypairs=keypair_clause ( ',' keypairs=keypair_clause )* ','?
+	: keypair_clause ( ',' keypair_clause )* ','?
 	;
 
 keypair_clause
@@ -435,7 +435,7 @@ statement
 	;
 
 statement_block
-	: '{' semicolon* ( stmt=statement ( semicolon+ stmt=statement )* semicolon* )? '}'
+	: '{' semicolon* ( statement ( semicolon+ statement )* semicolon* )? '}'
 	;
 
 loop
@@ -474,9 +474,9 @@ else
 	;
 
 switch
-	: SWITCH test=expression cases=case+ catchAll=else?
+	: SWITCH test=expression case+ catchAll=else?
 	;
 
 case
-	: CASE matches=expression ( ',' matches=expression )* block=statement_block
+	: CASE expression ( ',' expression )* block=statement_block
 	;

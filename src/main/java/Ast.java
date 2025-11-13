@@ -389,17 +389,24 @@ public class Ast {
 		}
 	}
 
-	public static class CaseBranch {
+	public static class CaseBranch extends Node {
 		public final List<Expression> values;
 		public final StatementBlock body;
 
-		public CaseBranch(List<Expression> values, StatementBlock body) {
+		public CaseBranch(List<Token> tokens, List<Expression> values, StatementBlock body) {
+			super(tokens);
+
 			assert values != null;
 			assert values.size() > 0;
 			assert body != null;
 
 			this.values = values;
 			this.body = body;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitCaseBranch(this);
 		}
 	}
 
@@ -967,6 +974,8 @@ public class Ast {
 		T visitIfStatement(IfStatement node);
 
 		T visitSwitchStatement(SwitchStatement node);
+
+		T visitCaseBranch(CaseBranch node);
 
 		T visitWhileStatement(WhileStatement node);
 

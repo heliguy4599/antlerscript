@@ -5,21 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2945966a-30a3-47d3-bd50-01b1831b16e2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/projectSettingsUpdater.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/_Clean__Compile_AntlerScript.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/antlr4/AntlerScriptParser.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/antlr4/AntlerScriptParser.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/AntlerScriptAST.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/AntlerScriptParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/AntlerScriptParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/AntlerScriptParserBaseListener.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/AntlerScriptParserListener.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/CSTTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Ast.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Ast.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CstToAstConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CstToAstConverter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +97,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/CstToAstConverter.java</url>
-          <line>36</line>
+          <line>38</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>

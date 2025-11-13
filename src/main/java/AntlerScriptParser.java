@@ -5572,7 +5572,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Keypair_listContext extends ParserRuleContext {
-		public Keypair_clauseContext keypairs;
 		public List<Keypair_clauseContext> keypair_clause() {
 			return getRuleContexts(Keypair_clauseContext.class);
 		}
@@ -5603,7 +5602,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(837);
-			((Keypair_listContext)_localctx).keypairs = keypair_clause();
+			keypair_clause();
 			setState(842);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,82,_ctx);
@@ -5614,7 +5613,7 @@ public class AntlerScriptParser extends Parser {
 					setState(838);
 					match(COMMA);
 					setState(839);
-					((Keypair_listContext)_localctx).keypairs = keypair_clause();
+					keypair_clause();
 					}
 					} 
 				}
@@ -5997,7 +5996,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Statement_blockContext extends ParserRuleContext {
-		public StatementContext stmt;
 		public TerminalNode LCURLY() { return getToken(AntlerScriptParser.LCURLY, 0); }
 		public TerminalNode RCURLY() { return getToken(AntlerScriptParser.RCURLY, 0); }
 		public List<SemicolonContext> semicolon() {
@@ -6053,7 +6051,7 @@ public class AntlerScriptParser extends Parser {
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 2463444525464827288L) != 0) || ((((_la - 70)) & ~0x3f) == 0 && ((1L << (_la - 70)) & 549755814915L) != 0)) {
 				{
 				setState(882);
-				((Statement_blockContext)_localctx).stmt = statement();
+				statement();
 				setState(892);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,90,_ctx);
@@ -6076,7 +6074,7 @@ public class AntlerScriptParser extends Parser {
 							_la = _input.LA(1);
 						} while ( _la==NEWLINE || _la==SEMICOLON );
 						setState(888);
-						((Statement_blockContext)_localctx).stmt = statement();
+						statement();
 						}
 						} 
 					}
@@ -6782,7 +6780,6 @@ public class AntlerScriptParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class SwitchContext extends ParserRuleContext {
 		public ExpressionContext test;
-		public CaseContext cases;
 		public ElseContext catchAll;
 		public TerminalNode SWITCH() { return getToken(AntlerScriptParser.SWITCH, 0); }
 		public ExpressionContext expression() {
@@ -6826,7 +6823,7 @@ public class AntlerScriptParser extends Parser {
 				{
 				{
 				setState(998);
-				((SwitchContext)_localctx).cases = case_();
+				case_();
 				}
 				}
 				setState(1001); 
@@ -6858,7 +6855,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CaseContext extends ParserRuleContext {
-		public ExpressionContext matches;
 		public Statement_blockContext block;
 		public TerminalNode CASE() { return getToken(AntlerScriptParser.CASE, 0); }
 		public List<ExpressionContext> expression() {
@@ -6895,7 +6891,7 @@ public class AntlerScriptParser extends Parser {
 			setState(1006);
 			match(CASE);
 			setState(1007);
-			((CaseContext)_localctx).matches = expression();
+			expression();
 			setState(1012);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -6905,7 +6901,7 @@ public class AntlerScriptParser extends Parser {
 				setState(1008);
 				match(COMMA);
 				setState(1009);
-				((CaseContext)_localctx).matches = expression();
+				expression();
 				}
 				}
 				setState(1014);
