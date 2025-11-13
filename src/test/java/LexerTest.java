@@ -44,7 +44,6 @@ class LexerTest {
 		testInput("123i16", L.INTEGER);
 		testInput("123i32", L.INTEGER);
 		testInput("123i64", L.INTEGER);
-		testInput("123i128", L.INTEGER);
 
 		// Unsigned suffix
 		testInput("123u", L.INTEGER);
@@ -52,7 +51,6 @@ class LexerTest {
 		testInput("123u16", L.INTEGER);
 		testInput("123u32", L.INTEGER);
 		testInput("123u64", L.INTEGER);
-		testInput("123u128", L.INTEGER);
 	}
 
 	@Test
@@ -66,7 +64,6 @@ class LexerTest {
 		testInput("0xFFi16", L.INTEGER);
 		testInput("0xFFi32", L.INTEGER);
 		testInput("0xFFi64", L.INTEGER);
-		testInput("0xFFi128", L.INTEGER);
 
 		// Unsigned suffix
 		testInput("0xFFu", L.INTEGER);
@@ -74,7 +71,6 @@ class LexerTest {
 		testInput("0xFFu16", L.INTEGER);
 		testInput("0xFFu32", L.INTEGER);
 		testInput("0xFFu64", L.INTEGER);
-		testInput("0xFFu128", L.INTEGER);
 	}
 
 	@Test
@@ -88,7 +84,6 @@ class LexerTest {
 		testInput("0b101i16", L.INTEGER);
 		testInput("0b101i32", L.INTEGER);
 		testInput("0b101i64", L.INTEGER);
-		testInput("0b101i128", L.INTEGER);
 
 		// Unsigned suffix
 		testInput("0b101u", L.INTEGER);
@@ -96,7 +91,6 @@ class LexerTest {
 		testInput("0b101u16", L.INTEGER);
 		testInput("0b101u32", L.INTEGER);
 		testInput("0b101u64", L.INTEGER);
-		testInput("0b101u128", L.INTEGER);
 	}
 
 	@Test
@@ -110,7 +104,6 @@ class LexerTest {
 		testInput("3.14f16", L.FLOAT);
 		testInput("3.14f32", L.FLOAT);
 		testInput("3.14f64", L.FLOAT);
-		testInput("3.14f128", L.FLOAT);
 	}
 
 	@Test
@@ -132,21 +125,18 @@ class LexerTest {
 		testInput("3.14e10f16", L.FLOAT);
 		testInput("3.14e10f32", L.FLOAT);
 		testInput("3.14e10f64", L.FLOAT);
-		testInput("3.14e10f128", L.FLOAT);
 
 		testInput("3.14e+10f", L.FLOAT);
 		testInput("3.14e+10f8", L.FLOAT);
 		testInput("3.14e+10f16", L.FLOAT);
 		testInput("3.14e+10f32", L.FLOAT);
 		testInput("3.14e+10f64", L.FLOAT);
-		testInput("3.14e+10f128", L.FLOAT);
 
 		testInput("3.14e-10f", L.FLOAT);
 		testInput("3.14e-10f8", L.FLOAT);
 		testInput("3.14e-10f16", L.FLOAT);
 		testInput("3.14e-10f32", L.FLOAT);
 		testInput("3.14e-10f64", L.FLOAT);
-		testInput("3.14e-10f128", L.FLOAT);
 	}
 
 	@Test
@@ -159,7 +149,6 @@ class LexerTest {
 		testInput("0xF.Ff16", L.FLOAT);
 		testInput("0xF.Ff32", L.FLOAT);
 		testInput("0xF.Ff64", L.FLOAT);
-		testInput("0xF.Ff128", L.FLOAT);
 	}
 
 	@Test
@@ -174,7 +163,6 @@ class LexerTest {
 		testInput("0xF.Fe10f16", L.FLOAT);
 		testInput("0xF.Fe10f32", L.FLOAT);
 		testInput("0xF.Fe10f64", L.FLOAT);
-		testInput("0xF.Fe10f128", L.FLOAT);
 
 		testInput("0xF.Fe+10", L.FLOAT);
 		testInput("0xF.Fe+10f", L.FLOAT);
@@ -182,7 +170,6 @@ class LexerTest {
 		testInput("0xF.Fe+10f16", L.FLOAT);
 		testInput("0xF.Fe+10f32", L.FLOAT);
 		testInput("0xF.Fe+10f64", L.FLOAT);
-		testInput("0xF.Fe+10f128", L.FLOAT);
 
 		testInput("0xF.Fe-10", L.FLOAT);
 		testInput("0xF.Fe-10f", L.FLOAT);
@@ -190,14 +177,12 @@ class LexerTest {
 		testInput("0xF.Fe-10f16", L.FLOAT);
 		testInput("0xF.Fe-10f32", L.FLOAT);
 		testInput("0xF.Fe-10f64", L.FLOAT);
-		testInput("0xF.Fe-10f128", L.FLOAT);
 
 		testInput("0xF.Fp10", L.FLOAT);
 		testInput("0xF.Fp10f8", L.FLOAT);
 		testInput("0xF.Fp10f16", L.FLOAT);
 		testInput("0xF.Fp10f32", L.FLOAT);
 		testInput("0xF.Fp10f64", L.FLOAT);
-		testInput("0xF.Fp10f128", L.FLOAT);
 
 		testInput("0xF.Fp+10", L.FLOAT);
 		testInput("0xF.Fp+10f", L.FLOAT);
@@ -205,7 +190,6 @@ class LexerTest {
 		testInput("0xF.Fp+10f16", L.FLOAT);
 		testInput("0xF.Fp+10f32", L.FLOAT);
 		testInput("0xF.Fp+10f64", L.FLOAT);
-		testInput("0xF.Fp+10f128", L.FLOAT);
 
 		testInput("0xF.Fp-10", L.FLOAT);
 		testInput("0xF.Fp-10f", L.FLOAT);
@@ -213,7 +197,6 @@ class LexerTest {
 		testInput("0xF.Fp-10f16", L.FLOAT);
 		testInput("0xF.Fp-10f32", L.FLOAT);
 		testInput("0xF.Fp-10f64", L.FLOAT);
-		testInput("0xF.Fp-10f128", L.FLOAT);
 	}
 
 	@Test
@@ -395,11 +378,6 @@ class LexerTest {
 	@Test
 	void or() {
 		testInput("or", L.OR);
-	}
-
-	@Test
-	void privateConstructor() {
-		testInput("__constructor", L.PRIVATE_CONSTRUCTOR);
 	}
 
 	@Test
@@ -696,12 +674,12 @@ class LexerTest {
 
 	@Test
 	void lesserThanEq() {
-		testInput("<=", L.LESSER_THAN_EQ);
+		testInput("<=", L.LESSER_OR_EQ);
 	}
 
 	@Test
 	void greaterThanEq() {
-		testInput(">=", L.GREATER_THAN_EQ);
+		testInput(">=", L.GREATER_OR_EQ);
 	}
 
 	@Test

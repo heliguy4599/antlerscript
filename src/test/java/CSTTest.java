@@ -147,11 +147,6 @@ class CSTTest {
 			testInput("constructor(Int i, j, Int ... args) { 2 + 2 }", "constructor");
 		}
 
-		@Test
-		void class_private_constructor() {
-			testInput("__constructor(Int i, j, Int ... args) { 2 + 2 }", "private_constructor");
-		}
-
 		@ParameterizedTest
 		@ValueSource(strings = {
 			"(Int i)",
