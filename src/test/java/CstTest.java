@@ -123,6 +123,55 @@ class CstTest {
 	}
 
 	@Nested
+	@DisplayName("Files")
+	class Files {
+		@Test
+		void file_directive() {
+			testInput("$directive hello", "file_directive");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"",
+			"$directive name;",
+			"$directive name; $directive name;",
+			"$directive name; let Int i = 10",
+			"let Int i = 10; let Int i = 10;",
+			"$directive name; extends One.Two;",
+			"let Int i = 10; $directive name; extends One.Two; let Int j = 5",
+			"type Thing = List(Int)",
+			"$directive name; type Thing = List(Int)",
+		})
+		void file_program(String input) {
+			testInput(input, "program");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"directive name",
+			"$ directive name",
+			"$ directive",
+			"$directive",
+			"$directive $directive name",
+			"$directive $directive",
+			"$ $directive"
+		})
+		void fail_file_directive(String input) {
+			testInputNoRule(input, "file_directive");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"capture(One).A -> B",
+			"extends Two",
+			"$directive name; let Int i = 10; $directive name; type Thing = List(Int)",
+		})
+		void fail_no_rule_file_program(String input) {
+			testInputNoRule(input, "program");
+		}
+	}
+
+	@Nested
 	@DisplayName("Classes")
 	class Classes {
 		@ParameterizedTest

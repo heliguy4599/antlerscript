@@ -18,7 +18,8 @@ semicolon
 //-----------------------
 
 program
-	: file_directive* ( class_top_level | statement ( semicolon statement )* semicolon* ) EOF
+	: ( file_directive semicolon+ )* ( statement semicolon+ )* ( statement semicolon* )? EOF
+	| ( file_directive semicolon+ )* ( statement semicolon+ )* ( file_directive semicolon+ )+ class_top_level semicolon* EOF
 	;
 
 file_directive
