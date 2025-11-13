@@ -858,15 +858,15 @@ public class Ast {
 	// UTILITIES
 	// ====================
 
-	public static class ConstructorParameter {
-		public final Type type;
-		public final String symbol;
-		public final Expression initialValue;
-		public final boolean isVarArgs;
-
-		ConstructorParameter(Type type, String symbol, Expression initialValue, boolean isVarArgs) {
+	public record ConstructorParameter(
+						Type type,
+						String symbol,
+						Expression initialValue,
+						boolean isVarArgs
+	) {
+		public ConstructorParameter {
 			assert symbol != null;
-			assert symbol.length() > 0;
+			assert !symbol.isEmpty();
 
 			if (type == null) {
 				assert !isVarArgs;
@@ -874,72 +874,49 @@ public class Ast {
 			} else if (isVarArgs) {
 				assert initialValue == null;
 			}
-
-			this.type = type;
-			this.symbol = symbol;
-			this.initialValue = initialValue;
-			this.isVarArgs = isVarArgs;
 		}
 	}
 
-	public static class FunctionParameter {
-		public final Type type;
-		public final String symbol;
-		public final Expression initialValue;
-		public final boolean isVarArgs;
-
-		FunctionParameter(Type type, String symbol, Expression initialValue, boolean isVarArgs) {
+	public record FunctionParameter(
+					Type type,
+					String symbol,
+					Expression initialValue,
+					boolean isVarArgs
+	) {
+		public FunctionParameter {
 			assert type != null;
 			assert symbol != null;
-			assert symbol.length() > 0;
+			assert !symbol.isEmpty();
 			assert (isVarArgs && initialValue == null) || !isVarArgs;
-
-			this.type = type;
-			this.symbol = symbol;
-			this.initialValue = initialValue;
-			this.isVarArgs = isVarArgs;
 		}
 	}
 
-	public static class Argument {
-		public final Expression value;
-		public final String keyword;
-		public final boolean isBlank;
-
-		Argument(Expression value, String keyword, boolean isBlank) {
+	public record Argument(
+				Expression value,
+				String keyword,
+				boolean isBlank
+	) {
+		public Argument {
 			assert (value != null && !isBlank) || (value == null && keyword == null && isBlank);
-
-			this.value = value;
-			this.keyword = keyword;
-			this.isBlank = isBlank;
 		}
 	}
 
-	public static class ClassName {
-		public final List<String> symbols;
-
-		public ClassName(List<String> symbols) {
+	public record ClassName(List<String> symbols) {
+		public ClassName {
 			assert symbols != null;
-			assert symbols.size() > 0;
-
-			this.symbols = symbols;
+			assert !symbols.isEmpty();
 		}
 
+		@Override
 		public String toString() {
 			return String.join(".", symbols);
 		}
 	}
 
-	public static class KeyValuePair {
-		public final Expression left;
-		public final Expression right;
-
-		KeyValuePair(Expression left, Expression right) {
+	public record KeyValuePair(Expression left, Expression right) {
+		public KeyValuePair {
 			assert left != null;
 			assert right != null;
-
-			this.left = left;
-			this.right = right;
 		}
 	}
 
