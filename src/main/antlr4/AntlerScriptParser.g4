@@ -327,24 +327,24 @@ argument_elm
 	;
 
 expression_atom
-	: symbol
-	| STRING
-	| RAW_STRING
-	| FLOAT
-	| INTEGER
-	| TRUE
-	| FALSE
-	| NULL
-	| SUPER
-	| SELF_INSTANCE
-	| new_object_instance
-	| new_list_instance
-	| new_array_instance
-	| new_map_instance
-	| new_class_instance
-	| lambda
-	| select
-	| '(' expression ')'
+	: symbol		#symbolExpression
+	| STRING		#stringExpression
+	| RAW_STRING		#rawStringExpression
+	| FLOAT			#floatExpression
+	| INTEGER		#integerExpression
+	| TRUE			#trueExpression
+	| FALSE			#falseExpression
+	| NULL			#nullExpression
+	| SUPER			#superExpression
+	| SELF_INSTANCE		#selfInstanceExpression
+	| new_object_instance	#newObjectExpression
+	| new_list_instance	#newListExpression
+	| new_array_instance	#newArrayExpression
+	| new_map_instance	#newMapExpression
+	| new_class_instance	#newClassInstance
+	| lambda		#lambdaExpression
+	| select		#selectExpression
+	| '(' expression ')'	#groupedExpression
 	;
 
 new_object_instance
@@ -388,6 +388,7 @@ new_map_instance
 	;
 
 select
+<<<<<<< HEAD
 	: SELECT ( '[' expression ']' )? '(' keypair_list ')'
 	;
 
@@ -398,6 +399,18 @@ keypair_list
 keypair_clause
 	: expression ':' expression
 	;
+=======
+    : SELECT ( '[' value=expression ']' )? '(' keypair_list ')'
+    ;
+
+keypair_list
+    : keypairs=keypair_clause ( ',' keypairs=keypair_clause )* ','?
+    ;
+
+keypair_clause
+    : key=expression ':' value=expression
+    ;
+>>>>>>> 6b6bc7f (Added rule labels to expression atoms)
 
 //-----------------------
 // STATEMENTS
