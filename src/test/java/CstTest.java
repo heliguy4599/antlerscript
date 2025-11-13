@@ -125,9 +125,25 @@ class CstTest {
 	@Nested
 	@DisplayName("Classes")
 	class Classes {
-		// TODO: class_top_level
+		@ParameterizedTest
+		@ValueSource(strings = {
+			";;;extends One;;const i = 10",
+			"let Int j = 23",
+			"capture(Two).i -> j",
+		})
+		void class_top_level(String input) {
+			testInput(input, "class_top_level");
+		}
 
-		// TODO: class_header_inside
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"extends One, Two, thing = 3, let item = false",
+			"const a = 5, capture(Two).three -> item",
+			"extends Two",
+		})
+		void class_header_inside(String input) {
+			testInput(input, "class_header_inside");
+		}
 
 		@Test
 		void class_extends() {
@@ -171,7 +187,7 @@ class CstTest {
 		}
 
 		@Test
-		void class_case() {
+		void class_cast() {
 			testInput("cast(Int) { 2 + 2 }", "cast");
 		}
 
