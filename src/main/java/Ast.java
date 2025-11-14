@@ -183,20 +183,19 @@ public class Ast {
 
 	// TODO: Enum types
 
-	// TODO
-	// public static class ClassType extends Type {
-	// 	public final List<ClassMember> members;
+	public static class ClassType extends Type {
+		public final List<ClassMember> members;
 
-	// 	public static classType(List<Token> tokens, List<ClassMember> members) {
-	// 		super(tokens);
-	// 		this.members = members != null ? members : new ArrayList<>();
-	// 	}
+		public ClassType(List<Token> tokens, List<ClassMember> members) {
+			super(tokens);
+			this.members = members != null ? members : new ArrayList<>();
+		}
 
-	// 	@Override
-	// 	public <T> T accept(Visitor<T> visitor) {
-	// 		return visitor.visitClassType(this);
-	// 	}
-	// }
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitClassType(this);
+		}
+	}
 
 	public static class SelfClassType extends Type {
 		public SelfClassType(List<Token> tokens) { super(tokens); }
@@ -1114,8 +1113,7 @@ public class Ast {
 
 		T visitFunctionType(FunctionType node);
 
-		// TODO
-		// T visitClassType(ClassType node);
+		T visitClassType(ClassType node);
 
 		T visitUnionType(UnionType node);
 
