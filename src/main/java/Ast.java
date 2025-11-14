@@ -181,7 +181,24 @@ public class Ast {
 		}
 	}
 
-	// TODO: Enum types
+	public static class EnumType extends Type {
+		public final ClassExtendsAccessClassMember extendsAccess;
+		public final List<String> memberSymbols;
+
+		public EnumType(List<Token> tokens, ClassExtendsAccessClassMember extendsAccess, List<String> memberSymbols) {
+			super(tokens);
+
+			assert memberSymbols != null && !memberSymbols.isEmpty();
+
+			this.extendsAccess = extendsAccess;
+			this.memberSymbols = memberSymbols;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitEnumType(this);
+		}
+	}
 
 	public static class ClassType extends Type {
 		public final List<ClassMember> members;
@@ -1112,6 +1129,8 @@ public class Ast {
 		T visitMapType(MapType node);
 
 		T visitFunctionType(FunctionType node);
+
+		T visitEnumType(EnumType node);
 
 		T visitClassType(ClassType node);
 
