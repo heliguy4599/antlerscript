@@ -209,6 +209,47 @@ public class Ast {
 	// TODO: CLASS DEFINITIONS
 	// ====================
 
+	public static abstract class ClassMember extends Node {
+		public ClassMember(List<Token> tokens) { super(tokens); }
+	}
+
+	public static class CastClassMember extends ClassMember {
+		public final Type castedType;
+		public final StatementBlock block;
+
+		public CastClassMember(List<Token> tokens, Type castedType, StatementBlock block) {
+			super(tokens);
+
+			assert castedType != null;
+			assert block != null;
+
+			this.castedType = castedType;
+			this.block = block;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitCastClassMember(this);
+		}
+	}
+
+	public static class DeclarationClassMember extends ClassMember {
+		public final VariableDeclaration declaration;
+
+		public DeclarationClassMember(List<Token> tokens, VariableDeclaration declaration) {
+			super(tokens);
+
+			assert declaration != null;
+
+			this.declaration = declaration;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitDeclarationClassMember(this);
+		}
+	}
+
 	// ====================
 	// STATEMENTS
 	// ====================
@@ -955,6 +996,10 @@ public class Ast {
 		T visitSelfClassType(SelfClassType node);
 
 		// Class members
+
+		T visitCastClassMember(CastClassMember node);
+
+		T visitDeclarationClassMember(DeclarationClassMember node);
 
 		// Statements
 		T visitExpressionStatement(ExpressionStatement node);
