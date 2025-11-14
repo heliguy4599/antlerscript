@@ -181,6 +181,8 @@ public class Ast {
 		}
 	}
 
+	// TODO: Enum types
+
 	// TODO
 	// public static class ClassType extends Type {
 	// 	public final List<ClassMember> members;
@@ -247,6 +249,130 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitDeclarationClassMember(this);
+		}
+	}
+
+	public static class OperatorOverloadClassMember extends ClassMember {
+		public enum Kind {
+			PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER,
+			LESSER_THAN, GREATER_THAN, CONCAT, EXPONENT,
+			FLOOR_DIVIDE, MODULO, EQUAL, INDEX
+		}
+
+		public final Kind operation;
+		public final Type leftType;
+		public final Type returnType;
+		public final String symbol;
+
+		public OperatorOverloadClassMember(List<Token> tokens, Kind operation, Type leftType, String symbol, Type returnType) {
+			super(tokens);
+
+			assert operation != null;
+			assert leftType != null;
+			assert symbol != null;
+			assert returnType != null;
+
+			this.operation = operation;
+			this.leftType = leftType;
+			this.symbol = symbol;
+			this.returnType = returnType;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitOperatorOverloadClassMember(this);
+		}
+	}
+
+	// TODO: Make constructor block optional (needs grammar update)
+	public static class ConstructorClassMember extends ClassMember {
+		public final List<ConstructorParameter> parameters;
+		public final StatementBlock statementBlock;
+
+		public ConstructorClassMember(List<Token> tokens, List<ConstructorParameter> parameters, StatementBlock statementBlock) {
+			super(tokens);
+
+			assert statementBlock != null;
+
+			this.parameters = parameters != null ? parameters : new ArrayList<>();
+			this.statementBlock = statementBlock;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitConstructorClassMember(this);
+		}
+	}
+
+	public static class CaptureClassMember extends ClassMember {
+		public final ClassExtendsAccessClassMember extendsAccess;
+		public final String originSymbol;
+		public final String targetSymbol;
+		public final ExtendsAssignClassMember extendsAssign;
+
+		public CaptureClassMember(
+			List<Token> tokens,
+			ClassExtendsAccessClassMember extendsAccess,
+			String originSymbol,
+			String targetSymbol,
+			ExtendsAssignClassMember extendsAssign
+		) {
+			super(tokens);
+
+			assert extendsAccess != null;
+			assert originSymbol != null && !originSymbol.isEmpty();
+			assert (
+				targetSymbol != null && extendsAssign == null
+			) || (
+				targetSymbol == null && extendsAssign != null
+			);
+
+			this.extendsAccess = extendsAccess;
+			this.originSymbol = originSymbol;
+			this.targetSymbol = targetSymbol;
+			this.extendsAssign = extendsAssign;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitCaptureClassMember(this);
+		}
+	}
+
+	public static class ExtendsAssignClassMember extends ClassMember {
+		public final String symbol;
+		public final Expression expression;
+
+		public ExtendsAssignClassMember(List<Token> tokens, String symbol, Expression expression) {
+			super(tokens);
+
+			assert symbol != null && !symbol.isEmpty();
+			assert expression != null;
+
+			this.symbol = symbol;
+			this.expression = expression;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitExtendsAssignClassMember(this);
+		}
+	}
+
+	public static class ClassExtendsAccessClassMember extends ClassMember {
+		public final List<String> symbols;
+
+		public ClassExtendsAccessClassMember(List<Token> tokens, List<String> symbols) {
+			super(tokens);
+
+			assert symbols != null && !symbols.isEmpty();
+
+			this.symbols = symbols;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitClassExtendsAccessClassMember(this);
 		}
 	}
 
@@ -995,11 +1121,19 @@ public class Ast {
 
 		T visitSelfClassType(SelfClassType node);
 
-		// Class members
-
 		T visitCastClassMember(CastClassMember node);
 
 		T visitDeclarationClassMember(DeclarationClassMember node);
+
+		T visitConstructorClassMember(ConstructorClassMember node);
+
+		T visitCaptureClassMember(CaptureClassMember node);
+
+		T visitExtendsAssignClassMember(ExtendsAssignClassMember node);
+
+		T visitOperatorOverloadClassMember(OperatorOverloadClassMember node);
+
+		T visitClassExtendsAccessClassMember(ClassExtendsAccessClassMember node);
 
 		// Statements
 		T visitExpressionStatement(ExpressionStatement node);
