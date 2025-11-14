@@ -49,7 +49,7 @@ class_extends_access
 	;
 
 constructor
-	: CONSTRUCTOR constructor_params statement_block
+	: CONSTRUCTOR constructor_params statement_block?
 	;
 
 constructor_params

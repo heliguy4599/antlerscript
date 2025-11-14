@@ -300,15 +300,12 @@ public class Ast {
 		}
 	}
 
-	// TODO: Make constructor block optional (needs grammar update)
 	public static class ConstructorClassMember extends ClassMember {
 		public final List<ConstructorParameter> parameters;
 		public final StatementBlock statementBlock;
 
 		public ConstructorClassMember(List<Token> tokens, List<ConstructorParameter> parameters, StatementBlock statementBlock) {
 			super(tokens);
-
-			assert statementBlock != null;
 
 			this.parameters = parameters != null ? parameters : new ArrayList<>();
 			this.statementBlock = statementBlock;
