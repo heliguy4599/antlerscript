@@ -182,10 +182,10 @@ public class Ast {
 	}
 
 	public static class EnumType extends Type {
-		public final ClassExtendsAccessClassMember extendsAccess;
+		public final ClassExtendsAccess extendsAccess;
 		public final List<String> memberSymbols;
 
-		public EnumType(List<Token> tokens, ClassExtendsAccessClassMember extendsAccess, List<String> memberSymbols) {
+		public EnumType(List<Token> tokens, ClassExtendsAccess extendsAccess, List<String> memberSymbols) {
 			super(tokens);
 
 			assert memberSymbols != null && !memberSymbols.isEmpty();
@@ -270,25 +270,24 @@ public class Ast {
 
 	public static class OperatorOverloadClassMember extends ClassMember {
 		public enum Kind {
-			PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER,
-			LESSER_THAN, GREATER_THAN, CONCAT, EXPONENT,
-			FLOOR_DIVIDE, MODULO, EQUAL, INDEX
+			PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER, LESSER_THAN, GREATER_THAN, CONCAT, EXPONENT, FLOOR_DIVIDE, MODULO, EQUAL, INDEX
 		}
 
-		public final Kind operation;
+		public final Kind operator;
 		public final Type leftType;
 		public final Type returnType;
 		public final String symbol;
 
-		public OperatorOverloadClassMember(List<Token> tokens, Kind operation, Type leftType, String symbol, Type returnType) {
+		public OperatorOverloadClassMember(List<Token> tokens, Kind operator, Type leftType, String symbol, Type returnType) {
 			super(tokens);
 
-			assert operation != null;
+			assert operator != null;
 			assert leftType != null;
 			assert symbol != null;
+			assert !symbol.isEmpty();
 			assert returnType != null;
 
-			this.operation = operation;
+			this.operator = operator;
 			this.leftType = leftType;
 			this.symbol = symbol;
 			this.returnType = returnType;
@@ -318,27 +317,19 @@ public class Ast {
 	}
 
 	public static class CaptureClassMember extends ClassMember {
-		public final ClassExtendsAccessClassMember extendsAccess;
+		public final ClassExtendsAccess extendsAccess;
 		public final String originSymbol;
 		public final String targetSymbol;
 		public final ExtendsAssignClassMember extendsAssign;
 
 		public CaptureClassMember(
-			List<Token> tokens,
-			ClassExtendsAccessClassMember extendsAccess,
-			String originSymbol,
-			String targetSymbol,
-			ExtendsAssignClassMember extendsAssign
+			List<Token> tokens, ClassExtendsAccess extendsAccess, String originSymbol, String targetSymbol, ExtendsAssignClassMember extendsAssign
 		) {
 			super(tokens);
 
 			assert extendsAccess != null;
 			assert originSymbol != null && !originSymbol.isEmpty();
-			assert (
-				targetSymbol != null && extendsAssign == null
-			) || (
-				targetSymbol == null && extendsAssign != null
-			);
+			assert (targetSymbol != null && !targetSymbol.isEmpty() && extendsAssign == null) || (targetSymbol == null && extendsAssign != null);
 
 			this.extendsAccess = extendsAccess;
 			this.originSymbol = originSymbol;
@@ -369,23 +360,6 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitExtendsAssignClassMember(this);
-		}
-	}
-
-	public static class ClassExtendsAccessClassMember extends ClassMember {
-		public final List<String> symbols;
-
-		public ClassExtendsAccessClassMember(List<Token> tokens, List<String> symbols) {
-			super(tokens);
-
-			assert symbols != null && !symbols.isEmpty();
-
-			this.symbols = symbols;
-		}
-
-		@Override
-		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitClassExtendsAccessClassMember(this);
 		}
 	}
 
@@ -457,11 +431,11 @@ public class Ast {
 		}
 	}
 
-	public static class TypeAlias extends Statement {
+	public static class Typedef extends Statement {
 		public final String name;
 		public final Type type;
 
-		public TypeAlias(List<Token> tokens, String name, Type type) {
+		public Typedef(List<Token> tokens, String name, Type type) {
 			super(tokens);
 
 			assert name != null;
@@ -473,7 +447,7 @@ public class Ast {
 
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitTypeAlias(this);
+			return visitor.visitTypedef(this);
 		}
 	}
 
@@ -510,18 +484,18 @@ public class Ast {
 	}
 
 	public static class IfStatement extends Statement {
-		public final Expression condition;
+		public final Expression test;
 		public final StatementBlock thenBranch;
 		public final List<ElifBranch> elifBranches;
 		public final StatementBlock elseBranch;
 
-		public IfStatement(List<Token> tokens, Expression condition, StatementBlock thenBranch, List<ElifBranch> elifBranches, StatementBlock elseBranch) {
+		public IfStatement(List<Token> tokens, Expression test, StatementBlock thenBranch, List<ElifBranch> elifBranches, StatementBlock elseBranch) {
 			super(tokens);
 
-			assert condition != null;
+			assert test != null;
 			assert thenBranch != null;
 
-			this.condition = condition;
+			this.test = test;
 			this.thenBranch = thenBranch;
 			this.elifBranches = elifBranches != null ? elifBranches : new ArrayList<>();
 			this.elseBranch = elseBranch;
@@ -533,16 +507,23 @@ public class Ast {
 		}
 	}
 
-	public static class ElifBranch {
-		public final Expression condition;
+	public static class ElifBranch extends Node {
+		public final Expression test;
 		public final StatementBlock body;
 
-		public ElifBranch(Expression condition, StatementBlock body) {
-			assert condition != null;
+		public ElifBranch(List<Token> tokens, Expression test, StatementBlock body) {
+			super(tokens);
+
+			assert test != null;
 			assert body != null;
 
-			this.condition = condition;
+			this.test = test;
 			this.body = body;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitElifBranch(this);
 		}
 	}
 
@@ -591,16 +572,16 @@ public class Ast {
 	}
 
 	public static class WhileStatement extends Statement {
-		public final Expression condition;
+		public final Expression test;
 		public final StatementBlock body;
 
-		public WhileStatement(List<Token> tokens, Expression condition, StatementBlock body) {
+		public WhileStatement(List<Token> tokens, Expression test, StatementBlock body) {
 			super(tokens);
 
-			assert condition != null;
+			assert test != null;
 			assert body != null;
 
-			this.condition = condition;
+			this.test = test;
 			this.body = body;
 		}
 
@@ -817,14 +798,16 @@ public class Ast {
 	public static class IntExpression extends Expression {
 		public final long value;
 		public final byte precision;
+		public final boolean signed;
 
-		public IntExpression(List<Token> tokens, long value, byte precision) {
+		public IntExpression(List<Token> tokens, long value, byte precision, boolean signed) {
 			super(tokens);
 
 			assert precision == 8 || precision == 16 || precision == 32 || precision == 64;
 
 			this.value = value;
 			this.precision = precision;
+			this.signed = signed;
 		}
 
 		@Override
@@ -1064,6 +1047,15 @@ public class Ast {
 		}
 	}
 
+	public record ClassExtendsAccess(
+						List<String> symbols
+	) {
+		public ClassExtendsAccess {
+			assert symbols != null;
+			assert !symbols.isEmpty();
+		}
+	}
+
 	public record FunctionParameter(
 					Type type,
 					String symbol,
@@ -1147,8 +1139,6 @@ public class Ast {
 
 		T visitOperatorOverloadClassMember(OperatorOverloadClassMember node);
 
-		T visitClassExtendsAccessClassMember(ClassExtendsAccessClassMember node);
-
 		// Statements
 		T visitExpressionStatement(ExpressionStatement node);
 
@@ -1156,7 +1146,7 @@ public class Ast {
 
 		T visitVariableDeclaration(VariableDeclaration node);
 
-		T visitTypeAlias(TypeAlias node);
+		T visitTypedef(Typedef node);
 
 		T visitReturnStatement(ReturnStatement node);
 
@@ -1165,6 +1155,8 @@ public class Ast {
 		T visitContinueStatement(ContinueStatement node);
 
 		T visitIfStatement(IfStatement node);
+
+		T visitElifBranch(ElifBranch node);
 
 		T visitSwitchStatement(SwitchStatement node);
 

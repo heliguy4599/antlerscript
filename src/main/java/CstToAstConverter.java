@@ -15,7 +15,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.N
 	private static void getTokensInternal(List<ParseTree> parseTrees, List<Token> out) {
 		for (ParseTree pt : parseTrees) {
 			Object pl = pt.getPayload();
-			
+
 			if (pl instanceof Token token) {
 				out.add(token);
 				return;
@@ -48,6 +48,61 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.N
 	public Ast.StatementBlock visitStatement_block(AntlerScriptParser.Statement_blockContext ctx) {
 		// TODO, placeholder
 		return new Ast.StatementBlock(null, null, false);
+	}
+
+	@Override
+	public Ast.WhileStatement visitWhileStatement(AntlerScriptParser.WhileStatementContext ctx) {
+		return visitWhile(ctx.while_());
+	}
+
+	@Override
+	public Ast.WhileStatement visitWhile(AntlerScriptParser.WhileContext ctx) {
+		Ast.Expression test = visitExpression(ctx.test);
+		Ast.StatementBlock block = visitStatement_block(ctx.block);
+		return new Ast.WhileStatement(getTokens(ctx), test, block);
+	}
+
+	@Override
+	public Ast.Type visitType(AntlerScriptParser.TypeContext ctx) {
+		// TODO, placeholder
+		return new Ast.SymbolType(null, null);
+	}
+
+	@Override
+	public Ast.Typedef visitTypedefStatement(AntlerScriptParser.TypedefStatementContext ctx) {
+		return visitTypedef(ctx.typedef());
+	}
+
+	@Override
+	public Ast.Typedef visitTypedef(AntlerScriptParser.TypedefContext ctx) {
+		Ast.Type type = visitType(ctx.type());
+		return new Ast.Typedef(getTokens(ctx), ctx.symbol().getText(), type);
+	}
+
+	@Override
+	public Ast.IfStatement visitIf(AntlerScriptParser.IfContext ctx) {
+		Ast.Expression test = visitExpression(ctx.test);
+		Ast.StatementBlock thenBranch = visitStatement_block(ctx.block);
+		Ast.StatementBlock elseBranch = visitElse(ctx.else_());
+
+		List<Ast.ElifBranch> elifBranches = new ArrayList<>();
+		for (AntlerScriptParser.ElifContext elif : ctx.elif()) {
+			elifBranches.add(visitElif(elif));
+		}
+
+		return new Ast.IfStatement(getTokens(ctx), test, thenBranch, elifBranches, elseBranch);
+	}
+
+	@Override
+	public Ast.ElifBranch visitElif(AntlerScriptParser.ElifContext ctx) {
+		Ast.Expression test = visitExpression(ctx.test);
+		Ast.StatementBlock block = visitStatement_block(ctx.block);
+		return new Ast.ElifBranch(getTokens(ctx), test, block);
+	}
+
+	@Override
+	public Ast.IfStatement visitIfStatement(AntlerScriptParser.IfStatementContext ctx) {
+		return visitIf(ctx.if_());
 	}
 
 	@Override
