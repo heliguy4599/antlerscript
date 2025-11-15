@@ -68,7 +68,7 @@ var_args
 	;
 
 class_member
-	: cast			# castClassMemeber
+	: cast			# castClassMember
 	| declaration		# declarationClassMember
 	| operator_overload	# operatorOverloadClassMember
 	| constructor		# constructorClassMember

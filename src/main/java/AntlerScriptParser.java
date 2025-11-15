@@ -1363,18 +1363,6 @@ public class AntlerScriptParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class CastClassMemeberContext extends Class_memberContext {
-		public CastContext cast() {
-			return getRuleContext(CastContext.class,0);
-		}
-		public CastClassMemeberContext(Class_memberContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitCastClassMemeber(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
 	public static class ConstructorClassMemberContext extends Class_memberContext {
 		public ConstructorContext constructor() {
 			return getRuleContext(ConstructorContext.class,0);
@@ -1423,6 +1411,18 @@ public class AntlerScriptParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
+	public static class CastClassMemberContext extends Class_memberContext {
+		public CastContext cast() {
+			return getRuleContext(CastContext.class,0);
+		}
+		public CastClassMemberContext(Class_memberContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitCastClassMember(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class DeclarationClassMemberContext extends Class_memberContext {
 		public DeclarationContext declaration() {
 			return getRuleContext(DeclarationContext.class,0);
@@ -1443,7 +1443,7 @@ public class AntlerScriptParser extends Parser {
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case CAST:
-				_localctx = new CastClassMemeberContext(_localctx);
+				_localctx = new CastClassMemberContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(400);

@@ -82,12 +82,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVar_args(AntlerScriptParser.Var_argsContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code castClassMemeber}
+	 * Visit a parse tree produced by the {@code castClassMember}
 	 * labeled alternative in {@link AntlerScriptParser#class_member}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCastClassMemeber(AntlerScriptParser.CastClassMemeberContext ctx);
+	T visitCastClassMember(AntlerScriptParser.CastClassMemberContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code declarationClassMember}
 	 * labeled alternative in {@link AntlerScriptParser#class_member}.
