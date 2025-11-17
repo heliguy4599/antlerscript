@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 
-//public final class CstToAstConverter extends AbstractParseTreeVisitor<Ast.Node> implements AntlerScriptParserVisitor<Ast.Node> {
+// public final class CstToAstConverter extends AbstractParseTreeVisitor<Ast.Node> implements AntlerScriptParserVisitor<Ast.Node> {
 public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.Node> {
 	private static List<Token> getTokens(ParserRuleContext ctx) {
 		final List<Token> tokens = new ArrayList<>();
@@ -60,6 +60,20 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.N
 		Ast.Expression test = visitExpression(ctx.test);
 		Ast.StatementBlock block = visitStatement_block(ctx.block);
 		return new Ast.WhileStatement(getTokens(ctx), test, block);
+	}
+
+	@Override
+	public Ast.IterateStatement visitIterateStatement(AntlerScriptParser.IterateStatementContext ctx) {
+		return visitIterate(ctx.iterate());
+	}
+
+	@Override
+	public Ast.IterateStatement visitIterate(AntlerScriptParser.IterateContext ctx) {
+		Ast.Expression iterable = visitExpression(ctx.iterable);
+		Ast.StatementBlock block = visitStatement_block(ctx.block);
+		String indexSymbol = ctx.index.getText();
+		String elementSymbol = ctx.element.getText();
+		return new Ast.IterateStatement(getTokens(ctx), iterable, indexSymbol, elementSymbol, block);
 	}
 
 	@Override
