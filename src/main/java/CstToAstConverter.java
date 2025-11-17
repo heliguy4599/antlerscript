@@ -34,8 +34,19 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.N
 	}
 
 	@Override
-	public Ast.Node visitContinueStatement(AntlerScriptParser.ContinueStatementContext ctx) {
+	public Ast.BreakStatement visitBreakStatement(AntlerScriptParser.BreakStatementContext ctx) {
+		return new Ast.BreakStatement(getTokens(ctx));
+	}
+
+	@Override
+	public Ast.ContinueStatement visitContinueStatement(AntlerScriptParser.ContinueStatementContext ctx) {
 		return new Ast.ContinueStatement(getTokens(ctx));
+	}
+
+	@Override
+	public Ast.ReturnStatement visitReturnStatement(AntlerScriptParser.ReturnStatementContext ctx) {
+		Ast.Expression expression = visitExpression(ctx.expression());
+		return new Ast.ReturnStatement(getTokens(ctx), expression);
 	}
 
 	@Override
@@ -48,6 +59,21 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.N
 	public Ast.StatementBlock visitStatement_block(AntlerScriptParser.Statement_blockContext ctx) {
 		// TODO, placeholder
 		return new Ast.StatementBlock(null, null, false);
+	}
+
+	@Override
+	public Ast.LoopStatement visitLoopStatement(AntlerScriptParser.LoopStatementContext ctx) {
+		return visitLoop(ctx.loop());
+	}
+
+	@Override
+	public Ast.LoopStatement visitLoop(AntlerScriptParser.LoopContext ctx) {
+		Ast.Expression from = visitExpression(ctx.from);
+		Ast.Expression to = visitExpression(ctx.to);
+		Ast.Expression by = visitExpression(ctx.by);
+		String iterationSymbol = ctx.iterator.getText();
+		Ast.StatementBlock block = visitStatement_block(ctx.block);
+		return new Ast.LoopStatement(getTokens(ctx), from, to, by, iterationSymbol, block);
 	}
 
 	@Override
