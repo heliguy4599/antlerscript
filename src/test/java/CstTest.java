@@ -138,7 +138,6 @@ class CstTest {
 			"$directive name; let Int i = 10",
 			"let Int i = 10; let Int i = 10;",
 			"$directive name; extends One.Two;",
-			"let Int i = 10; $directive name; extends One.Two; let Int j = 5",
 			"type Thing = List(Int)",
 			"$directive name; type Thing = List(Int)",
 		})
@@ -165,6 +164,7 @@ class CstTest {
 			"capture(One).A -> B",
 			"extends Two",
 			"$directive name; let Int i = 10; $directive name; type Thing = List(Int)",
+			"let Int i = 10; $directive name; extends One.Two; let Int j = 5",
 		})
 		void fail_no_rule_file_program(String input) {
 			testInputNoRule(input, "program");
