@@ -18,12 +18,26 @@ semicolon
 //-----------------------
 
 program
+// garbage, heli fix!
+	: semicolon* MAIN_DIRECTIVE ( semicolon+ OTHER_DIRECTIVE )* ( semicolon+ statement )* semicolon* EOF    # mainProgram
+	| semicolon* namespace_member ( semicolon+ namespace_member )* semicolon* EOF                           # globalNamespaceProgram
+	| semicolon* ( )?
+	| semicolon* NAMESPACE_DIRECTIVE semicolon+ class_top_level? ( OTHER_DIRECTIVE semicolon+ )* ( statement semicolon+ )* ( statement semicolon* )? EOF
 	: ( file_directive semicolon+ )* ( statement semicolon+ )* ( statement semicolon* )? EOF
 	| ( file_directive semicolon+ )+ class_top_level semicolon* EOF
 	;
 
+program_classname
+	: CLASSNAME_DIRECTIVE semicolon+ class_top_level?
+	;
+
 file_directive
 	: DIRECTIVE symbol
+	;
+
+namespace_member
+	: declaration
+	| typedef
 	;
 
 //-----------------------
@@ -68,12 +82,12 @@ var_args
 	;
 
 class_member
-	: cast			# castClassMember
-	| declaration		# declarationClassMember
-	| operator_overload	# operatorOverloadClassMember
-	| constructor		# constructorClassMember
-	| capture		# captureClassMember
-	| extends_assign	# extendsClassMember
+	: cast                  # castClassMember
+	| declaration           # declarationClassMember
+	| operator_overload     # operatorOverloadClassMember
+	| constructor           # constructorClassMember
+	| capture               # captureClassMember
+	| extends_assign        # extendsClassMember
 	;
 
 cast
@@ -134,15 +148,15 @@ type_and
 	;
 
 type_atomic
-	: symbol	# symbolType
-	| list_header	# listType
-	| array_header	# arrayType
-	| map_header	# mapType
-	| class_header	# classType
-	| enum_header	# enumType
-	| func_header	# funcType
-	| SELF_CLASS	# selfType
-	| '(' type ')'	# typeGroup
+	: symbol        # symbolType
+	| list_header   # listType
+	| array_header  # arrayType
+	| map_header    # mapType
+	| class_header  # classType
+	| enum_header   # enumType
+	| func_header   # funcType
+	| SELF_CLASS    # selfType
+	| '(' type ')'  # typeGroup
 	;
 
 list_header
@@ -328,10 +342,10 @@ expression_postfix
 	;
 
 expression_access
-	: '[' expression ']'	# indexAccess
-	| '(' arguments? ')'	# functionCall
-	| '.' symbol		# memberAccess
-	| '?.' symbol		# nullishAccess
+	: '[' expression ']'    # indexAccess
+	| '(' arguments? ')'    # functionCall
+	| '.' symbol            # memberAccess
+	| '?.' symbol           # nullishAccess
 	;
 
 arguments
@@ -339,29 +353,29 @@ arguments
 	;
 
 argument_elm
-	: '_'				# discardArgument
-	| ( symbol '=' )? expression	# expressionArgument
+	: '_'                           # discardArgument
+	| ( symbol '=' )? expression    # expressionArgument
 	;
 
 expression_atom
-	: symbol		# symbolExpression
-	| STRING		# stringExpression
-	| RAW_STRING		# rawStringExpression
-	| FLOAT			# floatExpression
-	| INTEGER		# integerExpression
-	| TRUE			# trueExpression
-	| FALSE			# falseExpression
-	| NULL			# nullExpression
-	| SUPER			# superExpression
-	| SELF_INSTANCE		# selfInstanceExpression
-	| new_object_instance	# newObjectExpression
-	| new_list_instance	# newListExpression
-	| new_array_instance	# newArrayExpression
-	| new_map_instance	# newMapExpression
-	| new_class_instance	# newClassInstance
-	| lambda		# lambdaExpression
-	| select		# selectExpression
-	| '(' expression ')'	# groupedExpression
+	: symbol                # symbolExpression
+	| STRING                # stringExpression
+	| RAW_STRING            # rawStringExpression
+	| FLOAT                 # floatExpression
+	| INTEGER               # integerExpression
+	| TRUE                  # trueExpression
+	| FALSE                 # falseExpression
+	| NULL                  # nullExpression
+	| SUPER                 # superExpression
+	| SELF_INSTANCE         # selfInstanceExpression
+	| new_object_instance   # newObjectExpression
+	| new_list_instance     # newListExpression
+	| new_array_instance    # newArrayExpression
+	| new_map_instance      # newMapExpression
+	| new_class_instance    # newClassInstance
+	| lambda                # lambdaExpression
+	| select                # selectExpression
+	| '(' expression ')'    # groupedExpression
 	;
 
 new_object_instance
@@ -421,18 +435,18 @@ keypair_clause
 //-----------------------
 
 statement
-	: DEFER? expression		# expressionStatement
-	| BREAK  			# breakStatement
-	| CONTINUE			# continueStatement
-	| RETURN expression?		# returnStatement
-	| loop   			# loopStatement
-	| while				# whileStatement
-	| iterate			# iterateStatement
-	| declaration			# declarationStatement
-	| typedef			# typedefStatement
-	| if				# ifStatement
-	| switch			# switchStatement
-	| DEFER? statement_block	# statementBlockStatement
+	: DEFER? expression             # expressionStatement
+	| BREAK                         # breakStatement
+	| CONTINUE                      # continueStatement
+	| RETURN expression?            # returnStatement
+	| loop                          # loopStatement
+	| while                         # whileStatement
+	| iterate                       # iterateStatement
+	| declaration                   # declarationStatement
+	| typedef                       # typedefStatement
+	| if                            # ifStatement
+	| switch                        # switchStatement
+	| DEFER? statement_block        # statementBlockStatement
 	;
 
 statement_block
@@ -452,10 +466,10 @@ iterate
 	;
 
 declaration
-	: LET isMutable=MUT? variableType=type variableName=symbol				# letDeclaration
-	| LET isMutable=MUT? variableType=type? variableName=symbol '=' initialValue=expression	# letDefinition
-	| CONST variableType=type variableName=symbol						# constDeclaration
-	| CONST variableType=type? variableName=symbol '=' initialValue=expression		# constDefinition
+	: LET isMutable=MUT? variableType=type variableName=symbol                              # letDeclaration
+	| LET isMutable=MUT? variableType=type? variableName=symbol '=' initialValue=expression # letDefinition
+	| CONST variableType=type variableName=symbol                                           # constDeclaration
+	| CONST variableType=type? variableName=symbol '=' initialValue=expression              # constDefinition
 	;
 
 typedef
