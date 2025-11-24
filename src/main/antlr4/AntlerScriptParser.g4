@@ -18,21 +18,21 @@ semicolon
 //-----------------------
 
 program
-// garbage, heli fix!
-	: semicolon* MAIN_DIRECTIVE ( semicolon+ OTHER_DIRECTIVE )* ( semicolon+ statement )* semicolon* EOF    # mainProgram
-	| semicolon* namespace_member ( semicolon+ namespace_member )* semicolon* EOF                           # globalNamespaceProgram
-	| semicolon* ( )?
-	| semicolon* NAMESPACE_DIRECTIVE semicolon+ class_top_level? ( OTHER_DIRECTIVE semicolon+ )* ( statement semicolon+ )* ( statement semicolon* )? EOF
-	: ( file_directive semicolon+ )* ( statement semicolon+ )* ( statement semicolon* )? EOF
-	| ( file_directive semicolon+ )+ class_top_level semicolon* EOF
+	: main_program
+	| class_program
+	| namespace_program
 	;
 
-program_classname
-	: CLASSNAME_DIRECTIVE semicolon+ class_top_level?
+main_program
+	: semicolon* MAIN_DIRECTIVE ( semicolon+ OTHER_DIRECTIVE )* ( semicolon+ statement )* semicolon* EOF
 	;
 
-file_directive
-	: DIRECTIVE symbol
+class_program
+	: semicolon* ( NAMESPACE_DIRECTIVE semicolon+ )? CLASSNAME_DIRECTIVE ( semicolon+ OTHER_DIRECTIVE )* ( semicolon class_top_level )? EOF
+	;
+
+namespace_program
+	: semicolon* NAMESPACE_DIRECTIVE ( semicolon+ OTHER_DIRECTIVE )* ( semicolon+ namespace_member )* semicolon* EOF
 	;
 
 namespace_member
