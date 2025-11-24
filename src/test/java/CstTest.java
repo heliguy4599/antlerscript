@@ -125,49 +125,73 @@ class CstTest {
 	@Nested
 	@DisplayName("Files")
 	class Files {
-		@Test
-		void file_directive() {
-			testInput("$directive hello", "file_directive");
+		@ParameterizedTest
+		@ValueSource(strings = {
+			":: main",
+			":: main;",
+			";;::main;;",
+			":: main; :: thing other; print(10)",
+		})
+		void file_main_program(String input) {
+			testInput(input, "main_program");
 		}
 
 		@ParameterizedTest
 		@ValueSource(strings = {
-			"",
-			"$directive name;",
-			"$directive name; $directive name;",
-			"$directive name; let Int i = 10",
-			"let Int i = 10; let Int i = 10;",
-			"$directive name; extends One.Two;",
-			"type Thing = List(Int)",
-			"$directive name; type Thing = List(Int)",
+			":: classname Test",
+			":: classname Test; :: thing",
+			":: classname Test; extends One.Two; let Int i = 10",
+			":: namespace Hi; :: classname YourMom; constructor() {}",
 		})
-		void file_program(String input) {
-			testInput(input, "program");
+		void file_class_program(String input) {
+			testInput(input, "class_program");
 		}
 
 		@ParameterizedTest
 		@ValueSource(strings = {
-			"directive name",
-			"$ directive name",
-			"$ directive",
-			"$directive",
-			"$directive $directive name",
-			"$directive $directive",
-			"$ $directive"
+			":: namespace YourMom",
+			":: namespace YourMom; :: thing value",
+			":: namespace YourMom; type Thing = Class()",
+			":: namespace YourMom; :: thing value; let Int i = 24",
 		})
-		void fail_file_directive(String input) {
-			testInputNoRule(input, "file_directive");
+		void file_namespace_program(String input) {
+			testInput(input, "namespace_program");
 		}
 
 		@ParameterizedTest
 		@ValueSource(strings = {
-			"capture(One).A -> B",
-			"extends Two",
-			"$directive name; let Int i = 10; $directive name; type Thing = List(Int)",
-			"let Int i = 10; $directive name; extends One.Two; let Int j = 5",
+			"::;",
+			":: thing value; print()",
+			"print(); :: main",
+			":: classname Hello; :: main; constructor()",
+			"print()",
+			"let Int i = 10",
 		})
-		void fail_no_rule_file_program(String input) {
-			testInputNoRule(input, "program");
+		void fail_file_main_program_no_rule(String input) {
+			testInputNoRule(input, "main_program");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			":: classname Hello; print()",
+			":: print()",
+			":: classname Hello; :: classname Hello; let Int i = 10",
+			":: classname Hello; :: namespace Hello",
+			":: thing; :: classname Hello; let Int i = 20",
+		})
+		void fail_file_class_program_no_rule(String input) {
+			testInputNoRule(input, "class_program");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			":: namespace Hello; :: classname Hello; let Int i = 10",
+			":: namespace; let Int i = 10",
+			":: namespace Hello; :: namespace Hello; let Int i = 10",
+			":: namespace Hello; :: main; let Int i = 10",
+		})
+		void fail_file_namespace_program_no_rule(String input) {
+			testInputNoRule(input, "namespace_program");
 		}
 	}
 
