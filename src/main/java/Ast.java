@@ -39,8 +39,8 @@ public class Ast {
 				assert directives != null && !directives.isEmpty();
 			}
 
-			this.directives = directives;
-			this.statements = statements;
+			this.directives = directives != null ? directives : new ArrayList<>();
+			this.statements = statements != null ? statements : new ArrayList<>();
 		}
 
 		@Override
@@ -64,7 +64,7 @@ public class Ast {
 			this.extendsAccess = extendsAccess;
 			this.namespace = namespace;
 			this.className = className;
-			this.directives = directives;
+			this.directives = directives != null ? directives : new ArrayList<>();
 			this.topLevel = topLevel;
 		}
 
@@ -89,8 +89,8 @@ public class Ast {
 			}
 
 			this.name = name;
-			this.directives = directives;
-			this.members = members;
+			this.directives = directives != null ? directives : new ArrayList<>();
+			this.members = members != null ? members : new ArrayList<>();
 		}
 
 		@Override
@@ -204,6 +204,7 @@ public class Ast {
 
 		public FunctionType(List<Token> tokens, List<FunctionParameter> parameters, Type returnType) {
 			super(tokens);
+
 			this.parameters = parameters != null ? parameters : new ArrayList<>();
 			this.returnType = returnType;
 		}
@@ -238,6 +239,7 @@ public class Ast {
 
 		public ClassType(List<Token> tokens, List<ClassMember> members) {
 			super(tokens);
+
 			this.members = members != null ? members : new ArrayList<>();
 		}
 
@@ -429,6 +431,7 @@ public class Ast {
 
 		public StatementBlock(List<Token> tokens, List<Statement> statements, boolean isDeferred) {
 			super(tokens);
+
 			this.statements = statements != null ? statements : new ArrayList<>();
 			this.isDeferred = isDeferred;
 		}
@@ -1064,7 +1067,7 @@ public class Ast {
 			assert classType != null;
 
 			this.classType = classType;
-			this.arguments = arguments;
+			this.arguments = arguments != null ? arguments : new ArrayList<>();
 		}
 
 		@Override
