@@ -28,11 +28,59 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProgram(AntlerScriptParser.ProgramContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#file_directive}.
+	 * Visit a parse tree produced by {@link AntlerScriptParser#other_directive}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFile_directive(AntlerScriptParser.File_directiveContext ctx);
+	T visitOther_directive(AntlerScriptParser.Other_directiveContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#namespace_directive}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNamespace_directive(AntlerScriptParser.Namespace_directiveContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#classname_directive}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassname_directive(AntlerScriptParser.Classname_directiveContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#main_directive}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMain_directive(AntlerScriptParser.Main_directiveContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#main_program}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMain_program(AntlerScriptParser.Main_programContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#class_program}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClass_program(AntlerScriptParser.Class_programContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#namespace_program}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNamespace_program(AntlerScriptParser.Namespace_programContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#implicit_namespace_program}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitImplicit_namespace_program(AntlerScriptParser.Implicit_namespace_programContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#namespace_member}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNamespace_member(AntlerScriptParser.Namespace_memberContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#class_top_level}.
 	 * @param ctx the parse tree

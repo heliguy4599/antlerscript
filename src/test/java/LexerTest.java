@@ -1,5 +1,8 @@
 import org.antlr.v4.runtime.*;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 // TODO: add comprehensive negative tests
@@ -25,7 +28,7 @@ class LexerTest {
 
 	@Test
 	void directive() {
-		testInput("$lmao", L.DIRECTIVE);
+		testInput("::", L.OTHER_DIRECTIVE);
 	}
 
 	@Test
