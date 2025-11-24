@@ -26,15 +26,9 @@ class LexerTest {
 			     v.getDisplayName(next.getType()));
 	}
 
-	@ParameterizedTest
-	@ValueSource(strings = {
-		":: lmao",
-		"::lmao",
-		":: lmao lmao",
-		"::lmao lmao",
-	})
-	void directive(String input) {
-		testInput(input, L.OTHER_DIRECTIVE);
+	@Test
+	void directive() {
+		testInput("::", L.OTHER_DIRECTIVE);
 	}
 
 	@Test

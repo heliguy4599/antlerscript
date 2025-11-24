@@ -130,7 +130,7 @@ class CstTest {
 			":: main",
 			":: main;",
 			";;::main;;",
-			":: main; :: thing other; print(10)",
+			":: main; :: thing \"other\"; print(10)",
 		})
 		void file_main_program(String input) {
 			testInput(input, "main_program");
@@ -150,12 +150,24 @@ class CstTest {
 		@ParameterizedTest
 		@ValueSource(strings = {
 			":: namespace YourMom",
-			":: namespace YourMom; :: thing value",
+			":: namespace YourMom; :: thing \"value\"",
 			":: namespace YourMom; type Thing = Class()",
-			":: namespace YourMom; :: thing value; let Int i = 24",
+			":: namespace YourMom; :: thing \"value\"; let Int i = 24",
 		})
 		void file_namespace_program(String input) {
 			testInput(input, "namespace_program");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			";;:: thing \"value\";;",
+			":: thing \"value\"",
+			"type Thing = Class()",
+			";;type Thing = Class();;",
+			";;;:: thing \"value\"; :: thing; type Thing = Class(); let Int i = potato;;",
+		})
+		void file_implicit_namespace_program(String input) {
+			testInput(input, "implicit_namespace_program");
 		}
 
 		@ParameterizedTest
@@ -166,6 +178,7 @@ class CstTest {
 			":: classname Hello; :: main; constructor()",
 			"print()",
 			"let Int i = 10",
+			"",
 		})
 		void fail_file_main_program_no_rule(String input) {
 			testInputNoRule(input, "main_program");
@@ -200,7 +213,7 @@ class CstTest {
 	class Classes {
 		@ParameterizedTest
 		@ValueSource(strings = {
-			";;;extends One;;const i = 10",
+			"extends One;;const i = 10",
 			"let Int j = 23",
 			"capture(Two).i -> j",
 		})

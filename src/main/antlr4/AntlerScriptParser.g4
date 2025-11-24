@@ -21,18 +21,40 @@ program
 	: main_program
 	| class_program
 	| namespace_program
+	| implicit_namespace_program
+	;
+
+other_directive
+	: OTHER_DIRECTIVE SYMBOL ( STRING | RAW_STRING )?
+	;
+
+namespace_directive
+	: NAMESPACE_DIRECTIVE SYMBOL
+	;
+
+classname_directive
+	: CLASSNAME_DIRECTIVE SYMBOL
+	;
+
+main_directive
+	: MAIN_DIRECTIVE
 	;
 
 main_program
-	: semicolon* MAIN_DIRECTIVE ( semicolon+ OTHER_DIRECTIVE )* ( semicolon+ statement )* semicolon* EOF
+	: semicolon* main_directive ( semicolon+ other_directive )* ( semicolon+ statement )* semicolon* EOF
 	;
 
 class_program
-	: semicolon* ( NAMESPACE_DIRECTIVE semicolon+ )? CLASSNAME_DIRECTIVE ( semicolon+ OTHER_DIRECTIVE )* ( semicolon class_top_level )? EOF
+	: semicolon* ( namespace_directive semicolon+ )? classname_directive ( semicolon+ other_directive )* ( semicolon+ class_top_level )? semicolon* EOF
 	;
 
 namespace_program
-	: semicolon* NAMESPACE_DIRECTIVE ( semicolon+ OTHER_DIRECTIVE )* ( semicolon+ namespace_member )* semicolon* EOF
+	: semicolon* namespace_directive ( semicolon+ other_directive )* ( semicolon+ namespace_member )* semicolon* EOF
+	;
+
+implicit_namespace_program
+	: semicolon* ( other_directive semicolon+ )* namespace_member ( semicolon+ namespace_member )* semicolon* EOF
+	| semicolon* other_directive ( semicolon+ other_directive )* ( namespace_member ( semicolon+ namespace_member )* )? semicolon* EOF
 	;
 
 namespace_member
@@ -45,12 +67,12 @@ namespace_member
 //-----------------------
 
 class_top_level
-	: semicolon* class_extends ( semicolon+ class_member ( semicolon+ class_member )* semicolon* )?
-	| semicolon* class_member ( semicolon+ class_member )* semicolon*
+	: class_extends ( semicolon+ class_member )*
+	| class_member ( semicolon+ class_member )*
 	;
 
 class_header_inside
-	: class_extends ( ',' class_member ( ',' class_member )* ','? )?
+	: class_extends ( ',' class_member )* ','?
 	| class_member ( ',' class_member )* ','?
 	;
 
