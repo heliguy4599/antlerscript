@@ -21,48 +21,81 @@ public class Ast {
 	// PROGRAM & TOP LEVEL
 	// ====================
 
-	public static class Program extends Node {
-		public final List<FileDirective> directives;
-		public final List<Statement> statements;  // For scripts without classes
-		// TODO
-		// public final ClassDefinition classDefinition;  // For class files
+	public static abstract class Program extends Node {
+		public Program(List<Token> tokens) { super(tokens); }
+	}
 
-		// TODO (turn classDefinition from Object to ClassDefinition)
-		public Program(List<Token> tokens, List<FileDirective> directives, List<Statement> statements, Object classDefinition) {
+	public static class MainProgram extends Program {
+		public final List<FileDirective> directives;
+		public final List<Statement> statements;
+
+		public MainProgram(List<Token> tokens, List<FileDirective> directives, List<Statement> statements) {
 			super(tokens);
 
-			// TODO: figure out minimum input program
-			assert (statements != null && classDefinition == null) || (statements == null && classDefinition != null);
+			if (directives == null || directives.isEmpty()) {
+				assert statements != null && !statements.isEmpty();
+			}
+			if (statements == null || statements.isEmpty()) {
+				assert directives != null && !directives.isEmpty();
+			}
 
 			this.directives = directives;
 			this.statements = statements;
-			// TODO
-			// this.classDefinition = classDefinition;
 		}
 
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitProgram(this);
+			return visitor.visitMainProgram(this);
 		}
 	}
 
-	public static class FileDirective extends Node {
-		public final String name;  // "namespace", "classname", etc.
-		public final String value;
+	public static class ClassProgram extends Program {
+		public final ClassExtendsAccess extendsAccess;
+		public final String namespace;
+		public final String className;
+		public final List<FileDirective> directives;
+		public final ClassType topLevel;
 
-		public FileDirective(List<Token> tokens, String name, String value) {
+		public ClassProgram(List<Token> tokens, ClassExtendsAccess extendsAccess, String namespace, String className, List<FileDirective> directives, ClassType topLevel) {
 			super(tokens);
 
-			assert name != null;
-			assert value != null;
+			assert className != null && !className.isEmpty();
 
-			this.name = name;
-			this.value = value;
+			this.extendsAccess = extendsAccess;
+			this.namespace = namespace;
+			this.className = className;
+			this.directives = directives;
+			this.topLevel = topLevel;
 		}
 
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitFileDirective(this);
+			return visitor.visitClassProgram(this);
+		}
+	}
+
+	public static class NamespaceProgram extends Program {
+		public final String name;
+		public final List<FileDirective> directives;
+		public final List<NamespaceMember> members;
+
+		public NamespaceProgram(List<Token> tokens, String name, List<FileDirective> directives, List<NamespaceMember> members) {
+			super(tokens);
+
+			if (name != null) {
+				assert !name.isEmpty();
+			} else {
+				assert (directives != null && !directives.isEmpty()) || (members != null && !members.isEmpty());
+			}
+
+			this.name = name;
+			this.directives = directives;
+			this.members = members;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitNamespaceProgram(this);
 		}
 	}
 
@@ -224,7 +257,7 @@ public class Ast {
 	}
 
 	// ====================
-	// TODO: CLASS DEFINITIONS
+	// CLASS DEFINITIONS
 	// ====================
 
 	public static abstract class ClassMember extends Node {
@@ -537,7 +570,7 @@ public class Ast {
 
 			assert value != null;
 			assert cases != null;
-			assert cases.size() > 0;
+			assert !cases.isEmpty();
 
 			this.value = value;
 			this.cases = cases;
@@ -558,7 +591,7 @@ public class Ast {
 			super(tokens);
 
 			assert values != null;
-			assert values.size() > 0;
+			assert !values.isEmpty();
 			assert body != null;
 
 			this.values = values;
@@ -784,7 +817,7 @@ public class Ast {
 			super(tokens);
 
 			assert symbol != null;
-			assert symbol.length() > 0;
+			assert !symbol.isEmpty();
 
 			this.symbol = symbol;
 		}
@@ -932,7 +965,7 @@ public class Ast {
 			super(tokens);
 
 			assert branches != null;
-			assert branches.size() > 0;
+			assert !branches.isEmpty();
 
 			this.match = match;
 			this.branches = branches;
@@ -1009,7 +1042,7 @@ public class Ast {
 			super(tokens);
 
 			assert symbol != null;
-			assert symbol.length() > 0;
+			assert !symbol.isEmpty();
 
 			this.symbol = symbol;
 			this.arguments = arguments != null ? arguments : new ArrayList<>();
@@ -1021,18 +1054,49 @@ public class Ast {
 		}
 	}
 
-	// TODO:
-	// new_class_instance
+	public static class NewClassInstance extends Expression {
+		public final ClassType classType;
+		public final List<Argument> arguments;
+
+		public NewClassInstance(List<Token> tokens, ClassType classType, List<Argument> arguments) {
+			super(tokens);
+
+			assert classType != null;
+
+			this.classType = classType;
+			this.arguments = arguments;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitNewClassInstance(this);
+		}
+	}
 
 	// ====================
 	// UTILITIES
 	// ====================
 
+	public record FileDirective(
+		String name,
+		String argument
+	) {
+		public FileDirective {
+			assert name != null && !name.isEmpty();
+		}
+	}
+
+	public sealed interface NamespaceMember permits NamespaceDeclaration, NamespaceTypedef {}
+
+	record NamespaceDeclaration(VariableDeclaration declaration) implements NamespaceMember {}
+
+	record NamespaceTypedef(Typedef typedef) implements NamespaceMember {}
+
 	public record ConstructorParameter(
-						Type type,
-						String symbol,
-						Expression initialValue,
-						boolean isVarArgs
+		Type type,
+		String symbol,
+		Expression initialValue,
+		boolean isVarArgs
 	) {
 		public ConstructorParameter {
 			assert symbol != null;
@@ -1048,7 +1112,7 @@ public class Ast {
 	}
 
 	public record ClassExtendsAccess(
-						List<String> symbols
+		List<String> symbols
 	) {
 		public ClassExtendsAccess {
 			assert symbols != null;
@@ -1057,10 +1121,10 @@ public class Ast {
 	}
 
 	public record FunctionParameter(
-					Type type,
-					String symbol,
-					Expression initialValue,
-					boolean isVarArgs
+		Type type,
+		String symbol,
+		Expression initialValue,
+		boolean isVarArgs
 	) {
 		public FunctionParameter {
 			assert type != null;
@@ -1071,9 +1135,9 @@ public class Ast {
 	}
 
 	public record Argument(
-				Expression value,
-				String keyword,
-				boolean isBlank
+		Expression value,
+		String keyword,
+		boolean isBlank
 	) {
 		public Argument {
 			assert (value != null && !isBlank) || (value == null && keyword == null && isBlank);
@@ -1104,9 +1168,11 @@ public class Ast {
 	// ====================
 
 	public static interface Visitor<T> {
-		T visitProgram(Program node);
+		T visitMainProgram(Program node);
 
-		T visitFileDirective(FileDirective node);
+		T visitClassProgram(Program node);
+
+		T visitNamespaceProgram(NamespaceProgram node);
 
 		// Types
 		T visitSymbolType(SymbolType node);
@@ -1206,5 +1272,7 @@ public class Ast {
 		T visitNewArrayExpression(NewArrayExpression node);
 
 		T visitNewObjectExpression(NewObjectExpression node);
+
+		T visitNewClassInstance(NewClassInstance node);
 	}
 }
