@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.tree.*;
 
 
 // public final class CstToAstConverter extends AbstractParseTreeVisitor<Ast.Node> implements AntlerScriptParserVisitor<Ast.Node> {
-public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.Node> {
+public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Object> {
 	private static List<Token> getTokens(ParserRuleContext ctx) {
 		final List<Token> tokens = new ArrayList<>();
 		getTokensInternal(ctx.children, tokens);
@@ -81,19 +81,39 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.N
 
 	// class_extends
 
-	// class_extends_access
+	@Override
+	public Ast.ClassExtendsAccess visitClass_extends_access(AntlerScriptParser.Class_extends_accessContext ctx) {
+		return new Ast.ClassExtendsAccess(ctx.symbol().stream().map(RuleContext::getText).toList());
+	}
 
-	// constructor
+	@Override
+	public Ast.ConstructorClassMember visitConstructor(AntlerScriptParser.ConstructorContext ctx) {
+		return new Ast.ConstructorClassMember(
+			getTokens(ctx),
+			visitConstructor_params(ctx.constructor_params()),
+			visitStatement_block(ctx.statement_block())
+		);
+	}
 
-	// constructor_params
+	@Override
+	public List<Ast.ConstructorParameter> visitConstructor_params(AntlerScriptParser.Constructor_paramsContext ctx) {
+		return ctx.constructor_params_elm().stream().map(this::visitConstructor_params_elm).toList();
+	}
 
-	// constructor_params_elm
+	@Override
+	public Ast.ConstructorParameter visitConstructor_params_elm(AntlerScriptParser.Constructor_params_elmContext ctx) {
+		// TODO: isVarArgs is always false!!!
+		return new Ast.ConstructorParameter(visitType(ctx.type()), ctx.symbol().getText(), visitExpression(ctx.expression()), false);
+	}
 
 	// var_args
 
 	// CLASS-MEMBER
 
-	// CLASS-MEMBER-cast
+	@Override
+	public Ast.CastClassMember visitCastClassMember(AntlerScriptParser.CastClassMemberContext ctx) {
+		return visitCast(ctx.cast());
+	}
 
 	// CLASS-MEMBER-declaration
 
@@ -105,7 +125,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.N
 
 	// CLASS-MEMBER-extends_assign
 
-	// cast
+	@Override
+	public Ast.CastClassMember visitCast(AntlerScriptParser.CastContext ctx) {
+		return new Ast.CastClassMember(getTokens(ctx), visitType(ctx.type()), visitStatement_block(ctx.statement_block()));
+	}
 
 	// operator_overload
 
@@ -285,11 +308,21 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.N
 
 	// new_map_instance
 
-	// select
+	@Override
+	public Ast.SelectExpression visitSelect(AntlerScriptParser.SelectContext ctx) {
+		return new Ast.SelectExpression(getTokens(ctx), visitExpression(ctx.expression()), visitKeypair_list(ctx.keypair_list()));
+	}
 
-	// keypair_list
+	@Override
+	public List<Ast.KeyValuePair> visitKeypair_list(AntlerScriptParser.Keypair_listContext ctx) {
+		return ctx.keypair_clause().stream().map(this::visitKeypair_clause).toList();
+	}
 
-	// keypair_clause
+	@Override
+	public Ast.KeyValuePair visitKeypair_clause(AntlerScriptParser.Keypair_clauseContext ctx) {
+		var expression = ctx.expression();
+		return new Ast.KeyValuePair(visitExpression(expression.getFirst()), visitExpression(expression.getLast()));
+	}
 
 	// === STATEMENT ===
 
@@ -338,7 +371,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.N
 		return visitIf(ctx.if_());
 	}
 
-	// STATEMENT-switch
+	@Override
+	public Ast.SwitchStatement visitSwitchStatement(AntlerScriptParser.SwitchStatementContext ctx) {
+		return visitSwitch(ctx.switch_());
+	}
 
 	// STATEMENT-defer? statement_block
 
@@ -374,7 +410,57 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Ast.N
 		return new Ast.IterateStatement(getTokens(ctx), iterable, indexSymbol, elementSymbol, block);
 	}
 
-	// declaration
+	@Override
+	public Ast.VariableDeclaration visitLetDeclaration(AntlerScriptParser.LetDeclarationContext ctx) {
+		// TODO: Laz please take a look at this, I'm not sure if `ctx.isMutable != null` is the right approach
+		return new Ast.VariableDeclaration(
+			getTokens(ctx),
+			false,
+			ctx.isMutable != null,
+			visitType(ctx.type()),
+			ctx.variableName.getText(),
+			null
+		);
+	}
+
+	public Ast.VariableDeclaration visitLetDefinition(AntlerScriptParser.LetDefinitionContext ctx) {
+		var type = ctx.type();
+		// TODO: Laz please take a look at this, I'm not sure if `ctx.isMutable != null` is the right approach
+		return new Ast.VariableDeclaration(
+			getTokens(ctx),
+			false,
+			ctx.isMutable != null,
+			type != null ? visitType(type) : null,
+			ctx.variableName.getText(),
+			visitExpression(ctx.expression())
+		);
+	}
+
+	@Override
+	public Ast.VariableDeclaration visitConstDeclaration(AntlerScriptParser.ConstDeclarationContext ctx) {
+		// TODO: Laz, are const declarations allowed to *NOT* have a value? Doesn't that kinda defeat the purpose of `const`?
+		return new Ast.VariableDeclaration(
+			getTokens(ctx),
+			true,
+			false,
+			visitType(ctx.type()),
+			ctx.variableName.getText(),
+			null
+		);
+	}
+
+	@Override
+	public Ast.VariableDeclaration visitConstDefinition(AntlerScriptParser.ConstDefinitionContext ctx) {
+		var type = ctx.type();
+		return new Ast.VariableDeclaration(
+			getTokens(ctx),
+			true,
+			false,
+			type != null ? visitType(type) : null,
+			ctx.variableName.getText(),
+			visitExpression(ctx.expression())
+		);
+	}
 
 	@Override
 	public Ast.Typedef visitTypedef(AntlerScriptParser.TypedefContext ctx) {
