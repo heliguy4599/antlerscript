@@ -855,13 +855,6 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLetDefinition(AntlerScriptParser.LetDefinitionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code constDeclaration}
-	 * labeled alternative in {@link AntlerScriptParser#declaration}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitConstDeclaration(AntlerScriptParser.ConstDeclarationContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code constDefinition}
 	 * labeled alternative in {@link AntlerScriptParser#declaration}.
 	 * @param ctx the parse tree

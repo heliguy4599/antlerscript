@@ -490,7 +490,6 @@ iterate
 declaration
 	: LET isMutable=MUT? variableType=type variableName=symbol                              # letDeclaration
 	| LET isMutable=MUT? variableType=type? variableName=symbol '=' initialValue=expression # letDefinition
-	| CONST variableType=type variableName=symbol                                           # constDeclaration
 	| CONST variableType=type? variableName=symbol '=' initialValue=expression              # constDefinition
 	;
 

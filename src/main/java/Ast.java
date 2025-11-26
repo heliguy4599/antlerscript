@@ -50,20 +50,20 @@ public class Ast {
 	}
 
 	public static class ClassProgram extends Program {
-		public final ClassExtendsAccess extendsAccess;
 		public final String namespace;
 		public final String className;
+		public final List<ClassExtendsAccess> classExtends;
 		public final List<FileDirective> directives;
 		public final ClassType topLevel;
 
-		public ClassProgram(List<Token> tokens, ClassExtendsAccess extendsAccess, String namespace, String className, List<FileDirective> directives, ClassType topLevel) {
+		public ClassProgram(List<Token> tokens, String namespace, String className, List<ClassExtendsAccess> classExtends, List<FileDirective> directives, ClassType topLevel) {
 			super(tokens);
 
 			assert className != null && !className.isEmpty();
 
-			this.extendsAccess = extendsAccess;
 			this.namespace = namespace;
 			this.className = className;
+			this.classExtends = classExtends != null ? classExtends : new ArrayList<>();
 			this.directives = directives != null ? directives : new ArrayList<>();
 			this.topLevel = topLevel;
 		}
