@@ -100,7 +100,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	@Override
 	public List<Ast.ConstructorParameter> visitConstructor_params(AntlerScriptParser.Constructor_paramsContext ctx) {
-		List<Ast.ConstructorParameter> params = ctx.constructor_params_elm().stream().map(this::visitConstructor_params_elm).toList();
+		List<Ast.ConstructorParameter> params = new ArrayList<>(ctx.constructor_params_elm().stream().map(this::visitConstructor_params_elm).toList());
 		if (ctx.var_args() != null) {
 			params.add(visitVar_args(ctx.var_args()));
 		}
