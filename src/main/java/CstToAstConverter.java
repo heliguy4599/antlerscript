@@ -342,7 +342,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.BooleanExpression(getTokens(ctx), false);
 	}
 
-	// EXPRESSION-ATOM-null
+	@Override
+	public Ast.NullExpression visitNullExpression(AntlerScriptParser.NullExpressionContext ctx) {
+		return new Ast.NullExpression(getTokens(ctx));
+	}
 
 	// EXPRESSION-ATOM-super
 
