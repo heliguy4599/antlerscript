@@ -332,9 +332,15 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// EXPRESSION-ATOM-integer
 
-	// EXPRESSION-ATOM-true
+	@Override
+	public Ast.BooleanExpression visitTrueExpression(AntlerScriptParser.TrueExpressionContext ctx) {
+		return new Ast.BooleanExpression(getTokens(ctx), true);
+	}
 
-	// EXPRESSION-ATOM-false
+	@Override
+	public Ast.BooleanExpression visitFalseExpression(AntlerScriptParser.FalseExpressionContext ctx) {
+		return new Ast.BooleanExpression(getTokens(ctx), false);
+	}
 
 	// EXPRESSION-ATOM-null
 
