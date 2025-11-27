@@ -381,7 +381,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// EXPRESSION-ATOM-lambda
 
-	// EXPRESSION-ATOM-select
+	@Override
+	public Ast.SelectExpression visitSelectExpression(AntlerScriptParser.SelectExpressionContext ctx) {
+		return visitSelect(ctx.select());
+	}
 
 	// EXPRESSION-ATOM-'(' expression ')'
 
