@@ -356,8 +356,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	@Override
 	public Ast.NewListExpression visitNew_list_instance(AntlerScriptParser.New_list_instanceContext ctx) {
 		Ast.ListType type = visitList_header(ctx.list_header());
-		// TODO: implement `object_instantiation_args`
-		var args = (List<Ast.Argument>) visitObject_instantiation_args(ctx.object_instantiation_args());
+		List<Ast.Argument> args = visitObject_instantiation_args(ctx.object_instantiation_args());
 		return new Ast.NewListExpression(getTokens(ctx), type, args);
 	}
 
@@ -365,7 +364,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// new_class_instance
 
-	// object_instantiation_args
+	@Override
+	public List<Ast.Argument> visitObject_instantiation_args(AntlerScriptParser.Object_instantiation_argsContext ctx) {
+		return visitArguments(ctx.arguments());
+	}
 
 	@Override
 	public Ast.NewMapExpression visitNew_map_instance(AntlerScriptParser.New_map_instanceContext ctx) {
