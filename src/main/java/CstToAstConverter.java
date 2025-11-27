@@ -290,9 +290,24 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// nullishAccess
 
-	// arguments
+	@Override
+	public List<Ast.Argument> visitArguments(AntlerScriptParser.ArgumentsContext ctx) {
+		return ctx.argument_elm().stream().map((arg_elm_ctx) -> switch (arg_elm_ctx) {
+			case AntlerScriptParser.DiscardArgumentContext disc -> visitDiscardArgument(disc);
+			case AntlerScriptParser.ExpressionArgumentContext expr -> visitExpressionArgument(expr);
+			default -> null;
+		}).toList();
+	}
 
-	// argument_elm
+	@Override
+	public Ast.Argument visitDiscardArgument(AntlerScriptParser.DiscardArgumentContext _ctx) {
+		return new Ast.Argument(null, null, true);
+	}
+
+	@Override
+	public Ast.Argument visitExpressionArgument(AntlerScriptParser.ExpressionArgumentContext ctx) {
+		return new Ast.Argument(visitExpression(ctx.expression()), ctx.symbol().getText(), false);
+	}
 
 	// EXPRESSION-ATOM-symbol
 
@@ -445,18 +460,18 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	public Ast.Statement visitStatement(AntlerScriptParser.StatementContext ctx) {
 		return switch (ctx) {
-		case AntlerScriptParser.ExpressionStatementContext stmt -> visitExpressionStatement(stmt);
-		case AntlerScriptParser.BreakStatementContext stmt -> visitBreakStatement(stmt);
-		case AntlerScriptParser.ContinueStatementContext stmt -> visitContinueStatement(stmt);
-		case AntlerScriptParser.ReturnStatementContext stmt -> visitReturnStatement(stmt);
-		case AntlerScriptParser.LoopStatementContext stmt -> visitLoopStatement(stmt);
-		case AntlerScriptParser.WhileStatementContext stmt -> visitWhileStatement(stmt);
-		case AntlerScriptParser.IterateStatementContext stmt -> visitIterateStatement(stmt);
-		case AntlerScriptParser.DeclarationStatementContext stmt -> visitDeclarationStatement(stmt);
-		case AntlerScriptParser.TypedefStatementContext stmt -> visitTypedefStatement(stmt);
-		case AntlerScriptParser.IfStatementContext stmt -> visitIfStatement(stmt);
-		case AntlerScriptParser.SwitchStatementContext stmt -> visitSwitchStatement(stmt);
-		case AntlerScriptParser.StatementBlockStatementContext stmt -> visitStatementBlockStatement(stmt);
+			case AntlerScriptParser.ExpressionStatementContext stmt -> visitExpressionStatement(stmt);
+			case AntlerScriptParser.BreakStatementContext stmt -> visitBreakStatement(stmt);
+			case AntlerScriptParser.ContinueStatementContext stmt -> visitContinueStatement(stmt);
+			case AntlerScriptParser.ReturnStatementContext stmt -> visitReturnStatement(stmt);
+			case AntlerScriptParser.LoopStatementContext stmt -> visitLoopStatement(stmt);
+			case AntlerScriptParser.WhileStatementContext stmt -> visitWhileStatement(stmt);
+			case AntlerScriptParser.IterateStatementContext stmt -> visitIterateStatement(stmt);
+			case AntlerScriptParser.DeclarationStatementContext stmt -> visitDeclarationStatement(stmt);
+			case AntlerScriptParser.TypedefStatementContext stmt -> visitTypedefStatement(stmt);
+			case AntlerScriptParser.IfStatementContext stmt -> visitIfStatement(stmt);
+			case AntlerScriptParser.SwitchStatementContext stmt -> visitSwitchStatement(stmt);
+			case AntlerScriptParser.StatementBlockStatementContext stmt -> visitStatementBlockStatement(stmt);
 		default -> null;
 		};
 	}
