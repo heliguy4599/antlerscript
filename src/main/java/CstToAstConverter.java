@@ -336,7 +336,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// EXPRESSION-ATOM-self instance
 
-	// EXPRESSION-ATOM-new_object_instance
+	@Override
+	public Ast.NewObjectExpression visitNewObjectExpression(AntlerScriptParser.NewObjectExpressionContext ctx) {
+		return visitNew_object_instance(ctx.new_object_instance());
+	}
 
 	@Override
 	public Ast.NewListExpression visitNewListExpression(AntlerScriptParser.NewListExpressionContext ctx) {
@@ -361,7 +364,11 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// EXPRESSION-ATOM-'(' expression ')'
 
-	// new_object_instance
+	@Override
+	public Ast.NewObjectExpression visitNew_object_instance(AntlerScriptParser.New_object_instanceContext ctx) {
+		List<Ast.Argument> args = visitObject_instantiation_args(ctx.object_instantiation_args());
+		return new Ast.NewObjectExpression(getTokens(ctx), ctx.symbol().getText(), args);
+	}
 
 	@Override
 	public Ast.NewListExpression visitNew_list_instance(AntlerScriptParser.New_list_instanceContext ctx) {
