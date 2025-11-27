@@ -178,7 +178,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return visitList_header(ctx.list_header());
 	}
 
-	// TYPE-ATOMIC-array_header
+	@Override
+	public Ast.ArrayType visitArrayType(AntlerScriptParser.ArrayTypeContext ctx) {
+		return visitArray_header(ctx.array_header());
+	}
 
 	@Override
 	public Ast.MapType visitMapType(AntlerScriptParser.MapTypeContext ctx) {
@@ -201,7 +204,11 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.ListType(getTokens(ctx), type);
 	}
 
-	// array_header
+	@Override
+	public Ast.ArrayType visitArray_header(AntlerScriptParser.Array_headerContext ctx) {
+		Ast.Type type = visitType(ctx.type());
+		return new Ast.ArrayType(getTokens(ctx), type);
+	}
 
 	@Override
 	public Ast.MapType visitMap_header(AntlerScriptParser.Map_headerContext ctx) {
@@ -336,7 +343,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return visitNew_list_instance(ctx.new_list_instance());
 	}
 
-	// EXPRESSION-ATOM-new_array_instance
+	@Override
+	public Ast.NewArrayExpression visitNewArrayExpression(AntlerScriptParser.NewArrayExpressionContext ctx) {
+		return visitNew_array_instance(ctx.new_array_instance());
+	}
 
 	@Override
 	public Ast.NewMapExpression visitNewMapExpression(AntlerScriptParser.NewMapExpressionContext ctx) {
@@ -360,7 +370,12 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.NewListExpression(getTokens(ctx), type, args);
 	}
 
-	// new_array_instance
+	@Override
+	public Ast.NewArrayExpression visitNew_array_instance(AntlerScriptParser.New_array_instanceContext ctx) {
+		Ast.ArrayType type = visitArray_header(ctx.array_header());
+		List<Ast.Argument> args = visitObject_instantiation_args(ctx.object_instantiation_args());
+		return new Ast.NewArrayExpression(getTokens(ctx), type, args);
+	}
 
 	// new_class_instance
 
