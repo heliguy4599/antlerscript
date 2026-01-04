@@ -369,7 +369,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.Argument(visitExpression(ctx.expression()), ctx.symbol().getText(), false);
 	}
 
-	// EXPRESSION-ATOM-symbol
+	@Override
+	public Ast.SymbolExpression visitSymbolExpression(AntlerScriptParser.SymbolExpressionContext ctx) {
+		return new Ast.SymbolExpression(getTokens(ctx), ctx.getText());
+	}
 
 	@Override
 	public Ast.StringExpression visitStringExpression(AntlerScriptParser.StringExpressionContext ctx) {
