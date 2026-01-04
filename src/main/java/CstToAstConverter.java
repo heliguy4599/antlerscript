@@ -159,7 +159,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 			return visitType_and(ctx.left);
 		}
 
-		return new Ast.UnionType(getTokens(ctx), Ast.UnionType.Kind.OR, visitType_and(ctx.left), visitType_and(ctx.right));
+		return new Ast.UnionType(getTokens(ctx), Ast.UnionType.Kind.OR, visitType_and(ctx.left), visitType_or(ctx.right.type_or()));
 	}
 
 	@Override
@@ -168,10 +168,11 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 			return visitTypeAtomic(ctx.left);
 		}
 
-		return new Ast.UnionType(getTokens(ctx), Ast.UnionType.Kind.AND, visitTypeAtomic(ctx.left), visitTypeAtomic(ctx.right));
+		return new Ast.UnionType(getTokens(ctx), Ast.UnionType.Kind.AND, visitTypeAtomic(ctx.left), visitType_and(ctx.right.type_and()));
 	}
 
 	public Ast.Type visitTypeAtomic(AntlerScriptParser.Type_atomicContext ctx) {
+		// TODO: not that, again
 		return null;
 	}
 
@@ -197,6 +198,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	// TYPE-ATOMIC-enum_header
 
 	// TYPE-ATOMIC-func_header
+	public Ast.FunctionType visitFunc_header(AntlerScriptParser.Func_headerContext ctx) {
+		// TODO: not that
+		return null;
+	}
 
 	// TYPE-ATOMIC-SELF_CLASS
 
@@ -227,7 +232,11 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// func_param_elm
 
-	// lambda
+	public Ast.LambdaExpression visitLambda(AntlerScriptParser.LambdaContext ctx) {
+		Ast.FunctionType type = visitFunc_header(ctx.func_header());
+		Ast.StatementBlock block = visitStatement_block(ctx.statement_block());
+		return new Ast.LambdaExpression(getTokens(ctx), type, block);
+	}
 
 	// class_header
 
@@ -384,6 +393,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	// EXPRESSION-ATOM-new_class_instance
 
 	// EXPRESSION-ATOM-lambda
+	@Override
+	public Ast.LambdaExpression visitLambdaExpression(AntlerScriptParser.LambdaExpressionContext ctx) {
+		return visitLambda(ctx.lambda());
+	}
 
 	@Override
 	public Ast.SelectExpression visitSelectExpression(AntlerScriptParser.SelectExpressionContext ctx) {
