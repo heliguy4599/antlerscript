@@ -27,11 +27,11 @@ fragment HEX_INTEGER: [0-9A-F] ( '_'? [0-9A-F] )* ;
 fragment EXPONENT_BASE10: 'e' ( '+' | '-' )? DEC_INTEGER;
 fragment EXPONENT_BASE16: ( 'e' | 'p' )  ( '+' | '-' )? DEC_INTEGER;
 fragment INTEGER_SUFFIX
-	: 'i' ( '8' | '16' | '32' | '64' )?
-	| 'u' ( '8' | '16' | '32' | '64' )?
+	: 'i' ( '8' | '16' | '32' | '64' )
+	| 'u' ( '8' | '16' | '32' | '64' )
 	;
 fragment FLOAT_SUFFIX
-	: 'f' ( '8' | '16' | '32' | '64' )?
+	: 'f' ( '8' | '16' | '32' | '64' )
 	;
 
 INTEGER

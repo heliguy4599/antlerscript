@@ -4,12 +4,24 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 
-// public final class CstToAstConverter extends AbstractParseTreeVisitor<Ast.Node> implements AntlerScriptParserVisitor<Ast.Node> {
+// public final class CstToAstConverter extends AbstractParseTreeVisitor<Ast.Node> implements
+// AntlerScriptParserVisitor<Ast.Node> {
 public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Object> {
 	private static List<Token> getTokens(ParserRuleContext ctx) {
 		final List<Token> tokens = new ArrayList<>();
 		getTokensInternal(ctx.children, tokens);
 		return tokens;
+	}
+
+	private static double parseFloat(String floatString) {
+		if (floatString.startsWith("0x")) {
+			floatString = floatString.replace("e", "p");
+			if (!floatString.contains("p")) {
+				floatString = floatString + "p0";
+			}
+		}
+
+		return Double.parseDouble(floatString);
 	}
 
 	private static void getTokensInternal(List<ParseTree> parseTrees, List<Token> out) {
@@ -24,7 +36,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 			// Payload can now only be RuleContext
 			assert pl instanceof RuleContext;
 
-			RuleContext rule = (RuleContext)pl;
+			RuleContext rule = (RuleContext) pl;
 
 			List<ParseTree> parseTreesChild = new ArrayList<>();
 			for (int i = 0; i < rule.getChildCount(); i++) {
@@ -84,9 +96,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	@Override
 	public Ast.ConstructorClassMember visitConstructor(AntlerScriptParser.ConstructorContext ctx) {
 		return new Ast.ConstructorClassMember(
-			getTokens(ctx),
-			visitConstructor_params(ctx.constructor_params()),
-			visitStatement_block(ctx.statement_block())
+			getTokens(ctx), visitConstructor_params(ctx.constructor_params()), visitStatement_block(ctx.statement_block())
 		);
 	}
 
@@ -172,11 +182,13 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	}
 
 	public Ast.Type visitTypeAtomic(AntlerScriptParser.Type_atomicContext ctx) {
-		// TODO: not that, again
-		return null;
+		return (Ast.Type) visit(ctx);
 	}
 
-	// TYPE-ATOMIC-symbol
+	@Override
+	public Ast.SymbolType visitSymbolType(AntlerScriptParser.SymbolTypeContext ctx) {
+		return new Ast.SymbolType(getTokens(ctx), ctx.symbol().getText());
+	}
 
 	@Override
 	public Ast.ListType visitListType(AntlerScriptParser.ListTypeContext ctx) {
@@ -203,7 +215,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return null;
 	}
 
-	// TYPE-ATOMIC-SELF_CLASS
+	@Override
+	public Ast.SelfClassType visitSelfType(AntlerScriptParser.SelfTypeContext ctx) {
+		return new Ast.SelfClassType(getTokens(ctx));
+	}
 
 	// TYPE-ATOMIC-'(' type ')'
 
@@ -341,7 +356,20 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.StringExpression(getTokens(ctx), ctx.RAW_STRING().getText(), true);
 	}
 
-	// EXPRESSION-ATOM-float
+	@Override
+	public Ast.FloatExpression visitFloatExpression(AntlerScriptParser.FloatExpressionContext ctx) {
+		String[] floatOut = ctx.getText().split("f");
+
+		switch (floatOut.length) {
+		case 1:
+			return new Ast.FloatExpression(getTokens(ctx), parseFloat(floatOut[0]), (byte) 64);
+		case 2:
+			return new Ast.FloatExpression(getTokens(ctx), parseFloat(floatOut[0]), Byte.parseByte(floatOut[1]));
+		default:
+			assert false;
+			return null;
+		}
+	}
 
 	// EXPRESSION-ATOM-integer
 
@@ -363,11 +391,6 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	@Override
 	public Ast.SuperExpression visitSuperExpression(AntlerScriptParser.SuperExpressionContext ctx) {
 		return new Ast.SuperExpression(getTokens(ctx));
-	}
-
-	@Override
-	public Ast.SelfExpression visitSelfType(AntlerScriptParser.SelfTypeContext ctx) {
-		return new Ast.SelfExpression(getTokens(ctx));
 	}
 
 	@Override
@@ -494,16 +517,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	}
 
 	public Ast.VariableDeclaration visitDeclaration(AntlerScriptParser.DeclarationContext ctx) {
-		Ast.VariableDeclaration decl = switch (ctx) {
-			case AntlerScriptParser.LetDefinitionContext letDef -> visitLetDefinition(letDef);
-			case AntlerScriptParser.LetDeclarationContext letDecl -> visitLetDeclaration(letDecl);
-			case AntlerScriptParser.ConstDefinitionContext constDecl -> visitConstDefinition(constDecl);
-			default -> null;
-		};
-
-		assert decl != null;
-
-		return decl;
+		return (Ast.VariableDeclaration) visit(ctx);
 	}
 
 	@Override
@@ -532,21 +546,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	}
 
 	public Ast.Statement visitStatement(AntlerScriptParser.StatementContext ctx) {
-		return switch (ctx) {
-			case AntlerScriptParser.ExpressionStatementContext stmt -> visitExpressionStatement(stmt);
-			case AntlerScriptParser.BreakStatementContext stmt -> visitBreakStatement(stmt);
-			case AntlerScriptParser.ContinueStatementContext stmt -> visitContinueStatement(stmt);
-			case AntlerScriptParser.ReturnStatementContext stmt -> visitReturnStatement(stmt);
-			case AntlerScriptParser.LoopStatementContext stmt -> visitLoopStatement(stmt);
-			case AntlerScriptParser.WhileStatementContext stmt -> visitWhileStatement(stmt);
-			case AntlerScriptParser.IterateStatementContext stmt -> visitIterateStatement(stmt);
-			case AntlerScriptParser.DeclarationStatementContext stmt -> visitDeclarationStatement(stmt);
-			case AntlerScriptParser.TypedefStatementContext stmt -> visitTypedefStatement(stmt);
-			case AntlerScriptParser.IfStatementContext stmt -> visitIfStatement(stmt);
-			case AntlerScriptParser.SwitchStatementContext stmt -> visitSwitchStatement(stmt);
-			case AntlerScriptParser.StatementBlockStatementContext stmt -> visitStatementBlockStatement(stmt);
-		default -> null;
-		};
+		return (Ast.Statement) visit(ctx);
 	}
 
 	@Override
@@ -583,24 +583,14 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	@Override
 	public Ast.VariableDeclaration visitLetDeclaration(AntlerScriptParser.LetDeclarationContext ctx) {
 		return new Ast.VariableDeclaration(
-			getTokens(ctx),
-			false,
-			ctx.isMutable != null,
-			visitType(ctx.type()),
-			ctx.variableName.getText(),
-			null
+			getTokens(ctx), false, ctx.isMutable != null, visitType(ctx.type()), ctx.variableName.getText(), null
 		);
 	}
 
 	public Ast.VariableDeclaration visitLetDefinition(AntlerScriptParser.LetDefinitionContext ctx) {
 		var type = ctx.type();
 		return new Ast.VariableDeclaration(
-			getTokens(ctx),
-			false,
-			ctx.isMutable != null,
-			type != null ? visitType(type) : null,
-			ctx.variableName.getText(),
-			visitExpression(ctx.expression())
+			getTokens(ctx), false, ctx.isMutable != null, type != null ? visitType(type) : null, ctx.variableName.getText(), visitExpression(ctx.expression())
 		);
 	}
 
@@ -608,12 +598,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	public Ast.VariableDeclaration visitConstDefinition(AntlerScriptParser.ConstDefinitionContext ctx) {
 		var type = ctx.type();
 		return new Ast.VariableDeclaration(
-			getTokens(ctx),
-			true,
-			false,
-			type != null ? visitType(type) : null,
-			ctx.variableName.getText(),
-			visitExpression(ctx.expression())
+			getTokens(ctx), true, false, type != null ? visitType(type) : null, ctx.variableName.getText(), visitExpression(ctx.expression())
 		);
 	}
 
