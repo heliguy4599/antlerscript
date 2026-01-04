@@ -456,7 +456,6 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// EXPRESSION-ATOM-new_class_instance
 
-	// EXPRESSION-ATOM-lambda
 	@Override
 	public Ast.LambdaExpression visitLambdaExpression(AntlerScriptParser.LambdaExpressionContext ctx) {
 		return visitLambda(ctx.lambda());
@@ -467,7 +466,9 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return visitSelect(ctx.select());
 	}
 
-	// EXPRESSION-ATOM-'(' expression ')'
+	public Ast.Expression visitGroupedExpression(AntlerScriptParser.GroupedExpressionContext ctx) {
+		return visitExpression(ctx.expression());
+	}
 
 	@Override
 	public Ast.NewObjectExpression visitNew_object_instance(AntlerScriptParser.New_object_instanceContext ctx) {
