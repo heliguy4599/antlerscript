@@ -2712,6 +2712,8 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Type_orContext extends ParserRuleContext {
+		public Type_andContext left;
+		public Type_andContext right;
 		public List<Type_andContext> type_and() {
 			return getRuleContexts(Type_andContext.class);
 		}
@@ -2741,7 +2743,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(615);
-			type_and();
+			((Type_orContext)_localctx).left = type_and();
 			setState(620);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -2751,7 +2753,7 @@ public class AntlerScriptParser extends Parser {
 				setState(616);
 				match(PIPE);
 				setState(617);
-				type_and();
+				((Type_orContext)_localctx).right = type_and();
 				}
 				}
 				setState(622);
@@ -2773,6 +2775,8 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Type_andContext extends ParserRuleContext {
+		public Type_atomicContext left;
+		public Type_atomicContext right;
 		public List<Type_atomicContext> type_atomic() {
 			return getRuleContexts(Type_atomicContext.class);
 		}
@@ -2802,7 +2806,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(623);
-			type_atomic();
+			((Type_andContext)_localctx).left = type_atomic();
 			setState(628);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -2812,7 +2816,7 @@ public class AntlerScriptParser extends Parser {
 				setState(624);
 				match(AMP);
 				setState(625);
-				type_atomic();
+				((Type_andContext)_localctx).right = type_atomic();
 				}
 				}
 				setState(630);

@@ -22,6 +22,8 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 			}
 
 			// Payload can now only be RuleContext
+			assert pl instanceof RuleContext;
+
 			RuleContext rule = (RuleContext)pl;
 
 			List<ParseTree> parseTreesChild = new ArrayList<>();
@@ -32,16 +34,6 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 			getTokensInternal(parseTreesChild, out);
 		}
 	}
-
-	// === MISC ===
-
-	// symbol
-
-	// SEMICOLON
-
-	// SEMICOLON-newline
-
-	// SEMICOLON-semicolon
 
 	// === FILES ===
 
@@ -124,12 +116,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	@Override
 	public Ast.DeclarationClassMember visitDeclarationClassMember(AntlerScriptParser.DeclarationClassMemberContext ctx) {
-		return new Ast.DeclarationClassMember(getTokens(ctx), switch (ctx.declaration()) {
-			case AntlerScriptParser.LetDefinitionContext def -> visitLetDefinition(def);
-			case AntlerScriptParser.LetDeclarationContext decl -> visitLetDeclaration(decl);
-			case AntlerScriptParser.ConstDefinitionContext decl -> visitConstDefinition(decl);
-			default -> null;
-		});
+		return new Ast.DeclarationClassMember(getTokens(ctx), visitDeclaration(ctx.declaration()));
 	}
 
 	// CLASS-MEMBER-declaration
@@ -163,13 +150,30 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	@Override
 	public Ast.Type visitType(AntlerScriptParser.TypeContext ctx) {
-		// TODO, placeholder
-		return new Ast.SymbolType(null, null);
+		return visitType_or(ctx.type_or());
 	}
 
-	// type_or
+	@Override
+	public Ast.Type visitType_or(AntlerScriptParser.Type_orContext ctx) {
+		if (ctx.right == null) {
+			return visitType_and(ctx.left);
+		}
 
-	// type_and
+		return new Ast.UnionType(getTokens(ctx), Ast.UnionType.Kind.OR, visitType_and(ctx.left), visitType_and(ctx.right));
+	}
+
+	@Override
+	public Ast.Type visitType_and(AntlerScriptParser.Type_andContext ctx) {
+		if (ctx.right == null) {
+			return visitTypeAtomic(ctx.left);
+		}
+
+		return new Ast.UnionType(getTokens(ctx), Ast.UnionType.Kind.AND, visitTypeAtomic(ctx.left), visitTypeAtomic(ctx.right));
+	}
+
+	public Ast.Type visitTypeAtomic(AntlerScriptParser.Type_atomicContext ctx) {
+		return null;
+	}
 
 	// TYPE-ATOMIC-symbol
 
@@ -234,7 +238,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	@Override
 	public Ast.Expression visitExpression(AntlerScriptParser.ExpressionContext ctx) {
 		// TODO, placeholder
-		return new Ast.IndexExpression(null, null, null);
+		return null;
 	}
 
 	// expression_assignment
@@ -476,14 +480,22 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return visitIterate(ctx.iterate());
 	}
 
-	@Override
-	public Ast.VariableDeclaration visitDeclarationStatement(AntlerScriptParser.DeclarationStatementContext ctx) {
-		return switch (ctx.declaration()) {
-			case AntlerScriptParser.LetDefinitionContext def -> visitLetDefinition(def);
-			case AntlerScriptParser.LetDeclarationContext decl -> visitLetDeclaration(decl);
-			case AntlerScriptParser.ConstDefinitionContext decl -> visitConstDefinition(decl);
+	public Ast.VariableDeclaration visitDeclaration(AntlerScriptParser.DeclarationContext ctx) {
+		Ast.VariableDeclaration decl = switch (ctx) {
+			case AntlerScriptParser.LetDefinitionContext letDef -> visitLetDefinition(letDef);
+			case AntlerScriptParser.LetDeclarationContext letDecl -> visitLetDeclaration(letDecl);
+			case AntlerScriptParser.ConstDefinitionContext constDecl -> visitConstDefinition(constDecl);
 			default -> null;
 		};
+
+		assert decl != null;
+
+		return decl;
+	}
+
+	@Override
+	public Ast.VariableDeclaration visitDeclarationStatement(AntlerScriptParser.DeclarationStatementContext ctx) {
+		return visitDeclaration(ctx.declaration());
 	}
 
 	@Override
