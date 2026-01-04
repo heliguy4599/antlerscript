@@ -222,7 +222,11 @@ public class Ast {
 		public EnumType(List<Token> tokens, ClassExtendsAccess extendsAccess, List<String> memberSymbols) {
 			super(tokens);
 
-			assert memberSymbols != null && !memberSymbols.isEmpty();
+			if (extendsAccess != null) {
+				assert memberSymbols != null && !memberSymbols.isEmpty();
+			} else if (memberSymbols == null) {
+				memberSymbols = new ArrayList<>();
+			}
 
 			this.extendsAccess = extendsAccess;
 			this.memberSymbols = memberSymbols;
@@ -1129,6 +1133,10 @@ public class Ast {
 		Expression initialValue,
 		boolean isVarArgs
 	) {
+		FunctionParameter(ConstructorParameter param) {
+			this(param.type, param.symbol, param.initialValue, param.isVarArgs);
+		}
+
 		public FunctionParameter {
 			assert type != null;
 			assert symbol != null;

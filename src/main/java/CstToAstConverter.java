@@ -106,7 +106,11 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// class_top_level
 
-	// class_header_inside
+	@Override
+	public Ast.ClassType visitClass_header_inside(AntlerScriptParser.Class_header_insideContext ctx) {
+		// TODO: not that
+		return null;
+	}
 
 	@Override
 	public List<Ast.ClassExtendsAccess> visitClass_extends(AntlerScriptParser.Class_extendsContext ctx) {
@@ -179,7 +183,17 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// === ENUMS ===
 
-	// enum_header_inside
+	@Override
+	public Ast.EnumType visitEnum_header_inside(AntlerScriptParser.Enum_header_insideContext ctx) {
+		Ast.ClassExtendsAccess extendsAccess = ctx.class_extends_access() == null
+			? null
+			: visitClass_extends_access(ctx.class_extends_access());
+		List<String> memberSymbols = ctx.symbol() == null
+			? null
+			: ctx.symbol().stream().map(AntlerScriptParser.SymbolContext::getText).toList();
+
+		return new Ast.EnumType(getTokens(ctx), extendsAccess, memberSymbols);
+	}
 
 	// === TYPES ===
 
@@ -206,6 +220,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.UnionType(getTokens(ctx), Ast.UnionType.Kind.AND, visitTypeAtomic(ctx.left), visitType_and(ctx.right.type_and()));
 	}
 
+	// Helper, not an override
 	public Ast.Type visitTypeAtomic(AntlerScriptParser.Type_atomicContext ctx) {
 		return (Ast.Type) visit(ctx);
 	}
@@ -230,14 +245,18 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return visitMap_header(ctx.map_header());
 	}
 
-	// TYPE-ATOMIC-class_header
+	public Ast.ClassType visitClassType(AntlerScriptParser.ClassTypeContext ctx) {
+		return visitClass_header(ctx.class_header());
+	}
 
-	// TYPE-ATOMIC-enum_header
+	@Override
+	public Ast.EnumType visitEnumType(AntlerScriptParser.EnumTypeContext ctx) {
+		return visitEnum_header(ctx.enum_header());
+	}
 
-	// TYPE-ATOMIC-func_header
-	public Ast.FunctionType visitFunc_header(AntlerScriptParser.Func_headerContext ctx) {
-		// TODO: not that
-		return null;
+	@Override
+	public Ast.FunctionType visitFuncType(AntlerScriptParser.FuncTypeContext ctx) {
+		return visitFunc_header(ctx.func_header());
 	}
 
 	@Override
@@ -245,7 +264,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.SelfClassType(getTokens(ctx));
 	}
 
-	// TYPE-ATOMIC-'(' type ')'
+	@Override
+	public Ast.Type visitTypeGroup(AntlerScriptParser.TypeGroupContext ctx) {
+		return visitType(ctx.type());
+	}
 
 	@Override
 	public Ast.ListType visitList_header(AntlerScriptParser.List_headerContext ctx) {
@@ -266,27 +288,57 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.MapType(getTokens(ctx), first, second);
 	}
 
-	// func_header
+	@Override
+	public Ast.FunctionType visitFunc_header(AntlerScriptParser.Func_headerContext ctx) {
+		Ast.Type returnType = ctx.type() == null ? null : visitType(ctx.type());
+		List<Ast.FunctionParameter> params = ctx.func_params() == null ? null : visitFunc_params(ctx.func_params());
+		return new Ast.FunctionType(getTokens(ctx), params, returnType);
+	}
 
-	// func_params
+	@Override
+	public List<Ast.FunctionParameter> visitFunc_params(AntlerScriptParser.Func_paramsContext ctx) {
+		List<Ast.FunctionParameter> params = new ArrayList<>(ctx.func_param_elm().stream().map(this::visitFunc_param_elm).toList());
 
-	// func_param_elm
+		if (ctx.var_args() != null) {
+			params.add(new Ast.FunctionParameter(visitVar_args(ctx.var_args())));
+		}
 
+		return params;
+	}
+
+	@Override
+	public Ast.FunctionParameter visitFunc_param_elm(AntlerScriptParser.Func_param_elmContext ctx) {
+		Ast.Type type = visitType(ctx.type());
+		String symbol = ctx.symbol().getText();
+		Ast.Expression expr = ctx.expression() == null ? null : visitExpression(ctx.expression());
+		return new Ast.FunctionParameter(type, symbol, expr, false);
+	}
+
+	@Override
 	public Ast.LambdaExpression visitLambda(AntlerScriptParser.LambdaContext ctx) {
 		Ast.FunctionType type = visitFunc_header(ctx.func_header());
 		Ast.StatementBlock block = visitStatement_block(ctx.statement_block());
 		return new Ast.LambdaExpression(getTokens(ctx), type, block);
 	}
 
-	// class_header
+	@Override
+	public Ast.ClassType visitClass_header(AntlerScriptParser.Class_headerContext ctx) {
+		if (ctx.class_header_inside() == null) {
+			return new Ast.ClassType(getTokens(ctx), null);
+		}
+		return visitClass_header_inside(ctx.class_header_inside());
+	}
 
-	// enum_header
+	@Override
+	public Ast.EnumType visitEnum_header(AntlerScriptParser.Enum_headerContext ctx) {
+		return visitEnum_header_inside(ctx.enum_header_inside());
+	}
 
 	// === EXPRESSIONS ===
 
 	@Override
 	public Ast.Expression visitExpression(AntlerScriptParser.ExpressionContext ctx) {
-		// TODO, placeholder
+		// TODO: not that
 		return null;
 	}
 
@@ -454,7 +506,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return visitNew_map_instance(ctx.new_map_instance());
 	}
 
-	// EXPRESSION-ATOM-new_class_instance
+	@Override
+	public Ast.NewClassInstance visitNewClassInstance(AntlerScriptParser.NewClassInstanceContext ctx) {
+		return visitNew_class_instance(ctx.new_class_instance());
+	}
 
 	@Override
 	public Ast.LambdaExpression visitLambdaExpression(AntlerScriptParser.LambdaExpressionContext ctx) {
@@ -466,6 +521,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return visitSelect(ctx.select());
 	}
 
+	@Override
 	public Ast.Expression visitGroupedExpression(AntlerScriptParser.GroupedExpressionContext ctx) {
 		return visitExpression(ctx.expression());
 	}
@@ -490,7 +546,12 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.NewArrayExpression(getTokens(ctx), type, args);
 	}
 
-	// new_class_instance
+	@Override
+	public Ast.NewClassInstance visitNew_class_instance(AntlerScriptParser.New_class_instanceContext ctx) {
+		List<Ast.Argument> args = visitObject_instantiation_args(ctx.object_instantiation_args());
+		Ast.ClassType type = visitClass_header(ctx.class_header());
+		return new Ast.NewClassInstance(getTokens(ctx), type, args);
+	}
 
 	@Override
 	public List<Ast.Argument> visitObject_instantiation_args(AntlerScriptParser.Object_instantiation_argsContext ctx) {
@@ -558,6 +619,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return visitIterate(ctx.iterate());
 	}
 
+	// Helper, not an override
 	public Ast.VariableDeclaration visitDeclaration(AntlerScriptParser.DeclarationContext ctx) {
 		return (Ast.VariableDeclaration) visit(ctx);
 	}
@@ -587,6 +649,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.StatementBlock(getTokens(ctx), ctx.statement_block().statement().stream().map(this::visitStatement).toList(), ctx.DEFER() != null);
 	}
 
+	// Helper, not an override
 	public Ast.Statement visitStatement(AntlerScriptParser.StatementContext ctx) {
 		return (Ast.Statement) visit(ctx);
 	}
@@ -629,6 +692,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		);
 	}
 
+	@Override
 	public Ast.VariableDeclaration visitLetDefinition(AntlerScriptParser.LetDefinitionContext ctx) {
 		var type = ctx.type();
 		return new Ast.VariableDeclaration(
