@@ -14,6 +14,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	}
 
 	private static double parseFloat(String floatString) {
+		assert !floatString.contains("f");
+
+		floatString = floatString.replace("_", "");
+
 		if (floatString.startsWith("0x")) {
 			floatString = floatString.replace("e", "p");
 			if (!floatString.contains("p")) {
@@ -22,6 +26,27 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		}
 
 		return Double.parseDouble(floatString);
+	}
+
+	private static long parseInt(String intString) {
+		assert !intString.contains("i");
+		assert !intString.contains("u");
+
+		intString = intString.replace("_", "");
+
+		Long result = null;
+
+		if (intString.startsWith("0x")) {
+			intString = intString.substring(2);
+			result = Long.parseLong(intString, 16);
+		} else if (intString.startsWith("0b")) {
+			intString = intString.substring(2);
+			result = Long.parseLong(intString, 2);
+		} else {
+			result = Long.parseLong(intString, 10);
+		}
+
+		return result;
 	}
 
 	private static void getTokensInternal(List<ParseTree> parseTrees, List<Token> out) {
@@ -371,7 +396,20 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		}
 	}
 
-	// EXPRESSION-ATOM-integer
+	@Override
+	public Ast.IntExpression visitIntegerExpression(AntlerScriptParser.IntegerExpressionContext ctx) {
+		String[] intOut = ctx.getText().split("i|u");
+
+		switch (intOut.length) {
+		case 1:
+			return new Ast.IntExpression(getTokens(ctx), parseInt(intOut[0]), (byte) 64, true);
+		case 2:
+			return new Ast.IntExpression(getTokens(ctx), parseInt(intOut[0]), Byte.parseByte(intOut[1]), ctx.getText().contains("i"));
+		default:
+			assert false;
+			return null;
+		}
+	}
 
 	@Override
 	public Ast.BooleanExpression visitTrueExpression(AntlerScriptParser.TrueExpressionContext ctx) {
