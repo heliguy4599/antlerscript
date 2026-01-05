@@ -642,6 +642,11 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	}
 
 	@Override
+	public Ast.SelfExpression visitSelfInstanceExpression(AntlerScriptParser.SelfInstanceExpressionContext ctx) {
+		return new Ast.SelfExpression(getTokens(ctx));
+	}
+
+	@Override
 	public Ast.SuperExpression visitSuperExpression(AntlerScriptParser.SuperExpressionContext ctx) {
 		return new Ast.SuperExpression(getTokens(ctx));
 	}
