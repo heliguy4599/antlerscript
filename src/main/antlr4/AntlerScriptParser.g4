@@ -117,7 +117,7 @@ cast
 	;
 
 operator_overload
-	: OPERATOR overridable '(' type symbol ':' type ')' statement_block
+	: OPERATOR overridable '(' rightType=type symbol ':' returnType=type ')' statement_block
 	;
 
 overridable
@@ -137,7 +137,7 @@ overridable
 	;
 
 capture
-	: CAPTURE '(' class_extends_access ')' '.' symbol '->' ( symbol | extends_assign )
+	: CAPTURE '(' class_extends_access ')' '.' origin=symbol '->' ( target=symbol | extends_assign )
 	;
 
 extends_assign

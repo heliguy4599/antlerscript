@@ -313,23 +313,26 @@ public class Ast {
 		}
 
 		public final Kind operator;
-		public final Type leftType;
+		public final Type rightType;
 		public final Type returnType;
 		public final String symbol;
+		public final StatementBlock block;
 
-		public OperatorOverloadClassMember(List<Token> tokens, Kind operator, Type leftType, String symbol, Type returnType) {
+		public OperatorOverloadClassMember(List<Token> tokens, Kind operator, Type rightType, String symbol, Type returnType, StatementBlock block) {
 			super(tokens);
 
 			assert operator != null;
-			assert leftType != null;
+			assert rightType != null;
 			assert symbol != null;
 			assert !symbol.isEmpty();
 			assert returnType != null;
+			assert block != null;
 
 			this.operator = operator;
-			this.leftType = leftType;
+			this.rightType = rightType;
 			this.symbol = symbol;
 			this.returnType = returnType;
+			this.block = block;
 		}
 
 		@Override

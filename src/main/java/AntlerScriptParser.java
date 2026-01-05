@@ -2202,17 +2202,13 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Operator_overloadContext extends ParserRuleContext {
+		public TypeContext rightType;
+		public TypeContext returnType;
 		public TerminalNode OPERATOR() { return getToken(AntlerScriptParser.OPERATOR, 0); }
 		public OverridableContext overridable() {
 			return getRuleContext(OverridableContext.class,0);
 		}
 		public TerminalNode LPAREN() { return getToken(AntlerScriptParser.LPAREN, 0); }
-		public List<TypeContext> type() {
-			return getRuleContexts(TypeContext.class);
-		}
-		public TypeContext type(int i) {
-			return getRuleContext(TypeContext.class,i);
-		}
 		public SymbolContext symbol() {
 			return getRuleContext(SymbolContext.class,0);
 		}
@@ -2220,6 +2216,12 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode RPAREN() { return getToken(AntlerScriptParser.RPAREN, 0); }
 		public Statement_blockContext statement_block() {
 			return getRuleContext(Statement_blockContext.class,0);
+		}
+		public List<TypeContext> type() {
+			return getRuleContexts(TypeContext.class);
+		}
+		public TypeContext type(int i) {
+			return getRuleContext(TypeContext.class,i);
 		}
 		public Operator_overloadContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -2245,13 +2247,13 @@ public class AntlerScriptParser extends Parser {
 			setState(549);
 			match(LPAREN);
 			setState(550);
-			type();
+			((Operator_overloadContext)_localctx).rightType = type();
 			setState(551);
 			symbol();
 			setState(552);
 			match(COLON);
 			setState(553);
-			type();
+			((Operator_overloadContext)_localctx).returnType = type();
 			setState(554);
 			match(RPAREN);
 			setState(555);
@@ -2414,6 +2416,8 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class CaptureContext extends ParserRuleContext {
+		public SymbolContext origin;
+		public SymbolContext target;
 		public TerminalNode CAPTURE() { return getToken(AntlerScriptParser.CAPTURE, 0); }
 		public TerminalNode LPAREN() { return getToken(AntlerScriptParser.LPAREN, 0); }
 		public Class_extends_accessContext class_extends_access() {
@@ -2421,13 +2425,13 @@ public class AntlerScriptParser extends Parser {
 		}
 		public TerminalNode RPAREN() { return getToken(AntlerScriptParser.RPAREN, 0); }
 		public TerminalNode DOT() { return getToken(AntlerScriptParser.DOT, 0); }
+		public TerminalNode RARROW() { return getToken(AntlerScriptParser.RARROW, 0); }
 		public List<SymbolContext> symbol() {
 			return getRuleContexts(SymbolContext.class);
 		}
 		public SymbolContext symbol(int i) {
 			return getRuleContext(SymbolContext.class,i);
 		}
-		public TerminalNode RARROW() { return getToken(AntlerScriptParser.RARROW, 0); }
 		public Extends_assignContext extends_assign() {
 			return getRuleContext(Extends_assignContext.class,0);
 		}
@@ -2459,7 +2463,7 @@ public class AntlerScriptParser extends Parser {
 			setState(577);
 			match(DOT);
 			setState(578);
-			symbol();
+			((CaptureContext)_localctx).origin = symbol();
 			setState(579);
 			match(RARROW);
 			setState(582);
@@ -2468,7 +2472,7 @@ public class AntlerScriptParser extends Parser {
 			case 1:
 				{
 				setState(580);
-				symbol();
+				((CaptureContext)_localctx).target = symbol();
 				}
 				break;
 			case 2:

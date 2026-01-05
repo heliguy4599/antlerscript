@@ -104,6 +104,11 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// === CLASSES ===
 
+	// Helper, not an override
+	public Ast.ClassMember visitClassMember(AntlerScriptParser.Class_memberContext ctx) {
+		return (Ast.ClassMember) visit(ctx);
+	}
+
 	// class_top_level
 
 	@Override
@@ -158,26 +163,73 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return new Ast.DeclarationClassMember(getTokens(ctx), visitDeclaration(ctx.declaration()));
 	}
 
-	// CLASS-MEMBER-declaration
+	@Override
+	public Ast.OperatorOverloadClassMember visitOperatorOverloadClassMember(AntlerScriptParser.OperatorOverloadClassMemberContext ctx) {
+		return visitOperator_overload(ctx.operator_overload());
+	}
 
-	// CLASS-MEMBER-operator_overload
+	@Override
+	public Ast.ConstructorClassMember visitConstructorClassMember(AntlerScriptParser.ConstructorClassMemberContext ctx) {
+		return visitConstructor(ctx.constructor());
+	}
 
-	// CLASS-MEMBER-constructor
+	@Override
+	public Ast.CaptureClassMember visitCaptureClassMember(AntlerScriptParser.CaptureClassMemberContext ctx) {
+		return visitCapture(ctx.capture());
+	}
 
-	// CLASS-MEMBER-capture
-
-	// CLASS-MEMBER-extends_assign
+	@Override
+	public Ast.ExtendsAssignClassMember visitExtendsClassMember(AntlerScriptParser.ExtendsClassMemberContext ctx) {
+		return visitExtends_assign(ctx.extends_assign());
+	}
 
 	@Override
 	public Ast.CastClassMember visitCast(AntlerScriptParser.CastContext ctx) {
 		return new Ast.CastClassMember(getTokens(ctx), visitType(ctx.type()), visitStatement_block(ctx.statement_block()));
 	}
 
-	// operator_overload
+	@Override
+	public Ast.OperatorOverloadClassMember visitOperator_overload(AntlerScriptParser.Operator_overloadContext ctx) {
+		return new Ast.OperatorOverloadClassMember(
+			getTokens(ctx),
+			visitOverridable(ctx.overridable()),
+			visitType(ctx.rightType),
+			ctx.symbol().getText(),
+			visitType(ctx.returnType),
+			visitStatement_block(ctx.statement_block())
+		);
+	}
 
-	// overridable
+	@Override
+	public Ast.OperatorOverloadClassMember.Kind visitOverridable(AntlerScriptParser.OverridableContext ctx) {
+		Ast.OperatorOverloadClassMember.Kind result = switch(ctx.operator.getType()) {
+		case AntlerScriptParser.PLUS -> Ast.OperatorOverloadClassMember.Kind.PLUS;
+		case AntlerScriptParser.MINUS -> Ast.OperatorOverloadClassMember.Kind.MINUS;
+		case AntlerScriptParser.STAR -> Ast.OperatorOverloadClassMember.Kind.MULTIPLY;
+		case AntlerScriptParser.SLASH -> Ast.OperatorOverloadClassMember.Kind.DIVIDE;
+		case AntlerScriptParser.PERCENT -> Ast.OperatorOverloadClassMember.Kind.REMAINDER;
+		case AntlerScriptParser.LESSER_THAN -> Ast.OperatorOverloadClassMember.Kind.LESSER_THAN;
+		case AntlerScriptParser.GREATER_THAN -> Ast.OperatorOverloadClassMember.Kind.GREATER_THAN;
+		case AntlerScriptParser.DOUBLE_PLUS -> Ast.OperatorOverloadClassMember.Kind.CONCAT;
+		case AntlerScriptParser.DOUBLE_STAR -> Ast.OperatorOverloadClassMember.Kind.EXPONENT;
+		case AntlerScriptParser.DOUBLE_SLASH -> Ast.OperatorOverloadClassMember.Kind.FLOOR_DIVIDE;
+		case AntlerScriptParser.DOUBLE_PERCENT -> Ast.OperatorOverloadClassMember.Kind.MODULO;
+		case AntlerScriptParser.DOUBLE_EQUAL -> Ast.OperatorOverloadClassMember.Kind.EQUAL;
+		case AntlerScriptParser.LBRACK -> Ast.OperatorOverloadClassMember.Kind.INDEX;
+		default -> null;
+		};
 
-	// capture
+		assert result != null;
+
+		return result;
+	}
+
+	@Override
+	public Ast.CaptureClassMember visitCapture(AntlerScriptParser.CaptureContext ctx) {
+		String target = ctx.target == null ? null : ctx.target.getText();
+		var extendsAssign = ctx.extends_assign() == null ? null : visitExtends_assign(ctx.extends_assign());
+		return new Ast.CaptureClassMember(getTokens(ctx), visitClass_extends_access(ctx.class_extends_access()), ctx.origin.getText(), target, extendsAssign);
+	}
 
 	@Override
 	public Ast.ExtendsAssignClassMember visitExtends_assign(AntlerScriptParser.Extends_assignContext ctx) {
