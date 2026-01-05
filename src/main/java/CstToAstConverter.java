@@ -179,7 +179,10 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// capture
 
-	// extends_assign
+	@Override
+	public Ast.ExtendsAssignClassMember visitExtends_assign(AntlerScriptParser.Extends_assignContext ctx) {
+		return new Ast.ExtendsAssignClassMember(getTokens(ctx), ctx.symbol().getText(), visitExpression(ctx.expression()));
+	}
 
 	// === ENUMS ===
 
@@ -188,7 +191,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		Ast.ClassExtendsAccess extendsAccess = ctx.class_extends_access() == null
 			? null
 			: visitClass_extends_access(ctx.class_extends_access());
-		List<String> memberSymbols = ctx.symbol() == null
+		List<String> memberSymbols = ctx.symbol().isEmpty()
 			? null
 			: ctx.symbol().stream().map(AntlerScriptParser.SymbolContext::getText).toList();
 
@@ -336,6 +339,11 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// === EXPRESSIONS ===
 
+	// Helper, not an override
+	public Ast.Expression visitExpressionAtom(AntlerScriptParser.Expression_atomContext ctx) {
+		return (Ast.Expression) visit(ctx);
+	}
+
 	@Override
 	public Ast.Expression visitExpression(AntlerScriptParser.ExpressionContext ctx) {
 		// TODO: not that
@@ -384,23 +392,123 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	// expression_mult_right
 
-	// expression_unary
+	@Override
+	public Ast.Expression visitExpression_unary(AntlerScriptParser.Expression_unaryContext ctx) {
+		Ast.Expression latest = visitExpression_exp(ctx.expression_exp());
 
-	// expression_unary_op
+		var ops = ctx.expression_unary_op();
+		var iter = ops.listIterator(ops.size());
+		while (iter.hasPrevious()) {
+			var opCtx = iter.previous();
+			Token op = opCtx.operator;
 
-	// expression_exp
+			Ast.UnaryExpression.Kind kind = switch(op.getType()) {
+			case AntlerScriptParser.PLUS -> Ast.UnaryExpression.Kind.PLUS;
+			case AntlerScriptParser.MINUS -> Ast.UnaryExpression.Kind.MINUS;
+			case AntlerScriptParser.TILDE -> Ast.UnaryExpression.Kind.BIT_NOT;
+			default -> null;
+			};
 
-	// expression_exp_right
+			assert kind != null;
 
-	// expression_postfix
+			latest = new Ast.UnaryExpression(getTokens(opCtx), kind, latest);
+		}
 
-	// indexAccess
+		return latest;
+	}
 
-	// functionCall
+	@Override
+	public Object visitExpression_unary_op(AntlerScriptParser.Expression_unary_opContext ctx) {
+		// Should be handled by the caller
+		assert false;
+		return null;
+	}
 
-	// memberAccess
+	@Override
+	public Ast.Expression visitExpression_exp(AntlerScriptParser.Expression_expContext ctx) {
+		Ast.Expression latest = visitExpression_postfix(ctx.expression_postfix());
 
-	// nullishAccess
+		for (AntlerScriptParser.Expression_exp_rightContext expCtx : ctx.expression_exp_right()) {
+			latest = new Ast.BinaryExpression(getTokens(expCtx),
+							  Ast.BinaryExpression.Kind.EXPONENT,
+							  latest,
+							  visitExpression_postfix(expCtx.expression_postfix()));
+		}
+
+		return latest;
+	}
+
+	@Override
+	public Object visitExpression_exp_right(AntlerScriptParser.Expression_exp_rightContext ctx) {
+		// Should be handled by the caller
+		assert false;
+		return null;
+	}
+
+	@Override
+	public Ast.Expression visitExpression_postfix(AntlerScriptParser.Expression_postfixContext ctx) {
+		Ast.Expression latest = visitExpressionAtom(ctx.expression_atom());
+
+		for (AntlerScriptParser.Expression_accessContext accessCtx : ctx.expression_access()) {
+			switch (accessCtx) {
+			case AntlerScriptParser.IndexAccessContext idxCtx:
+				latest = new Ast.IndexExpression(getTokens(idxCtx),
+									latest,
+									visitExpression(idxCtx.expression()));
+				break;
+			case AntlerScriptParser.FunctionCallContext funcallCtx:
+				latest = new Ast.CallExpression(getTokens(funcallCtx),
+								       latest,
+								       funcallCtx.arguments() == null
+								       ? null
+								       : visitArguments(funcallCtx.arguments()));
+				break;
+			case AntlerScriptParser.MemberAccessContext memCtx:
+				latest = new Ast.AccessExpression(getTokens(memCtx),
+									 latest,
+									 memCtx.symbol().getText(),
+									 false);
+				break;
+			case AntlerScriptParser.NullishAccessContext nullCtx:
+				latest = new Ast.AccessExpression(getTokens(nullCtx),
+									 latest,
+									 nullCtx.symbol().getText(),
+									 true);
+				break;
+			default: assert false;
+			}
+		}
+
+		return latest;
+	}
+
+	@Override
+	public Object visitIndexAccess(AntlerScriptParser.IndexAccessContext ctx) {
+		// Should be handled by the caller
+		assert false;
+		return null;
+	}
+
+	@Override
+	public Object visitFunctionCall(AntlerScriptParser.FunctionCallContext ctx) {
+		// Should be handled by the caller
+		assert false;
+		return null;
+	}
+
+	@Override
+	public Object visitMemberAccess(AntlerScriptParser.MemberAccessContext ctx) {
+		// Should be handled by the caller
+		assert false;
+		return null;
+	}
+
+	@Override
+	public Object visitNullishAccess(AntlerScriptParser.NullishAccessContext ctx) {
+		// Should be handled by the caller
+		assert false;
+		return null;
+	}
 
 	@Override
 	public List<Ast.Argument> visitArguments(AntlerScriptParser.ArgumentsContext ctx) {
