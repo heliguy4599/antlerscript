@@ -3696,7 +3696,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Expression_assignmentContext extends ParserRuleContext {
-		public Expression_logical_orContext left;
 		public Expression_logical_orContext expression_logical_or() {
 			return getRuleContext(Expression_logical_orContext.class,0);
 		}
@@ -3722,7 +3721,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(720);
-			((Expression_assignmentContext)_localctx).left = expression_logical_or();
+			expression_logical_or();
 			setState(722);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -3967,7 +3966,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Expression_logical_orContext extends ParserRuleContext {
-		public Expression_logical_andContext left;
 		public Expression_logical_andContext expression_logical_and() {
 			return getRuleContext(Expression_logical_andContext.class,0);
 		}
@@ -3996,7 +3994,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(762);
-			((Expression_logical_orContext)_localctx).left = expression_logical_and();
+			expression_logical_and();
 			setState(766);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -4085,7 +4083,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Expression_logical_andContext extends ParserRuleContext {
-		public Expression_logical_notContext left;
 		public Expression_logical_notContext expression_logical_not() {
 			return getRuleContext(Expression_logical_notContext.class,0);
 		}
@@ -4114,7 +4111,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(775);
-			((Expression_logical_andContext)_localctx).left = expression_logical_not();
+			expression_logical_not();
 			setState(779);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -4243,7 +4240,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Expression_cmpContext extends ParserRuleContext {
-		public Expression_bit_orContext left;
 		public Expression_bit_orContext expression_bit_or() {
 			return getRuleContext(Expression_bit_orContext.class,0);
 		}
@@ -4272,7 +4268,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(793);
-			((Expression_cmpContext)_localctx).left = expression_bit_or();
+			expression_bit_or();
 			setState(797);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -4421,7 +4417,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Expression_bit_orContext extends ParserRuleContext {
-		public Expression_bit_xorContext left;
 		public Expression_bit_xorContext expression_bit_xor() {
 			return getRuleContext(Expression_bit_xorContext.class,0);
 		}
@@ -4450,7 +4445,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(818);
-			((Expression_bit_orContext)_localctx).left = expression_bit_xor();
+			expression_bit_xor();
 			setState(822);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -4521,7 +4516,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Expression_bit_xorContext extends ParserRuleContext {
-		public Expression_bit_andContext left;
 		public Expression_bit_andContext expression_bit_and() {
 			return getRuleContext(Expression_bit_andContext.class,0);
 		}
@@ -4550,7 +4544,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(828);
-			((Expression_bit_xorContext)_localctx).left = expression_bit_and();
+			expression_bit_and();
 			setState(832);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -4621,7 +4615,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Expression_bit_andContext extends ParserRuleContext {
-		public Expression_bit_shiftContext left;
 		public Expression_bit_shiftContext expression_bit_shift() {
 			return getRuleContext(Expression_bit_shiftContext.class,0);
 		}
@@ -4650,7 +4643,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(838);
-			((Expression_bit_andContext)_localctx).left = expression_bit_shift();
+			expression_bit_shift();
 			setState(842);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -4721,7 +4714,6 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Expression_bit_shiftContext extends ParserRuleContext {
-		public Expression_addContext left;
 		public Expression_addContext expression_add() {
 			return getRuleContext(Expression_addContext.class,0);
 		}
@@ -4750,7 +4742,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(848);
-			((Expression_bit_shiftContext)_localctx).left = expression_add();
+			expression_add();
 			setState(852);
 			_errHandler.sync(this);
 			_la = _input.LA(1);

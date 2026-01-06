@@ -234,7 +234,7 @@ expression
 	;
 
 expression_assignment
-	: left=expression_logical_or expression_assignment_right?
+	: expression_logical_or expression_assignment_right?
 	;
 
 expression_assignment_right
@@ -259,7 +259,7 @@ expression_assignment_right
 	;
 
 expression_logical_or
-	: left=expression_logical_and expression_logical_or_right*
+	: expression_logical_and expression_logical_or_right*
 	;
 
 expression_logical_or_right
@@ -268,7 +268,7 @@ expression_logical_or_right
 	;
 
 expression_logical_and
-	: left=expression_logical_not expression_logical_and_right*
+	: expression_logical_not expression_logical_and_right*
 	;
 
 expression_logical_and_right
@@ -280,7 +280,7 @@ expression_logical_not
 	;
 
 expression_cmp
-	: left=expression_bit_or expression_cmp_right*
+	: expression_bit_or expression_cmp_right*
 	;
 
 expression_cmp_right
@@ -295,7 +295,7 @@ expression_cmp_right
 	;
 
 expression_bit_or
-	: left=expression_bit_xor expression_bit_or_right*
+	: expression_bit_xor expression_bit_or_right*
 	;
 
 expression_bit_or_right
@@ -303,7 +303,7 @@ expression_bit_or_right
 	;
 
 expression_bit_xor
-	: left=expression_bit_and expression_bit_xor_right*
+	: expression_bit_and expression_bit_xor_right*
 	;
 
 expression_bit_xor_right
@@ -311,7 +311,7 @@ expression_bit_xor_right
 	;
 
 expression_bit_and
-	: left=expression_bit_shift expression_bit_and_right*
+	: expression_bit_shift expression_bit_and_right*
 	;
 
 expression_bit_and_right
@@ -319,7 +319,7 @@ expression_bit_and_right
 	;
 
 expression_bit_shift
-	: left=expression_add expression_bit_shift_right*
+	: expression_add expression_bit_shift_right*
 	;
 
 expression_bit_shift_right

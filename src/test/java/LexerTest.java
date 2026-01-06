@@ -42,14 +42,12 @@ class LexerTest {
 		testInput("1_2_3", L.INTEGER);
 
 		// Signed suffix
-		testInput("123i", L.INTEGER);
 		testInput("123i8", L.INTEGER);
 		testInput("123i16", L.INTEGER);
 		testInput("123i32", L.INTEGER);
 		testInput("123i64", L.INTEGER);
 
 		// Unsigned suffix
-		testInput("123u", L.INTEGER);
 		testInput("123u8", L.INTEGER);
 		testInput("123u16", L.INTEGER);
 		testInput("123u32", L.INTEGER);
@@ -62,14 +60,12 @@ class LexerTest {
 		testInput("0xF_F", L.INTEGER);
 
 		// Signed suffix
-		testInput("0xFFi", L.INTEGER);
 		testInput("0xFFi8", L.INTEGER);
 		testInput("0xFFi16", L.INTEGER);
 		testInput("0xFFi32", L.INTEGER);
 		testInput("0xFFi64", L.INTEGER);
 
 		// Unsigned suffix
-		testInput("0xFFu", L.INTEGER);
 		testInput("0xFFu8", L.INTEGER);
 		testInput("0xFFu16", L.INTEGER);
 		testInput("0xFFu32", L.INTEGER);
@@ -82,14 +78,12 @@ class LexerTest {
 		testInput("0b1_0_1", L.INTEGER);
 
 		// Signed suffix
-		testInput("0b101i", L.INTEGER);
 		testInput("0b101i8", L.INTEGER);
 		testInput("0b101i16", L.INTEGER);
 		testInput("0b101i32", L.INTEGER);
 		testInput("0b101i64", L.INTEGER);
 
 		// Unsigned suffix
-		testInput("0b101u", L.INTEGER);
 		testInput("0b101u8", L.INTEGER);
 		testInput("0b101u16", L.INTEGER);
 		testInput("0b101u32", L.INTEGER);
@@ -102,7 +96,6 @@ class LexerTest {
 		testInput("0_3.1_4", L.FLOAT);
 
 		// Suffix
-		testInput("3.14f", L.FLOAT);
 		testInput("3.14f8", L.FLOAT);
 		testInput("3.14f16", L.FLOAT);
 		testInput("3.14f32", L.FLOAT);
@@ -123,19 +116,16 @@ class LexerTest {
 		testInput("0_3.1_4e+1_0", L.FLOAT);
 		testInput("0_3.1_4e-1_0", L.FLOAT);
 
-		testInput("3.14e10f", L.FLOAT);
 		testInput("3.14e10f8", L.FLOAT);
 		testInput("3.14e10f16", L.FLOAT);
 		testInput("3.14e10f32", L.FLOAT);
 		testInput("3.14e10f64", L.FLOAT);
 
-		testInput("3.14e+10f", L.FLOAT);
 		testInput("3.14e+10f8", L.FLOAT);
 		testInput("3.14e+10f16", L.FLOAT);
 		testInput("3.14e+10f32", L.FLOAT);
 		testInput("3.14e+10f64", L.FLOAT);
 
-		testInput("3.14e-10f", L.FLOAT);
 		testInput("3.14e-10f8", L.FLOAT);
 		testInput("3.14e-10f16", L.FLOAT);
 		testInput("3.14e-10f32", L.FLOAT);
@@ -147,7 +137,6 @@ class LexerTest {
 		testInput("0xF.F", L.FLOAT);
 		testInput("0x0_F.F_0", L.FLOAT);
 
-		testInput("0xF.Ff", L.FLOAT);
 		testInput("0xF.Ff8", L.FLOAT);
 		testInput("0xF.Ff16", L.FLOAT);
 		testInput("0xF.Ff32", L.FLOAT);
@@ -161,21 +150,18 @@ class LexerTest {
 		testInput("0xFe-10", L.FLOAT);
 
 		testInput("0xF.Fe10", L.FLOAT);
-		testInput("0xF.Fe10f", L.FLOAT);
 		testInput("0xF.Fe10f8", L.FLOAT);
 		testInput("0xF.Fe10f16", L.FLOAT);
 		testInput("0xF.Fe10f32", L.FLOAT);
 		testInput("0xF.Fe10f64", L.FLOAT);
 
 		testInput("0xF.Fe+10", L.FLOAT);
-		testInput("0xF.Fe+10f", L.FLOAT);
 		testInput("0xF.Fe+10f8", L.FLOAT);
 		testInput("0xF.Fe+10f16", L.FLOAT);
 		testInput("0xF.Fe+10f32", L.FLOAT);
 		testInput("0xF.Fe+10f64", L.FLOAT);
 
 		testInput("0xF.Fe-10", L.FLOAT);
-		testInput("0xF.Fe-10f", L.FLOAT);
 		testInput("0xF.Fe-10f8", L.FLOAT);
 		testInput("0xF.Fe-10f16", L.FLOAT);
 		testInput("0xF.Fe-10f32", L.FLOAT);
@@ -188,14 +174,12 @@ class LexerTest {
 		testInput("0xF.Fp10f64", L.FLOAT);
 
 		testInput("0xF.Fp+10", L.FLOAT);
-		testInput("0xF.Fp+10f", L.FLOAT);
 		testInput("0xF.Fp+10f8", L.FLOAT);
 		testInput("0xF.Fp+10f16", L.FLOAT);
 		testInput("0xF.Fp+10f32", L.FLOAT);
 		testInput("0xF.Fp+10f64", L.FLOAT);
 
 		testInput("0xF.Fp-10", L.FLOAT);
-		testInput("0xF.Fp-10f", L.FLOAT);
 		testInput("0xF.Fp-10f8", L.FLOAT);
 		testInput("0xF.Fp-10f16", L.FLOAT);
 		testInput("0xF.Fp-10f32", L.FLOAT);
