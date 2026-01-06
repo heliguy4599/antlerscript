@@ -234,45 +234,45 @@ expression
 	;
 
 expression_assignment
-	: left=expression_logical_or right=expression_assignment_right?
+	: left=expression_logical_or expression_assignment_right?
 	;
 
 expression_assignment_right
-	: operator='+=' right=expression_assignment
-	| operator='-=' right=expression_assignment
-	| operator='*=' right=expression_assignment
-	| operator='**=' right=expression_assignment
-	| operator='/=' right=expression_assignment
-	| operator='//=' right=expression_assignment
-	| operator='%=' right=expression_assignment
-	| operator='%%=' right=expression_assignment
-	| operator='|=' right=expression_assignment
-	| operator='&=' right=expression_assignment
-	| operator='~=' right=expression_assignment
-	| operator='^=' right=expression_assignment
-	| operator='<<=' right=expression_assignment
-	| operator='>>=' right=expression_assignment
-	| operator='++=' right=expression_assignment
-	| operator='??=' right=expression_assignment
-	| operator='.=' right=expression_assignment
-	| operator='=' right=expression_assignment
+	: operator='+=' expression_assignment
+	| operator='-=' expression_assignment
+	| operator='*=' expression_assignment
+	| operator='**=' expression_assignment
+	| operator='/=' expression_assignment
+	| operator='//=' expression_assignment
+	| operator='%=' expression_assignment
+	| operator='%%=' expression_assignment
+	| operator='|=' expression_assignment
+	| operator='&=' expression_assignment
+	| operator='~=' expression_assignment
+	| operator='^=' expression_assignment
+	| operator='<<=' expression_assignment
+	| operator='>>=' expression_assignment
+	| operator='++=' expression_assignment
+	| operator='??=' expression_assignment
+	| operator='.=' expression_assignment
+	| operator='=' expression_assignment
 	;
 
 expression_logical_or
-	: left=expression_logical_and right=expression_logical_or_right?
+	: left=expression_logical_and expression_logical_or_right*
 	;
 
 expression_logical_or_right
-	: operator=OR right=expression_logical_or
-	| operator='??' right=expression_logical_or
+	: operator=OR expression_logical_and
+	| operator='??' expression_logical_and
 	;
 
 expression_logical_and
-	: left=expression_logical_not right=expression_logical_and_right*
+	: left=expression_logical_not expression_logical_and_right*
 	;
 
 expression_logical_and_right
-	: operator=AND right=expression_logical_not
+	: operator=AND expression_logical_not
 	;
 
 expression_logical_not
@@ -280,51 +280,51 @@ expression_logical_not
 	;
 
 expression_cmp
-	: left=expression_bit_or right=expression_cmp_right*
+	: left=expression_bit_or expression_cmp_right*
 	;
 
 expression_cmp_right
-	: operator='<' right=expression_bit_or
-	| operator='>' right=expression_bit_or
-	| operator='<=' right=expression_bit_or
-	| operator='>=' right=expression_bit_or
-	| operator='==' right=expression_bit_or
-	| operator='!=' right=expression_bit_or
-	| operator=IN right=expression_bit_or
-	| operator=IS right=expression_bit_or
+	: operator='<' expression_bit_or
+	| operator='>' expression_bit_or
+	| operator='<=' expression_bit_or
+	| operator='>=' expression_bit_or
+	| operator='==' expression_bit_or
+	| operator='!=' expression_bit_or
+	| operator=IN expression_bit_or
+	| operator=IS expression_bit_or
 	;
 
 expression_bit_or
-	: left=expression_bit_xor right=expression_bit_or_right*
+	: left=expression_bit_xor expression_bit_or_right*
 	;
 
 expression_bit_or_right
-	: operator='|' right=expression_bit_xor
+	: operator='|' expression_bit_xor
 	;
 
 expression_bit_xor
-	: left=expression_bit_and right=expression_bit_xor_right*
+	: left=expression_bit_and expression_bit_xor_right*
 	;
 
 expression_bit_xor_right
-	: operator='^' right=expression_bit_and
+	: operator='^' expression_bit_and
 	;
 
 expression_bit_and
-	: left=expression_bit_shift right=expression_bit_and_right*
+	: left=expression_bit_shift expression_bit_and_right*
 	;
 
 expression_bit_and_right
-	: operator='&' right=expression_bit_shift
+	: operator='&' expression_bit_shift
 	;
 
 expression_bit_shift
-	: left=expression_add right=expression_bit_shift_right*
+	: left=expression_add expression_bit_shift_right*
 	;
 
 expression_bit_shift_right
-	: operator='<<' right=expression_add
-	| operator='>>' right=expression_add
+	: operator='<<' expression_add
+	| operator='>>' expression_add
 	;
 
 expression_add
@@ -342,11 +342,11 @@ expression_mult
 	;
 
 expression_mult_right
-	: '*' expression_unary
-	| '/' expression_unary
-	| '//' expression_unary
-	| '%' expression_unary
-	| '%%' expression_unary
+	: operator='*' expression_unary
+	| operator='/' expression_unary
+	| operator='//' expression_unary
+	| operator='%' expression_unary
+	| operator='%%' expression_unary
 	;
 
 expression_unary

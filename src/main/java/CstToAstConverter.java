@@ -398,51 +398,325 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 
 	@Override
 	public Ast.Expression visitExpression(AntlerScriptParser.ExpressionContext ctx) {
+		return visitExpression_assignment(ctx.expression_assignment());
+	}
+
+	@Override
+	public Ast.Expression visitExpression_assignment(AntlerScriptParser.Expression_assignmentContext ctx) {
 		// TODO: not that
 		return null;
 	}
 
-	// expression_assignment
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_assignment_right(AntlerScriptParser.Expression_assignment_rightContext ctx) {
+		Token op = ctx.operator;
 
-	// expression_assignment_right
+		Ast.BinaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.PLUS_EQ -> Ast.BinaryExpression.Kind.PLUS_ASSIGN;
+		case AntlerScriptParser.MINUS_EQ -> Ast.BinaryExpression.Kind.MINUS_ASSIGN;
+		case AntlerScriptParser.STAR_EQ -> Ast.BinaryExpression.Kind.MULTIPLY_ASSIGN;
+		case AntlerScriptParser.DOUBLE_STAR_EQ -> Ast.BinaryExpression.Kind.EXPONENT_ASSIGN;
+		case AntlerScriptParser.SLASH_EQ -> Ast.BinaryExpression.Kind.DIVIDE_ASSIGN;
+		case AntlerScriptParser.DOUBLE_SLASH_EQ -> Ast.BinaryExpression.Kind.FLOOR_DIVIDE_ASSIGN;
+		case AntlerScriptParser.PERCENT_EQ -> Ast.BinaryExpression.Kind.MODULO_ASSIGN;
+		case AntlerScriptParser.DOUBLE_PERCENT_EQ -> Ast.BinaryExpression.Kind.REMAINDER_ASSIGN;
+		case AntlerScriptParser.PIPE_EQ -> Ast.BinaryExpression.Kind.BIT_OR_ASSIGN;
+		case AntlerScriptParser.AMP_EQ -> Ast.BinaryExpression.Kind.BIT_AND_ASSIGN;
+		case AntlerScriptParser.TILDE_EQ -> Ast.BinaryExpression.Kind.BIT_NOT_ASSIGN;
+		case AntlerScriptParser.CARRET_EQ -> Ast.BinaryExpression.Kind.BIT_XOR_ASSIGN;
+		case AntlerScriptParser.BIT_LSHIFT_EQ -> Ast.BinaryExpression.Kind.BIT_LSHIFT_ASSIGN;
+		case AntlerScriptParser.BIT_RSHIFT_EQ -> Ast.BinaryExpression.Kind.BIT_RSHIFT_ASSIGN;
+		case AntlerScriptParser.DOUBLE_PLUS_EQ -> Ast.BinaryExpression.Kind.CONCAT_ASSIGN;
+		case AntlerScriptParser.DOUBLE_QMARK_EQ -> Ast.BinaryExpression.Kind.NULLISH_ASSIGN;
+		case AntlerScriptParser.DOT_EQUAL -> Ast.BinaryExpression.Kind.CHAIN_ASSIGN;
+		case AntlerScriptParser.EQUAL -> Ast.BinaryExpression.Kind.ASSIGN;
+		default -> null;
+		};
 
-	// expression_logical_or
+		assert kind != null;
 
-	// expression_logical_or_right
+		return kind;
+	}
 
-	// expression_logical_and
+	@Override
+	public Ast.Expression visitExpression_logical_or(AntlerScriptParser.Expression_logical_orContext ctx) {
+		Ast.Expression latest = visitExpression_logical_and(ctx.expression_logical_and());
 
-	// expression_logical_and_right
+		for (AntlerScriptParser.Expression_logical_or_rightContext logicalOrCtx : ctx.expression_logical_or_right()) {
+			latest = new Ast.BinaryExpression(getTokens(logicalOrCtx),
+							  visitExpression_logical_or_right(logicalOrCtx),
+							  latest,
+							  visitExpression_logical_and(logicalOrCtx.expression_logical_and()));
+		}
 
-	// expression_logical_not
+		return latest;
+	}
 
-	// expression_cmp
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_logical_or_right(AntlerScriptParser.Expression_logical_or_rightContext ctx) {
+		Token op = ctx.operator;
 
-	// expression_cmp_right
+		Ast.BinaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.OR -> Ast.BinaryExpression.Kind.OR;
+		case AntlerScriptParser.DOUBLE_QMARK -> Ast.BinaryExpression.Kind.NULLISH;
+		default -> null;
+		};
 
-	// expression_bit_or
+		assert kind != null;
 
-	// expression_bit_or_right
+		return kind;
+	}
 
-	// expression_bit_xor
+	@Override
+	public Ast.Expression visitExpression_logical_and(AntlerScriptParser.Expression_logical_andContext ctx) {
+		Ast.Expression latest = visitExpression_logical_not(ctx.expression_logical_not());
 
-	// expression_bit_xor_right
+		for (AntlerScriptParser.Expression_logical_and_rightContext logicalAndCtx : ctx.expression_logical_and_right()) {
+			latest = new Ast.BinaryExpression(getTokens(logicalAndCtx),
+							  visitExpression_logical_and_right(logicalAndCtx),
+							  latest,
+							  visitExpression_logical_not(logicalAndCtx.expression_logical_not()));
+		}
 
-	// expression_bit_and
+		return latest;
+	}
 
-	// expression_bit_and_right
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_logical_and_right(AntlerScriptParser.Expression_logical_and_rightContext ctx) {
+		Token op = ctx.operator;
 
-	// expression_bit_shift
+		Ast.BinaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.AND -> Ast.BinaryExpression.Kind.AND;
+		default -> null;
+		};
 
-	// expression_bit_shift_right
+		assert kind != null;
 
-	// expression_add
+		return kind;
+	}
 
-	// expression_add_right
+	@Override
+	public Ast.Expression visitExpression_logical_not(AntlerScriptParser.Expression_logical_notContext ctx) {
+		Ast.Expression latest = visitExpression_cmp(ctx.expression_cmp());
 
-	// expression_mult
+		var ops = ctx.NOT();
+		var iter = ops.listIterator(ops.size());
+		while (iter.hasPrevious()) {
+			latest = new Ast.UnaryExpression(getTokens(ctx), Ast.UnaryExpression.Kind.NOT, latest);
+		}
 
-	// expression_mult_right
+		return latest;
+	}
+
+	@Override
+	public Ast.Expression visitExpression_cmp(AntlerScriptParser.Expression_cmpContext ctx) {
+		Ast.Expression latest = visitExpression_bit_or(ctx.expression_bit_or());
+
+		for (AntlerScriptParser.Expression_cmp_rightContext cmpCtx : ctx.expression_cmp_right()) {
+			latest = new Ast.BinaryExpression(getTokens(cmpCtx),
+							  visitExpression_cmp_right(cmpCtx),
+							  latest,
+							  visitExpression_bit_or(cmpCtx.expression_bit_or()));
+		}
+
+		return latest;
+	}
+
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_cmp_right(AntlerScriptParser.Expression_cmp_rightContext ctx) {
+		Token op = ctx.operator;
+
+		Ast.BinaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.LESSER_THAN -> Ast.BinaryExpression.Kind.LESSER_THAN;
+		case AntlerScriptParser.GREATER_THAN -> Ast.BinaryExpression.Kind.GREATER_THAN;
+		case AntlerScriptParser.LESSER_OR_EQ -> Ast.BinaryExpression.Kind.LESSER_OR_EQUAL;
+		case AntlerScriptParser.GREATER_OR_EQ -> Ast.BinaryExpression.Kind.GREATER_OR_EQUAL;
+		case AntlerScriptParser.DOUBLE_EQUAL -> Ast.BinaryExpression.Kind.EQUAL;
+		case AntlerScriptParser.NOT_EQUAL -> Ast.BinaryExpression.Kind.NOT_EQUAL;
+		case AntlerScriptParser.IN -> Ast.BinaryExpression.Kind.IN;
+		case AntlerScriptParser.IS -> Ast.BinaryExpression.Kind.IS;
+		default -> null;
+		};
+
+		assert kind != null;
+
+		return kind;
+	}
+
+	@Override
+	public Ast.Expression visitExpression_bit_or(AntlerScriptParser.Expression_bit_orContext ctx) {
+		Ast.Expression latest = visitExpression_bit_xor(ctx.expression_bit_xor());
+
+		for (AntlerScriptParser.Expression_bit_or_rightContext bitOrCtx : ctx.expression_bit_or_right()) {
+			latest = new Ast.BinaryExpression(getTokens(bitOrCtx),
+							  visitExpression_bit_or_right(bitOrCtx),
+							  latest,
+							  visitExpression_bit_xor(bitOrCtx.expression_bit_xor()));
+		}
+
+		return latest;
+	}
+
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_bit_or_right(AntlerScriptParser.Expression_bit_or_rightContext ctx) {
+		Token op = ctx.operator;
+
+		Ast.BinaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.PIPE -> Ast.BinaryExpression.Kind.BIT_OR;
+		default -> null;
+		};
+
+		assert kind != null;
+
+		return kind;
+	}
+
+	@Override
+	public Ast.Expression visitExpression_bit_xor(AntlerScriptParser.Expression_bit_xorContext ctx) {
+		Ast.Expression latest = visitExpression_bit_and(ctx.expression_bit_and());
+
+		for (AntlerScriptParser.Expression_bit_xor_rightContext bitXorCtx : ctx.expression_bit_xor_right()) {
+			latest = new Ast.BinaryExpression(getTokens(bitXorCtx),
+							  visitExpression_bit_xor_right(bitXorCtx),
+							  latest,
+							  visitExpression_bit_and(bitXorCtx.expression_bit_and()));
+		}
+
+		return latest;
+	}
+
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_bit_xor_right(AntlerScriptParser.Expression_bit_xor_rightContext ctx) {
+		Token op = ctx.operator;
+
+		Ast.BinaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.CARRET -> Ast.BinaryExpression.Kind.BIT_XOR;
+		default -> null;
+		};
+
+		assert kind != null;
+
+		return kind;
+	}
+
+	@Override
+	public Ast.Expression visitExpression_bit_and(AntlerScriptParser.Expression_bit_andContext ctx) {
+		Ast.Expression latest = visitExpression_bit_shift(ctx.expression_bit_shift());
+
+		for (AntlerScriptParser.Expression_bit_and_rightContext bitAndCtx : ctx.expression_bit_and_right()) {
+			latest = new Ast.BinaryExpression(getTokens(bitAndCtx),
+							  visitExpression_bit_and_right(bitAndCtx),
+							  latest,
+							  visitExpression_bit_shift(bitAndCtx.expression_bit_shift()));
+		}
+
+		return latest;
+	}
+
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_bit_and_right(AntlerScriptParser.Expression_bit_and_rightContext ctx) {
+		Token op = ctx.operator;
+
+		Ast.BinaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.AMP -> Ast.BinaryExpression.Kind.BIT_AND;
+		default -> null;
+		};
+
+		assert kind != null;
+
+		return kind;
+	}
+
+	@Override
+	public Ast.Expression visitExpression_bit_shift(AntlerScriptParser.Expression_bit_shiftContext ctx) {
+		Ast.Expression latest = visitExpression_add(ctx.expression_add());
+
+		for (AntlerScriptParser.Expression_bit_shift_rightContext bitShiftCtx : ctx.expression_bit_shift_right()) {
+			latest = new Ast.BinaryExpression(getTokens(bitShiftCtx),
+							  visitExpression_bit_shift_right(bitShiftCtx),
+							  latest,
+							  visitExpression_add(bitShiftCtx.expression_add()));
+		}
+
+		return latest;
+	}
+
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_bit_shift_right(AntlerScriptParser.Expression_bit_shift_rightContext ctx) {
+		Token op = ctx.operator;
+
+		Ast.BinaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.BIT_LSHIFT -> Ast.BinaryExpression.Kind.BIT_LSHIFT;
+		case AntlerScriptParser.BIT_RSHIFT -> Ast.BinaryExpression.Kind.BIT_RSHIFT;
+		default -> null;
+		};
+
+		assert kind != null;
+
+		return kind;
+	}
+
+	@Override
+	public Ast.Expression visitExpression_add(AntlerScriptParser.Expression_addContext ctx) {
+		Ast.Expression latest = visitExpression_mult(ctx.expression_mult());
+
+		for (AntlerScriptParser.Expression_add_rightContext addCtx : ctx.expression_add_right()) {
+			latest = new Ast.BinaryExpression(getTokens(addCtx),
+							  visitExpression_add_right(addCtx),
+							  latest,
+							  visitExpression_mult(addCtx.expression_mult()));
+		}
+
+		return latest;
+	}
+
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_add_right(AntlerScriptParser.Expression_add_rightContext ctx) {
+		Token op = ctx.operator;
+
+		Ast.BinaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.PLUS -> Ast.BinaryExpression.Kind.ADD;
+		case AntlerScriptParser.MINUS -> Ast.BinaryExpression.Kind.SUBTRACT;
+		case AntlerScriptParser.DOUBLE_PLUS -> Ast.BinaryExpression.Kind.CONCAT;
+		default -> null;
+		};
+
+		assert kind != null;
+
+		return kind;
+	}
+
+	@Override
+	public Ast.Expression visitExpression_mult(AntlerScriptParser.Expression_multContext ctx) {
+		Ast.Expression latest = visitExpression_unary(ctx.expression_unary());
+
+		for (AntlerScriptParser.Expression_mult_rightContext multCtx : ctx.expression_mult_right()) {
+			latest = new Ast.BinaryExpression(getTokens(multCtx),
+							  visitExpression_mult_right(multCtx),
+							  latest,
+							  visitExpression_unary(multCtx.expression_unary()));
+		}
+
+		return latest;
+	}
+
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_mult_right(AntlerScriptParser.Expression_mult_rightContext ctx) {
+		Token op = ctx.operator;
+
+		Ast.BinaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.STAR -> Ast.BinaryExpression.Kind.MULTIPLY;
+		case AntlerScriptParser.SLASH -> Ast.BinaryExpression.Kind.DIVIDE;
+		case AntlerScriptParser.DOUBLE_SLASH -> Ast.BinaryExpression.Kind.FLOOR_DIVIDE;
+		case AntlerScriptParser.PERCENT -> Ast.BinaryExpression.Kind.MODULO;
+		case AntlerScriptParser.DOUBLE_PERCENT -> Ast.BinaryExpression.Kind.REMAINDER;
+		default -> null;
+		};
+
+		assert kind != null;
+
+		return kind;
+	}
 
 	@Override
 	public Ast.Expression visitExpression_unary(AntlerScriptParser.Expression_unaryContext ctx) {
@@ -451,29 +725,26 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		var ops = ctx.expression_unary_op();
 		var iter = ops.listIterator(ops.size());
 		while (iter.hasPrevious()) {
-			var opCtx = iter.previous();
-			Token op = opCtx.operator;
-
-			Ast.UnaryExpression.Kind kind = switch(op.getType()) {
-			case AntlerScriptParser.PLUS -> Ast.UnaryExpression.Kind.PLUS;
-			case AntlerScriptParser.MINUS -> Ast.UnaryExpression.Kind.MINUS;
-			case AntlerScriptParser.TILDE -> Ast.UnaryExpression.Kind.BIT_NOT;
-			default -> null;
-			};
-
-			assert kind != null;
-
-			latest = new Ast.UnaryExpression(getTokens(opCtx), kind, latest);
+			latest = new Ast.UnaryExpression(getTokens(ctx), visitExpression_unary_op(iter.previous()), latest);
 		}
 
 		return latest;
 	}
 
 	@Override
-	public Object visitExpression_unary_op(AntlerScriptParser.Expression_unary_opContext ctx) {
-		// Should be handled by the caller
-		assert false;
-		return null;
+	public Ast.UnaryExpression.Kind visitExpression_unary_op(AntlerScriptParser.Expression_unary_opContext ctx) {
+		Token op = ctx.operator;
+
+		Ast.UnaryExpression.Kind kind = switch(op.getType()) {
+		case AntlerScriptParser.PLUS -> Ast.UnaryExpression.Kind.PLUS;
+		case AntlerScriptParser.MINUS -> Ast.UnaryExpression.Kind.MINUS;
+		case AntlerScriptParser.TILDE -> Ast.UnaryExpression.Kind.BIT_NOT;
+		default -> null;
+		};
+
+		assert kind != null;
+
+		return kind;
 	}
 
 	@Override
