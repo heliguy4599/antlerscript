@@ -166,7 +166,7 @@ type_or
 	;
 
 type_or_right
-	: PIPE type_or
+	: '|' type_or
 	;
 
 type_and
@@ -174,7 +174,7 @@ type_and
 	;
 
 type_and_right
-	: PIPE type_and
+	: '&' type_and
 	;
 
 type_atomic

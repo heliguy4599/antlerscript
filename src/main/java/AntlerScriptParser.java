@@ -2832,6 +2832,7 @@ public class AntlerScriptParser extends Parser {
 	public final Type_andContext type_and() throws RecognitionException {
 		Type_andContext _localctx = new Type_andContext(_ctx, getState());
 		enterRule(_localctx, 60, RULE_type_and);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -2839,14 +2840,14 @@ public class AntlerScriptParser extends Parser {
 			((Type_andContext)_localctx).left = type_atomic();
 			setState(628);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,66,_ctx) ) {
-			case 1:
+			_la = _input.LA(1);
+			if (_la==AMP) {
 				{
 				setState(627);
 				((Type_andContext)_localctx).right = type_and_right();
 				}
-				break;
 			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -2862,7 +2863,7 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Type_and_rightContext extends ParserRuleContext {
-		public TerminalNode PIPE() { return getToken(AntlerScriptParser.PIPE, 0); }
+		public TerminalNode AMP() { return getToken(AntlerScriptParser.AMP, 0); }
 		public Type_andContext type_and() {
 			return getRuleContext(Type_andContext.class,0);
 		}
@@ -2884,7 +2885,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(630);
-			match(PIPE);
+			match(AMP);
 			setState(631);
 			type_and();
 			}
@@ -8209,7 +8210,7 @@ public class AntlerScriptParser extends Parser {
 		"\u0000\u0000\u026f\u0270\u0005P\u0000\u0000\u0270\u0271\u00038\u001c\u0000"+
 		"\u0271;\u0001\u0000\u0000\u0000\u0272\u0274\u0003@ \u0000\u0273\u0275"+
 		"\u0003>\u001f\u0000\u0274\u0273\u0001\u0000\u0000\u0000\u0274\u0275\u0001"+
-		"\u0000\u0000\u0000\u0275=\u0001\u0000\u0000\u0000\u0276\u0277\u0005P\u0000"+
+		"\u0000\u0000\u0000\u0275=\u0001\u0000\u0000\u0000\u0276\u0277\u0005Q\u0000"+
 		"\u0000\u0277\u0278\u0003<\u001e\u0000\u0278?\u0001\u0000\u0000\u0000\u0279"+
 		"\u0286\u0003\u0000\u0000\u0000\u027a\u0286\u0003B!\u0000\u027b\u0286\u0003"+
 		"D\"\u0000\u027c\u0286\u0003F#\u0000\u027d\u0286\u0003P(\u0000\u027e\u0286"+
