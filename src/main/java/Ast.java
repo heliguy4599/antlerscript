@@ -52,18 +52,16 @@ public class Ast {
 	public static class ClassProgram extends Program {
 		public final String namespace;
 		public final String className;
-		public final List<ClassExtendsAccess> classExtends;
 		public final List<FileDirective> directives;
 		public final ClassType topLevel;
 
-		public ClassProgram(List<Token> tokens, String namespace, String className, List<ClassExtendsAccess> classExtends, List<FileDirective> directives, ClassType topLevel) {
+		public ClassProgram(List<Token> tokens, String namespace, String className, List<FileDirective> directives, ClassType topLevel) {
 			super(tokens);
 
 			assert className != null && !className.isEmpty();
 
 			this.namespace = namespace;
 			this.className = className;
-			this.classExtends = classExtends != null ? classExtends : new ArrayList<>();
 			this.directives = directives != null ? directives : new ArrayList<>();
 			this.topLevel = topLevel;
 		}
@@ -239,11 +237,13 @@ public class Ast {
 	}
 
 	public static class ClassType extends Type {
+		public final List<ClassExtendsAccess> classExtends;
 		public final List<ClassMember> members;
 
-		public ClassType(List<Token> tokens, List<ClassMember> members) {
+		public ClassType(List<Token> tokens, List<ClassExtendsAccess> classExtends, List<ClassMember> members) {
 			super(tokens);
 
+			this.classExtends = classExtends != null ? classExtends : new ArrayList<>();
 			this.members = members != null ? members : new ArrayList<>();
 		}
 

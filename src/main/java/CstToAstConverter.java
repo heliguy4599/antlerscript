@@ -113,14 +113,24 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		return (Ast.ClassMember) visit(ctx);
 	}
 
-	// class_top_level
+	@Override
+	public Ast.ClassType visitClass_top_level(AntlerScriptParser.Class_top_levelContext ctx) {
+		assert ctx != null;
+
+		List<Ast.ClassExtendsAccess> extendsAccess = visitClass_extends(ctx.class_extends());
+		List<Ast.ClassMember> members = ctx.class_member().stream().map(this::visitClassMember).toList();
+
+		return new Ast.ClassType(getTokens(ctx), extendsAccess, members);
+	}
 
 	@Override
 	public Ast.ClassType visitClass_header_inside(AntlerScriptParser.Class_header_insideContext ctx) {
 		assert ctx != null;
 
-		// TODO: not that
-		return null;
+		List<Ast.ClassExtendsAccess> extendsAccess = visitClass_extends(ctx.class_extends());
+		List<Ast.ClassMember> members = ctx.class_member().stream().map(this::visitClassMember).toList();
+
+		return new Ast.ClassType(getTokens(ctx), extendsAccess, members);
 	}
 
 	@Override
@@ -454,7 +464,7 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		assert ctx != null;
 
 		if (ctx.class_header_inside() == null) {
-			return new Ast.ClassType(getTokens(ctx), null);
+			return new Ast.ClassType(getTokens(ctx), null, null);
 		}
 		return visitClass_header_inside(ctx.class_header_inside());
 	}
