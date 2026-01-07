@@ -25,15 +25,15 @@ program
 	;
 
 other_directive
-	: OTHER_DIRECTIVE SYMBOL ( STRING | RAW_STRING )?
+	: OTHER_DIRECTIVE symbol ( STRING | RAW_STRING )?
 	;
 
 namespace_directive
-	: NAMESPACE_DIRECTIVE SYMBOL
+	: NAMESPACE_DIRECTIVE symbol
 	;
 
 classname_directive
-	: CLASSNAME_DIRECTIVE SYMBOL
+	: CLASSNAME_DIRECTIVE symbol
 	;
 
 main_directive
@@ -194,7 +194,8 @@ list_header
 	;
 
 array_header
-	: ARRAY '(' type? ')'
+	: ARRAY '(' ( type | expression )? ')'
+	| ARRAY '(' type ',' expression ')'
 	;
 
 map_header

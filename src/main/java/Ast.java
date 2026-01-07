@@ -165,10 +165,13 @@ public class Ast {
 
 	public static class ArrayType extends Type {
 		public final Type items;
+		public final Expression size;
 
-		public ArrayType(List<Token> tokens, Type items) {
+		public ArrayType(List<Token> tokens, Type items, Expression size) {
 			super(tokens);
+
 			this.items = items;
+			this.size = size;
 		}
 
 		@Override

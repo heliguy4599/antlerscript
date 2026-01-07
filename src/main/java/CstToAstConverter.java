@@ -4,9 +4,9 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 
-// public final class CstToAstConverter extends AbstractParseTreeVisitor<Ast.Node> implements
-// AntlerScriptParserVisitor<Ast.Node> {
-public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Object> {
+public final class CstToAstConverter extends AbstractParseTreeVisitor<Object> implements
+AntlerScriptParserVisitor<Object> {
+// public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Object> {
 	private static List<Token> getTokens(ParserRuleContext ctx) {
 		assert ctx != null;
 
@@ -74,35 +74,143 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		}
 	}
 
+	// === MISC ===
+
+	@Override
+	public Object visitSymbol(AntlerScriptParser.SymbolContext ctx) {
+		assert ctx != null;
+
+		// Should be handled by the caller
+		assert false;
+		return null;
+	}
+
+	@Override
+	public Object visitSemicolon(AntlerScriptParser.SemicolonContext ctx) {
+		assert ctx != null;
+
+		// Should be handled by the caller
+		assert false;
+		return null;
+	}
+
 	// === FILES ===
 
-	// PROGRAM
+	@Override
+	public Ast.Program visitProgram(AntlerScriptParser.ProgramContext ctx) {
+		assert ctx != null;
 
-	// PROGRAM-main_program
+		if (ctx.main_program() != null) {
+			return visitMain_program(ctx.main_program());
+		} else if (ctx.class_program() != null) {
+			return visitClass_program(ctx.class_program());
+		} else if (ctx.namespace_program() != null) {
+			return visitNamespace_program(ctx.namespace_program());
+		} else if (ctx.implicit_namespace_program() != null) {
+			return visitImplicit_namespace_program(ctx.implicit_namespace_program());
+		} else {
+			assert false;
+			return null;
+		}
+	}
 
-	// PROGRAM-class_program
+	@Override
+	public Ast.FileDirective visitOther_directive(AntlerScriptParser.Other_directiveContext ctx) {
+		assert ctx != null;
 
-	// PROGRAM-namespace_program
+		String string = null;
 
-	// PROGRAM-implicit_namespace_program
+		if (ctx.STRING() != null) {
+			string = ctx.STRING().getText();
 
-	// other_directive
+			assert string.length() >= 2;
+			assert string.charAt(0) == '"';
+			assert string.charAt(string.length() - 1) == '"';
+		} else if (ctx.RAW_STRING() != null) {
+			string = ctx.STRING().getText();
 
-	// namespace_directive
+			assert string.length() >= 2;
+			assert string.charAt(0) == '`';
+			assert string.charAt(string.length() - 1) == '`';
+		}
 
-	// classname_directive
+		return new Ast.FileDirective(ctx.symbol().getText(), string);
+	}
 
-	// main_directive
+	@Override
+	public String visitNamespace_directive(AntlerScriptParser.Namespace_directiveContext ctx) {
+		assert ctx != null;
 
-	// main_program
+		return ctx.symbol().getText();
+	}
 
-	// class_program
+	@Override
+	public String visitClassname_directive(AntlerScriptParser.Classname_directiveContext ctx) {
+		assert ctx != null;
 
-	// namespace_program
+		return ctx.symbol().getText();
+	}
 
-	// implicit_namespace_program
+	@Override
+	public Ast.FileDirective visitMain_directive(AntlerScriptParser.Main_directiveContext ctx) {
+		assert ctx != null;
 
-	// namespace_member
+		return new Ast.FileDirective(ctx.MAIN_DIRECTIVE().getText(), null);
+	}
+
+	@Override
+	public Ast.MainProgram visitMain_program(AntlerScriptParser.Main_programContext ctx) {
+		assert ctx != null;
+
+		List<Ast.Statement> statements = ctx.statement().stream().map(this::visitStatement).toList();
+		List<Ast.FileDirective> directives = ctx.other_directive().stream().map(this::visitOther_directive).toList();
+
+		return new Ast.MainProgram(getTokens(ctx), directives, statements);
+	}
+
+	@Override
+	public Ast.ClassProgram visitClass_program(AntlerScriptParser.Class_programContext ctx) {
+		assert ctx != null;
+
+		String namespace = visitNamespace_directive(ctx.namespace_directive());
+		String classname = visitClassname_directive(ctx.classname_directive());
+		List<Ast.FileDirective> directives = ctx.other_directive().stream().map(this::visitOther_directive).toList();
+		Ast.ClassType topLevel = visitClass_top_level(ctx.class_top_level());
+
+		return new Ast.ClassProgram(getTokens(ctx), namespace, classname, directives, topLevel);
+	}
+
+	@Override
+	public Ast.NamespaceProgram visitNamespace_program(AntlerScriptParser.Namespace_programContext ctx) {
+		assert ctx != null;
+
+		String namespace = visitNamespace_directive(ctx.namespace_directive());
+		List<Ast.FileDirective> directives = ctx.other_directive().stream().map(this::visitOther_directive).toList();
+		List<Ast.NamespaceMember> members = ctx.namespace_member().stream().map(this::visitNamespace_member).toList();
+
+		return new Ast.NamespaceProgram(getTokens(ctx), namespace, directives, members);
+	}
+
+	@Override
+	public Ast.NamespaceProgram visitImplicit_namespace_program(AntlerScriptParser.Implicit_namespace_programContext ctx) {
+		assert ctx != null;
+
+		List<Ast.FileDirective> directives = ctx.other_directive().stream().map(this::visitOther_directive).toList();
+		List<Ast.NamespaceMember> members = ctx.namespace_member().stream().map(this::visitNamespace_member).toList();
+
+		return new Ast.NamespaceProgram(getTokens(ctx), null, directives, members);
+	}
+
+	@Override
+	public Ast.NamespaceMember visitNamespace_member(AntlerScriptParser.Namespace_memberContext ctx) {
+		assert ctx != null;
+
+		if (ctx.declaration() != null) {
+			return new Ast.NamespaceDeclaration(visitDeclaration(ctx.declaration()));
+		}
+
+		return new Ast.NamespaceTypedef(visitTypedef(ctx.typedef()));
+	}
 
 	// === CLASSES ===
 
@@ -314,6 +422,15 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	}
 
 	@Override
+	public Object visitType_or_right(AntlerScriptParser.Type_or_rightContext ctx) {
+		assert ctx != null;
+
+		// Should be handled by the caller
+		assert false;
+		return null;
+	}
+
+	@Override
 	public Ast.Type visitType_and(AntlerScriptParser.Type_andContext ctx) {
 		assert ctx != null;
 
@@ -322,6 +439,15 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		}
 
 		return new Ast.UnionType(getTokens(ctx), Ast.UnionType.Kind.AND, visitTypeAtomic(ctx.left), visitType_and(ctx.right.type_and()));
+	}
+
+	@Override
+	public Object visitType_and_right(AntlerScriptParser.Type_and_rightContext ctx) {
+		assert ctx != null;
+
+		// Should be handled by the caller
+		assert false;
+		return null;
 	}
 
 	// Helper, not an override
@@ -406,7 +532,8 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 		assert ctx != null;
 
 		Ast.Type type = visitType(ctx.type());
-		return new Ast.ArrayType(getTokens(ctx), type);
+		Ast.Expression size = visitExpression(ctx.expression());
+		return new Ast.ArrayType(getTokens(ctx), type, size);
 	}
 
 	@Override
@@ -986,14 +1113,26 @@ public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Objec
 	public Ast.StringExpression visitStringExpression(AntlerScriptParser.StringExpressionContext ctx) {
 		assert ctx != null;
 
-		return new Ast.StringExpression(getTokens(ctx), ctx.STRING().getText(), false);
+		String string = ctx.STRING().getText();
+
+		assert string.length() >= 2;
+		assert string.charAt(0) == '"';
+		assert string.charAt(string.length() - 1) == '"';
+
+		return new Ast.StringExpression(getTokens(ctx), string.substring(1, string.length() - 1), false);
 	}
 
 	@Override
 	public Ast.StringExpression visitRawStringExpression(AntlerScriptParser.RawStringExpressionContext ctx) {
 		assert ctx != null;
 
-		return new Ast.StringExpression(getTokens(ctx), ctx.RAW_STRING().getText(), true);
+		String string = ctx.RAW_STRING().getText();
+
+		assert string.length() >= 2;
+		assert string.charAt(0) == '`';
+		assert string.charAt(string.length() - 1) == '`';
+
+		return new Ast.StringExpression(getTokens(ctx), string.substring(1, string.length() - 1), true);
 	}
 
 	@Override

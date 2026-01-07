@@ -1,5 +1,5 @@
-$namespace SomeNameSpace
-$classname SomeClass
+:: namespace SomeNameSpace
+:: classname SomeClass
 
 extends One.Two.Three.Four.Five
 
@@ -28,15 +28,17 @@ let Int thereCanBeDeclarationsInBetween = 0
 __constructor() {}
 
 # Can't do file directives after code:
-#   $namespace Whatever
+#   :: namespace Whatever
 
 let Func(Int a, Int b : Int) fn = Func(Int a, Int b : Int) {
 	return a + b
 }
 
-# const values are forward declared, so thats okay
+# const values are forward declared (and so is type), so thats okay, but not let
 const fn1 = Func(:){fn2()}
 const fn2 = Func(:){fn1()}
+
+const my_array = Array(Int, 5){ 10, 20, 30, 40, 50 }
 
 fn(b = 20, a = 30)
 fn(30, _)
@@ -55,6 +57,8 @@ let fn = Func(Int a, Int b : Int) {
 let Func(Int a, Int b : Int) fn = { return a + b }
 
 const ls = List(Int){ 10, 20 }
+
+
 
 let casting = Func(:) {
 	120.5 as Float; some_obj as SomeClass
