@@ -678,7 +678,7 @@ public class Ast {
 			var other = (ExpressionStatement) object;
 
 			return Objects.equals(expression, other.expression)
-				& isDeferred == other.isDeferred;
+				&& isDeferred == other.isDeferred;
 		}
 	}
 
@@ -1238,7 +1238,8 @@ public class Ast {
 			var other = (AccessExpression) object;
 
 			return Objects.equals(this.object, other.object)
-				&& Objects.equals(member, other.member);
+				&& Objects.equals(member, other.member)
+				&& optional == other.optional;
 		}
 	}
 

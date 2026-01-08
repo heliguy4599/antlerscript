@@ -127,7 +127,7 @@ AntlerScriptParserVisitor<Object> {
 			assert string.charAt(0) == '"';
 			assert string.charAt(string.length() - 1) == '"';
 		} else if (ctx.RAW_STRING() != null) {
-			string = ctx.STRING().getText();
+			string = ctx.RAW_STRING().getText();
 
 			assert string.length() >= 2;
 			assert string.charAt(0) == '`';
@@ -1099,7 +1099,9 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.Argument visitExpressionArgument(AntlerScriptParser.ExpressionArgumentContext ctx) {
 		assert ctx != null;
 
-		return new Ast.Argument(visitExpression(ctx.expression()), ctx.symbol().getText(), false);
+		String symbol = ctx.symbol() == null ? null : ctx.symbol().getText();
+
+		return new Ast.Argument(visitExpression(ctx.expression()), symbol, false);
 	}
 
 	@Override
