@@ -79,10 +79,10 @@ public class Ast {
 				return false;
 			}
 
-			MainProgram mainProgram = (MainProgram) object;
+			var other = (MainProgram) object;
 
-			return directives.equals(mainProgram.directives)
-				&& statements.equals(mainProgram.statements);
+			return Objects.equals(directives, other.directives)
+				&& Objects.equals(statements, other.statements);
 		}
 	}
 
@@ -106,6 +106,20 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitClassProgram(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (ClassProgram) object;
+
+			return Objects.equals(namespace, other.namespace)
+				&& Objects.equals(className, other.className)
+				&& Objects.equals(directives, other.directives)
+				&& Objects.equals(topLevel, other.topLevel);
 		}
 	}
 
@@ -131,6 +145,19 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitNamespaceProgram(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (NamespaceProgram) object;
+
+			return Objects.equals(name, other.name)
+				&& Objects.equals(directives, other.directives)
+				&& Objects.equals(members, other.members);
 		}
 	}
 
@@ -167,6 +194,19 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitUnionType(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (UnionType) object;
+
+			return kind == other.kind
+				&& Objects.equals(left, other.left)
+				&& Objects.equals(right, other.right);
+		}
 	}
 
 	public static class SymbolType extends Type {
@@ -184,6 +224,17 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitSymbolType(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (SymbolType) object;
+
+			return Objects.equals(name, other.name);
+		}
 	}
 
 	public static class ListType extends Type {
@@ -197,6 +248,17 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitListType(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (ListType) object;
+
+			return Objects.equals(items, other.items);
 		}
 	}
 
@@ -214,6 +276,18 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitArrayType(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (ArrayType) object;
+
+			return Objects.equals(items, other.items)
+				&& Objects.equals(size, other.size);
 		}
 	}
 
@@ -234,6 +308,18 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitMapType(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (MapType) object;
+
+			return Objects.equals(keys, other.keys)
+				&& Objects.equals(values, other.values);
+		}
 	}
 
 	public static class FunctionType extends Type {
@@ -250,6 +336,18 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitFunctionType(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (FunctionType) object;
+
+			return Objects.equals(parameters, other.parameters)
+				&& Objects.equals(returnType, other.returnType);
 		}
 	}
 
@@ -274,6 +372,18 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitEnumType(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (EnumType) object;
+
+			return Objects.equals(extendsAccess, other.extendsAccess)
+				&& Objects.equals(memberSymbols, other.memberSymbols);
+		}
 	}
 
 	public static class ClassType extends Type {
@@ -290,6 +400,18 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitClassType(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (ClassType) object;
+
+			return Objects.equals(classExtends, other.classExtends)
+				&& Objects.equals(members, other.members);
 		}
 	}
 
@@ -328,6 +450,18 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitCastClassMember(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (CastClassMember) object;
+
+			return Objects.equals(castedType, other.castedType)
+				&& Objects.equals(block, other.block);
+		}
 	}
 
 	public static class DeclarationClassMember extends ClassMember {
@@ -344,6 +478,17 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitDeclarationClassMember(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (DeclarationClassMember) object;
+
+			return Objects.equals(declaration, other.declaration);
 		}
 	}
 
@@ -379,6 +524,21 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitOperatorOverloadClassMember(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (OperatorOverloadClassMember) object;
+
+			return operator == other.operator
+				&& Objects.equals(rightType, other.rightType)
+				&& Objects.equals(symbol, other.symbol)
+				&& Objects.equals(returnType, other.returnType)
+				&& Objects.equals(block, other.block);
+		}
 	}
 
 	public static class ConstructorClassMember extends ClassMember {
@@ -395,6 +555,18 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitConstructorClassMember(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (ConstructorClassMember) object;
+
+			return Objects.equals(parameters, other.parameters)
+				&& Objects.equals(statementBlock, other.statementBlock);
 		}
 	}
 
@@ -423,6 +595,20 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitCaptureClassMember(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (CaptureClassMember) object;
+
+			return Objects.equals(extendsAccess, other.extendsAccess)
+				&& Objects.equals(originSymbol, other.originSymbol)
+				&& Objects.equals(targetSymbol, other.targetSymbol)
+				&& Objects.equals(extendsAssign, other.extendsAssign);
+		}
 	}
 
 	public static class ExtendsAssignClassMember extends ClassMember {
@@ -442,6 +628,18 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitExtendsAssignClassMember(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (ExtendsAssignClassMember) object;
+
+			return Objects.equals(symbol, other.symbol)
+				&& Objects.equals(expression, other.expression);
 		}
 	}
 
@@ -470,6 +668,18 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitExpressionStatement(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (ExpressionStatement) object;
+
+			return Objects.equals(expression, other.expression)
+				& isDeferred == other.isDeferred;
+		}
 	}
 
 	public static class StatementBlock extends Statement {
@@ -486,6 +696,18 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitStatementBlock(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (StatementBlock) object;
+
+			return Objects.equals(statements, other.statements)
+				&& isDeferred == other.isDeferred;
 		}
 	}
 
@@ -512,6 +734,21 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitVariableDeclaration(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (VariableDeclaration) object;
+
+			return isConst == other.isConst
+				&& isMutable == other.isMutable
+				&& Objects.equals(type, other.type)
+				&& Objects.equals(name, other.name)
+				&& Objects.equals(initializer, other.initializer);
+		}
 	}
 
 	public static class Typedef extends Statement {
@@ -532,6 +769,18 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitTypedef(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (Typedef) object;
+
+			return Objects.equals(name, other.name)
+				&& Objects.equals(type, other.type);
+		}
 	}
 
 	public static class ReturnStatement extends Statement {
@@ -545,6 +794,17 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitReturnStatement(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (ReturnStatement) object;
+
+			return Objects.equals(value, other.value);
 		}
 	}
 
@@ -597,12 +857,10 @@ public class Ast {
 
 			var other = (IfStatement) object;
 
-			return (
-				test.equals(other.test)
-				&& thenBranch.equals(other.thenBranch)
-				&& elifBranches.equals(other.elifBranches)
-				&& elseBranch.equals(other.elseBranch)
-			);
+			return Objects.equals(test, other.test)
+				&& Objects.equals(thenBranch, other.thenBranch)
+				&& Objects.equals(elifBranches, other.elifBranches)
+				&& Objects.equals(elseBranch, other.elseBranch);
 		}
 	}
 
@@ -633,10 +891,8 @@ public class Ast {
 
 			var other = (ElifBranch) object;
 
-			return (
-				test.equals(other.test)
-				&& body.equals(other.body)
-			);
+			return Objects.equals(test, other.test)
+				&& Objects.equals(body, other.body);
 		}
 	}
 
@@ -670,11 +926,9 @@ public class Ast {
 
 			var other = (SwitchStatement) object;
 
-			return (
-				value.equals(other.value)
-				&& cases.equals(other.cases)
-				&& defaultCase.equals(other.defaultCase)
-			);
+			return Objects.equals(value, other.value)
+				&& Objects.equals(cases, other.cases)
+				&& Objects.equals(defaultCase, other.defaultCase);
 		}
 	}
 
@@ -706,10 +960,8 @@ public class Ast {
 
 			var other = (CaseBranch) object;
 
-			return (
-				values.equals(other.values)
-				&& body.equals(other.body)
-			);
+			return Objects.equals(values, other.values)
+				&& Objects.equals(body, other.body);
 		}
 	}
 
@@ -740,10 +992,8 @@ public class Ast {
 
 			var other = (WhileStatement) object;
 
-			return (
-				test.equals(other.test)
-				&& body.equals(other.body)
-			);
+			return Objects.equals(test, other.test)
+				&& Objects.equals(body, other.body);
 		}
 	}
 
@@ -780,13 +1030,11 @@ public class Ast {
 
 			var other = (LoopStatement) object;
 
-			return (
-				from.equals(other.from)
-				&& to.equals(other.to)
-				&& by.equals(other.by)
-				&& variable.equals(other.variable)
-				&& body.equals(other.body)
-			);
+			return Objects.equals(from, other.from)
+				&& Objects.equals(to, other.to)
+				&& Objects.equals(by, other.by)
+				&& Objects.equals(variable, other.variable)
+				&& Objects.equals(body, other.body);
 		}
 	}
 
@@ -821,12 +1069,10 @@ public class Ast {
 
 			var other = (IterateStatement) object;
 
-			return (
-				iterable.equals(other.iterable)
-				&& indexVariable.equals(other.indexVariable)
-				&& elementVariable.equals(other.elementVariable)
-				&& body.equals(other.body)
-			);
+			return Objects.equals(iterable, other.iterable)
+				&& Objects.equals(indexVariable, other.indexVariable)
+				&& Objects.equals(elementVariable, other.elementVariable)
+				&& Objects.equals(body, other.body);
 		}
 	}
 
@@ -888,11 +1134,9 @@ public class Ast {
 
 			var other = (BinaryExpression) object;
 
-			return (
-				operation == other.operation
-				&& left.equals(other.left)
-				&& right.equals(other.right)
-			);
+			return operation == other.operation
+				&& Objects.equals(left, other.left)
+				&& Objects.equals(right, other.right);
 		}
 	}
 
@@ -927,10 +1171,8 @@ public class Ast {
 
 			var other = (UnaryExpression) object;
 
-			return (
-				operation == other.operation
-				&& operand.equals(other.operand)
-			);
+			return operation == other.operation
+				&& Objects.equals(operand, other.operand);
 		}
 	}
 
@@ -961,10 +1203,8 @@ public class Ast {
 
 			var other = (IndexExpression) object;
 
-			return (
-				base.equals(other.base)
-					&& index.equals(other.index)
-			);
+			return Objects.equals(base, other.base)
+				&& Objects.equals(index, other.index);
 		}
 	}
 
@@ -997,10 +1237,8 @@ public class Ast {
 
 			var other = (AccessExpression) object;
 
-			return (
-				this.object.equals(other.object)
-				&& member.equals(other.member)
-			);
+			return Objects.equals(this.object, other.object)
+				&& Objects.equals(member, other.member);
 		}
 	}
 
@@ -1030,10 +1268,8 @@ public class Ast {
 
 			var other = (CallExpression) object;
 
-			return (
-				function.equals(other.function)
-				&& arguments.equals(other.arguments)
-			);
+			return Objects.equals(function, other.function)
+				&& Objects.equals(arguments, other.arguments);
 		}
 	}
 
@@ -1062,7 +1298,7 @@ public class Ast {
 
 			var other = (SymbolExpression) object;
 
-			return symbol.equals(other.symbol);
+			return Objects.equals(symbol, other.symbol);
 		}
 	}
 
@@ -1094,11 +1330,9 @@ public class Ast {
 
 			var other = (IntExpression) object;
 
-			return (
-				value == other.value
+			return value == other.value
 				&& precision == other.precision
-				&& signed == other.signed
-			);
+				&& signed == other.signed;
 		}
 	}
 
@@ -1128,10 +1362,8 @@ public class Ast {
 
 			var other = (FloatExpression) object;
 
-			return (
-				value == other.value
-				&& precision == other.precision
-			);
+			return value == other.value
+				&& precision == other.precision;
 		}
 	}
 
@@ -1222,7 +1454,7 @@ public class Ast {
 
 			var other = (StringExpression) object;
 
-			return value.equals(other.value);
+			return Objects.equals(value, other.value);
 		}
 	}
 
@@ -1253,10 +1485,8 @@ public class Ast {
 
 			var other = (LambdaExpression) object;
 
-			return (
-				type.equals(other.type)
-				&& body.equals(other.body)
-			);
+			return Objects.equals(type, other.type)
+				&& Objects.equals(body, other.body);
 		}
 	}
 
@@ -1287,10 +1517,8 @@ public class Ast {
 
 			var other = (SelectExpression) object;
 
-			return (
-				match.equals(other.match)
-				&& branches.equals(other.branches)
-			);
+			return Objects.equals(match, other.match)
+				&& Objects.equals(branches, other.branches);
 		}
 	}
 
@@ -1320,10 +1548,8 @@ public class Ast {
 
 			var other = (NewMapExpression) object;
 
-			return (
-				type.equals(other.type)
-				&& keyValuePairs.equals(other.keyValuePairs)
-			);
+			return Objects.equals(type, other.type)
+				&& Objects.equals(keyValuePairs, other.keyValuePairs);
 		}
 	}
 
@@ -1353,10 +1579,8 @@ public class Ast {
 
 			var other = (NewListExpression) object;
 
-			return (
-				type.equals(other.type)
-				&& elements.equals(other.elements)
-			);
+			return Objects.equals(type, other.type)
+				&& Objects.equals(elements, other.elements);
 		}
 	}
 
@@ -1386,10 +1610,8 @@ public class Ast {
 
 			var other = (NewArrayExpression) object;
 
-			return (
-				type.equals(other.type)
-				&& elements.equals(other.elements)
-			);
+			return Objects.equals(type, other.type)
+				&& Objects.equals(elements, other.elements);
 		}
 	}
 
@@ -1420,10 +1642,8 @@ public class Ast {
 
 			var other = (NewObjectExpression) object;
 
-			return (
-				symbol.equals(other.symbol)
-				&& arguments.equals(other.arguments)
-			);
+			return Objects.equals(symbol, other.symbol)
+				&& Objects.equals(arguments, other.arguments);
 		}
 	}
 
@@ -1453,10 +1673,8 @@ public class Ast {
 
 			var other = (NewClassInstance) object;
 
-			return (
-				classType.equals(other.classType)
-				&& arguments.equals(other.arguments)
-			);
+			return Objects.equals(classType, other.classType)
+				&& Objects.equals(arguments, other.arguments);
 		}
 	}
 
