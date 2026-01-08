@@ -588,6 +588,22 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitIfStatement(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (IfStatement) object;
+
+			return (
+				test.equals(other.test)
+				&& thenBranch.equals(other.thenBranch)
+				&& elifBranches.equals(other.elifBranches)
+				&& elseBranch.equals(other.elseBranch)
+			);
+		}
 	}
 
 	public static class ElifBranch extends Node {
@@ -607,6 +623,20 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitElifBranch(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (ElifBranch) object;
+
+			return (
+				test.equals(other.test)
+				&& body.equals(other.body)
+			);
 		}
 	}
 
@@ -631,6 +661,21 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitSwitchStatement(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (SwitchStatement) object;
+
+			return (
+				value.equals(other.value)
+				&& cases.equals(other.cases)
+				&& defaultCase.equals(other.defaultCase)
+			);
+		}
 	}
 
 	public static class CaseBranch extends Node {
@@ -652,6 +697,20 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitCaseBranch(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (CaseBranch) object;
+
+			return (
+				values.equals(other.values)
+				&& body.equals(other.body)
+			);
+		}
 	}
 
 	public static class WhileStatement extends Statement {
@@ -671,6 +730,20 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitWhileStatement(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (WhileStatement) object;
+
+			return (
+				test.equals(other.test)
+				&& body.equals(other.body)
+			);
 		}
 	}
 
@@ -698,6 +771,23 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitLoopStatement(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (LoopStatement) object;
+
+			return (
+				from.equals(other.from)
+				&& to.equals(other.to)
+				&& by.equals(other.by)
+				&& variable.equals(other.variable)
+				&& body.equals(other.body)
+			);
+		}
 	}
 
 	public static class IterateStatement extends Statement {
@@ -721,6 +811,22 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitIterateStatement(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (IterateStatement) object;
+
+			return (
+				iterable.equals(other.iterable)
+				&& indexVariable.equals(other.indexVariable)
+				&& elementVariable.equals(other.elementVariable)
+				&& body.equals(other.body)
+			);
 		}
 	}
 
@@ -783,7 +889,7 @@ public class Ast {
 			var other = (BinaryExpression) object;
 
 			return (
-				operation.equals(other.operation)
+				operation == other.operation
 				&& left.equals(other.left)
 				&& right.equals(other.right)
 			);
@@ -822,7 +928,7 @@ public class Ast {
 			var other = (UnaryExpression) object;
 
 			return (
-				operation.equals(other.operation)
+				operation == other.operation
 				&& operand.equals(other.operand)
 			);
 		}
