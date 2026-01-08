@@ -773,6 +773,21 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitBinaryExpression(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (BinaryExpression) object;
+
+			return (
+				operation.equals(other.operation)
+				&& left.equals(other.left)
+				&& right.equals(other.right)
+			);
+		}
 	}
 
 	public static class UnaryExpression extends Expression {
@@ -797,6 +812,20 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitUnaryExpression(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (UnaryExpression) object;
+
+			return (
+				operation.equals(other.operation)
+				&& operand.equals(other.operand)
+			);
+		}
 	}
 
 	public static class IndexExpression extends Expression {
@@ -816,6 +845,20 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitIndexExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (IndexExpression) object;
+
+			return (
+				base.equals(other.base)
+					&& index.equals(other.index)
+			);
 		}
 	}
 
@@ -839,6 +882,20 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitAccessExpression(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (AccessExpression) object;
+
+			return (
+				this.object.equals(other.object)
+				&& member.equals(other.member)
+			);
+		}
 	}
 
 	public static class CallExpression extends Expression {
@@ -858,6 +915,20 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitCallExpression(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (CallExpression) object;
+
+			return (
+				function.equals(other.function)
+				&& arguments.equals(other.arguments)
+			);
+		}
 	}
 
 	public static class SymbolExpression extends Expression {
@@ -875,6 +946,17 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitSymbolExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (SymbolExpression) object;
+
+			return symbol.equals(other.symbol);
 		}
 	}
 
@@ -897,6 +979,21 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitIntExpression(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (IntExpression) object;
+
+			return (
+				value == other.value
+				&& precision == other.precision
+				&& signed == other.signed
+			);
+		}
 	}
 
 	public static class FloatExpression extends Expression {
@@ -915,6 +1012,20 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitFloatExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (FloatExpression) object;
+
+			return (
+				value == other.value
+				&& precision == other.precision
+			);
 		}
 	}
 
@@ -963,6 +1074,17 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitBooleanExpression(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (BooleanExpression) object;
+
+			return value == other.value;
+		}
 	}
 
 	public static class StringExpression extends Expression {
@@ -985,6 +1107,17 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitStringExpression(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (StringExpression) object;
+
+			return value.equals(other.value);
+		}
 	}
 
 	public static class LambdaExpression extends Expression {
@@ -1004,6 +1137,20 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitLambdaExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (LambdaExpression) object;
+
+			return (
+				type.equals(other.type)
+				&& body.equals(other.body)
+			);
 		}
 	}
 
@@ -1025,6 +1172,20 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitSelectExpression(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (SelectExpression) object;
+
+			return (
+				match.equals(other.match)
+				&& branches.equals(other.branches)
+			);
+		}
 	}
 
 	public static class NewMapExpression extends Expression {
@@ -1043,6 +1204,20 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitNewMapExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (NewMapExpression) object;
+
+			return (
+				type.equals(other.type)
+				&& keyValuePairs.equals(other.keyValuePairs)
+			);
 		}
 	}
 
@@ -1063,6 +1238,20 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitNewListExpression(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (NewListExpression) object;
+
+			return (
+				type.equals(other.type)
+				&& elements.equals(other.elements)
+			);
+		}
 	}
 
 	public static class NewArrayExpression extends Expression {
@@ -1081,6 +1270,20 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitNewArrayExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (NewArrayExpression) object;
+
+			return (
+				type.equals(other.type)
+				&& elements.equals(other.elements)
+			);
 		}
 	}
 
@@ -1102,6 +1305,20 @@ public class Ast {
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitNewObjectExpression(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (NewObjectExpression) object;
+
+			return (
+				symbol.equals(other.symbol)
+				&& arguments.equals(other.arguments)
+			);
+		}
 	}
 
 	public static class NewClassInstance extends Expression {
@@ -1120,6 +1337,20 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitNewClassInstance(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (NewClassInstance) object;
+
+			return (
+				classType.equals(other.classType)
+				&& arguments.equals(other.arguments)
+			);
 		}
 	}
 
