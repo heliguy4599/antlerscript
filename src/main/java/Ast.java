@@ -14,6 +14,31 @@ public class Ast {
 			this.tokens = tokens;
 		}
 
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+
+			if (object == null || getClass() != object.getClass()) {
+				return false;
+			}
+
+			Node node = (Node) object;
+
+			if (tokens.size() != node.tokens.size()) {
+				return false;
+			}
+
+			for (int i = 0; i < tokens.size(); i++) {
+				if (!tokens.get(i).getText().equals(node.tokens.get(i).getText())) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		public abstract <T> T accept(Visitor<T> visitor);
 	}
 
@@ -46,6 +71,18 @@ public class Ast {
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitMainProgram(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			MainProgram mainProgram = (MainProgram) object;
+
+			return directives.equals(mainProgram.directives)
+				&& statements.equals(mainProgram.statements);
 		}
 	}
 
