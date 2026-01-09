@@ -57,8 +57,16 @@ AntlerScriptParserVisitor<Object> {
 			Object pl = pt.getPayload();
 
 			if (pl instanceof Token token) {
+				// Set the token's `text` field instead of
+				// extracting from the input for more
+				// information during debugging
+				if (token instanceof CommonToken ctoken) {
+					ctoken.setText(token.getText());
+				}
+
 				out.add(token);
-				return;
+
+				continue;
 			}
 
 			// Payload can now only be RuleContext
@@ -675,8 +683,12 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression latest = visitExpression_logical_and(ctx.expression_logical_and());
 
+		List<Token> tokens = getTokens(ctx.expression_logical_and());
+
 		for (AntlerScriptParser.Expression_logical_or_rightContext logicalOrCtx : ctx.expression_logical_or_right()) {
-			latest = new Ast.BinaryExpression(getTokens(logicalOrCtx), visitExpression_logical_or_right(logicalOrCtx), latest, visitExpression_logical_and(logicalOrCtx.expression_logical_and()));
+			var acc = getTokens(logicalOrCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_logical_or_right(logicalOrCtx), latest, visitExpression_logical_and(logicalOrCtx.expression_logical_and()));
 		}
 
 		return latest;
@@ -705,8 +717,12 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression latest = visitExpression_logical_not(ctx.expression_logical_not());
 
+		List<Token> tokens = getTokens(ctx.expression_logical_not());
+
 		for (AntlerScriptParser.Expression_logical_and_rightContext logicalAndCtx : ctx.expression_logical_and_right()) {
-			latest = new Ast.BinaryExpression(getTokens(logicalAndCtx), visitExpression_logical_and_right(logicalAndCtx), latest, visitExpression_logical_not(logicalAndCtx.expression_logical_not()));
+			var acc = getTokens(logicalAndCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_logical_and_right(logicalAndCtx), latest, visitExpression_logical_not(logicalAndCtx.expression_logical_not()));
 		}
 
 		return latest;
@@ -749,8 +765,12 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression latest = visitExpression_bit_or(ctx.expression_bit_or());
 
+		List<Token> tokens = getTokens(ctx.expression_bit_or());
+
 		for (AntlerScriptParser.Expression_cmp_rightContext cmpCtx : ctx.expression_cmp_right()) {
-			latest = new Ast.BinaryExpression(getTokens(cmpCtx), visitExpression_cmp_right(cmpCtx), latest, visitExpression_bit_or(cmpCtx.expression_bit_or()));
+			var acc = getTokens(cmpCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_cmp_right(cmpCtx), latest, visitExpression_bit_or(cmpCtx.expression_bit_or()));
 		}
 
 		return latest;
@@ -785,8 +805,12 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression latest = visitExpression_bit_xor(ctx.expression_bit_xor());
 
+		List<Token> tokens = getTokens(ctx.expression_bit_xor());
+
 		for (AntlerScriptParser.Expression_bit_or_rightContext bitOrCtx : ctx.expression_bit_or_right()) {
-			latest = new Ast.BinaryExpression(getTokens(bitOrCtx), visitExpression_bit_or_right(bitOrCtx), latest, visitExpression_bit_xor(bitOrCtx.expression_bit_xor()));
+			var acc = getTokens(bitOrCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_bit_or_right(bitOrCtx), latest, visitExpression_bit_xor(bitOrCtx.expression_bit_xor()));
 		}
 
 		return latest;
@@ -814,8 +838,12 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression latest = visitExpression_bit_and(ctx.expression_bit_and());
 
+		List<Token> tokens = getTokens(ctx.expression_bit_and());
+
 		for (AntlerScriptParser.Expression_bit_xor_rightContext bitXorCtx : ctx.expression_bit_xor_right()) {
-			latest = new Ast.BinaryExpression(getTokens(bitXorCtx), visitExpression_bit_xor_right(bitXorCtx), latest, visitExpression_bit_and(bitXorCtx.expression_bit_and()));
+			var acc = getTokens(bitXorCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_bit_xor_right(bitXorCtx), latest, visitExpression_bit_and(bitXorCtx.expression_bit_and()));
 		}
 
 		return latest;
@@ -843,8 +871,12 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression latest = visitExpression_bit_shift(ctx.expression_bit_shift());
 
+		List<Token> tokens = getTokens(ctx.expression_bit_shift());
+
 		for (AntlerScriptParser.Expression_bit_and_rightContext bitAndCtx : ctx.expression_bit_and_right()) {
-			latest = new Ast.BinaryExpression(getTokens(bitAndCtx), visitExpression_bit_and_right(bitAndCtx), latest, visitExpression_bit_shift(bitAndCtx.expression_bit_shift()));
+			var acc = getTokens(bitAndCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_bit_and_right(bitAndCtx), latest, visitExpression_bit_shift(bitAndCtx.expression_bit_shift()));
 		}
 
 		return latest;
@@ -872,8 +904,12 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression latest = visitExpression_add(ctx.expression_add());
 
+		List<Token> tokens = getTokens(ctx.expression_add());
+
 		for (AntlerScriptParser.Expression_bit_shift_rightContext bitShiftCtx : ctx.expression_bit_shift_right()) {
-			latest = new Ast.BinaryExpression(getTokens(bitShiftCtx), visitExpression_bit_shift_right(bitShiftCtx), latest, visitExpression_add(bitShiftCtx.expression_add()));
+			var acc = getTokens(bitShiftCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_bit_shift_right(bitShiftCtx), latest, visitExpression_add(bitShiftCtx.expression_add()));
 		}
 
 		return latest;
@@ -902,8 +938,12 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression latest = visitExpression_mult(ctx.expression_mult());
 
+		List<Token> tokens = getTokens(ctx.expression_mult());
+
 		for (AntlerScriptParser.Expression_add_rightContext addCtx : ctx.expression_add_right()) {
-			latest = new Ast.BinaryExpression(getTokens(addCtx), visitExpression_add_right(addCtx), latest, visitExpression_mult(addCtx.expression_mult()));
+			var acc = getTokens(addCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_add_right(addCtx), latest, visitExpression_mult(addCtx.expression_mult()));
 		}
 
 		return latest;
@@ -933,8 +973,12 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression latest = visitExpression_unary(ctx.expression_unary());
 
+		List<Token> tokens = getTokens(ctx.expression_unary());
+
 		for (AntlerScriptParser.Expression_mult_rightContext multCtx : ctx.expression_mult_right()) {
-			latest = new Ast.BinaryExpression(getTokens(multCtx), visitExpression_mult_right(multCtx), latest, visitExpression_unary(multCtx.expression_unary()));
+			var acc = getTokens(multCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_mult_right(multCtx), latest, visitExpression_unary(multCtx.expression_unary()));
 		}
 
 		return latest;
@@ -1000,8 +1044,12 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression latest = visitExpression_postfix(ctx.expression_postfix());
 
+		List<Token> tokens = getTokens(ctx.expression_postfix());
+
 		for (AntlerScriptParser.Expression_exp_rightContext expCtx : ctx.expression_exp_right()) {
-			latest = new Ast.BinaryExpression(getTokens(expCtx), Ast.BinaryExpression.Kind.EXPONENT, latest, visitExpression_postfix(expCtx.expression_postfix()));
+			var acc = getTokens(expCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), Ast.BinaryExpression.Kind.EXPONENT, latest, visitExpression_postfix(expCtx.expression_postfix()));
 		}
 
 		return latest;

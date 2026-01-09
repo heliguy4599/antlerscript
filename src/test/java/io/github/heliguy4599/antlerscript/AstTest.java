@@ -27,7 +27,8 @@ class AstTest {
 			var context = (ParserRuleContext) rule.invoke(parser);
 			assertNull(context.exception);
 			var converter = new CstToAstConverter();
-			assertEquals(expected, converter.visit(context));
+			var converted = converter.visit(context);
+			assertEquals(expected, converted);
 		});
 		assertEquals(0, parser.getNumberOfSyntaxErrors());
 	}
@@ -78,6 +79,20 @@ class AstTest {
 		@Test
 		void lmao() {
 			testInput("Self", "type_atomic", new Ast.SelfClassType(genTokens("Self")));
+		}
+
+		@Test
+		void lmao2() {
+			testInput("1 + 1", "expression",
+				  new Ast.BinaryExpression(genTokens("1", "+", "1"), Ast.BinaryExpression.Kind.ADD,
+							   new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true),
+							   new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true)));
+		}
+
+		@Test
+		void lmao3() {
+			testInput("1 + 1 + 1", "expression",
+				  new Ast.BinaryExpression(genTokens("1", "+", "1", "+", "1"), Ast.BinaryExpression.Kind.ADD, new Ast.BinaryExpression(genTokens("1", "+", "1"), Ast.BinaryExpression.Kind.ADD, new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true), new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true)), new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true)));
 		}
 	}
 }
