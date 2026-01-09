@@ -1,6 +1,8 @@
 lexer grammar AntlerScriptLexer;
 
 @header {
+package io.github.heliguy4599.antlerscript;
+
 import java.util.Deque;
 import java.util.ArrayDeque;
 }

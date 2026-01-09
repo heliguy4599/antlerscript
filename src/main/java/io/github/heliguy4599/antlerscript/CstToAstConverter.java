@@ -1,3 +1,5 @@
+package io.github.heliguy4599.antlerscript;
+
 import java.util.*;
 
 import org.antlr.v4.runtime.*;
@@ -6,7 +8,6 @@ import org.antlr.v4.runtime.tree.*;
 
 public final class CstToAstConverter extends AbstractParseTreeVisitor<Object> implements
 AntlerScriptParserVisitor<Object> {
-// public final class CstToAstConverter extends AntlerScriptParserBaseVisitor<Object> {
 	private static List<Token> getTokens(ParserRuleContext ctx) {
 		assert ctx != null;
 

@@ -75,7 +75,7 @@
         <artifactId>antlr4-maven-plugin</artifactId>
         <version>4.13.2</version>
 	<configuration>
-          <outputDirectory>src/main/java</outputDirectory>
+          <outputDirectory>src/main/java/io/github/heliguy4599/antlerscript</outputDirectory>
 	  <visitor>true</visitor>
 	  <listener>false</listener>
 	</configuration>
@@ -105,15 +105,15 @@
 	<configuration>
           <filesets>
             <fileset>
-              <directory>src/main/java</directory>
+              <directory>src/main/java/io/github/heliguy4599/antlerscript</directory>
               <includes>
 		<include>AntlerScriptLexer.interp</include>
 		<include>AntlerScriptLexer.java</include>
 		<include>AntlerScriptLexer.tokens</include>
-		<include>AntlerScriptParserBaseListener.java</include>
+		<include>AntlerScriptParserBaseVisitor.java</include>
 		<include>AntlerScriptParser.interp</include>
 		<include>AntlerScriptParser.java</include>
-		<include>AntlerScriptParserListener.java</include>
+		<include>AntlerScriptParserVisitor.java</include>
 		<include>AntlerScriptParser.tokens</include>
               </includes>
               <followSymlinks>false</followSymlinks>

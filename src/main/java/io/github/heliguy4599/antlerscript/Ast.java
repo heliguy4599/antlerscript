@@ -1,3 +1,5 @@
+package io.github.heliguy4599.antlerscript;
+
 import java.util.*;
 
 import org.antlr.v4.runtime.Token;

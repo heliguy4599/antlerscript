@@ -1,3 +1,5 @@
+package io.github.heliguy4599.antlerscript;
+
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 

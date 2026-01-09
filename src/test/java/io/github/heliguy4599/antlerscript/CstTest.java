@@ -1,3 +1,5 @@
+package io.github.heliguy4599.antlerscript;
+
 import java.io.*;
 import java.lang.reflect.*;
 
@@ -11,7 +13,7 @@ import org.junit.jupiter.params.provider.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Testing the ANTLR4-generated concrete syntax tree (CST)")
-class CstTest {
+class AntlerScriptTest {
 	// testInput: Input fully matches rule with no errors or leftover tokens
 	// testInputNoRule: Input fails to match rule (ANTLR errors suppressed)
 	// testInputPartialMatch: Input partially matches but leaves unparsed tokens (ANTLR errors suppressed)

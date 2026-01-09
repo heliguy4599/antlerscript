@@ -1,4 +1,9 @@
 parser grammar AntlerScriptParser;
+
+@header {
+package io.github.heliguy4599.antlerscript;
+}
+
 options { tokenVocab=AntlerScriptLexer; }
 
 symbol

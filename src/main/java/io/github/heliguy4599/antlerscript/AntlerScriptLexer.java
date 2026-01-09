@@ -1,5 +1,7 @@
 // Generated from AntlerScriptLexer.g4 by ANTLR 4.13.2
 
+package io.github.heliguy4599.antlerscript;
+
 import java.util.Deque;
 import java.util.ArrayDeque;
 
