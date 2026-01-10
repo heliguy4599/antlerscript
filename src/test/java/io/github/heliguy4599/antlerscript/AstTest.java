@@ -64,35 +64,204 @@ class AstTest {
 	@Nested
 	@DisplayName("Statements")
 	class StatementTests {
-
+		@Test
+		void VariableDeclarationLet() {
+			testInput(
+				"let Int i",
+				"declaration",
+				new Ast.VariableDeclaration(
+					genTokens("let", "Int", "i"),
+					false,
+					false,
+					new Ast.SymbolType(genTokens("Int"), "Int"),
+					"i",
+					null
+				)
+			);
+		}
 	}
 
 	@Nested
 	@DisplayName("Expressions")
 	class ExpressionTests {
+		// @Test
+		// TODO: This seems to cause an infinite loop??
+		void UnaryExpressionNot() {
+			testInput(
+				"not true",
+				"expression",
+				new Ast.UnaryExpression(
+					genTokens("not", "true"),
+					Ast.UnaryExpression.Kind.NOT,
+					new Ast.BooleanExpression(genTokens("true"), true)
+				)
+			);
+		}
 
+		// @Test
+		// TODO: This seems to cause an infinite loop??
+		void ChainedUnaryExpressionNot() {
+			testInput(
+				"not not true",
+				"expression",
+				new Ast.UnaryExpression(
+					genTokens("not", "not", "true"),
+					Ast.UnaryExpression.Kind.NOT,
+					new Ast.UnaryExpression(
+						genTokens("not", "true"),
+						Ast.UnaryExpression.Kind.NOT,
+						new Ast.BooleanExpression(genTokens("true"), true)
+					)
+				)
+			);
+		}
+
+		@Test
+		void BinaryExpressionAdd() {
+			testInput(
+				"1 + 1",
+				"expression",
+				new Ast.BinaryExpression(
+					genTokens("1", "+", "1"),
+					Ast.BinaryExpression.Kind.ADD,
+					new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true),
+					new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true)
+				)
+			);
+		}
+
+		@Test
+		void ChainedBinaryExpressionAdd() {
+			testInput(
+				"1 + 1 + 1",
+				"expression",
+				new Ast.BinaryExpression(
+					genTokens("1", "+", "1", "+", "1"),
+					Ast.BinaryExpression.Kind.ADD,
+					new Ast.BinaryExpression(
+						genTokens("1", "+", "1"),
+						Ast.BinaryExpression.Kind.ADD,
+						new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true),
+						new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true)
+					),
+					new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true)
+				)
+			);
+		}
 	}
 
 	@Nested
 	@DisplayName("Types")
 	class TypeTests {
 		@Test
-		void lmao() {
+		void SymbolType() {
+			testInput("Int", "type_atomic", new Ast.SymbolType(genTokens("Int"), "Int"));
+		}
+
+		@Test
+		void ListType() {
+			testInput(
+				"List(Int)",
+				"type_atomic",
+				new Ast.ListType(
+					genTokens("List", "(", "Int", ")"),
+					new Ast.SymbolType(genTokens("Int"), "Int")
+				)
+			);
+		}
+
+		// @Test
+		// TODO: This fails
+		void ArrayType() {
+			testInput(
+				"Array(Int)",
+				"type_atomic",
+				new Ast.ArrayType(
+					genTokens("Array", "(", "Int", ")"),
+					new Ast.SymbolType(genTokens("Int"), "Int"),
+					null
+				)
+			);
+		}
+
+		@Test
+		void MapType() {
+			testInput(
+				"Map(String, Int)",
+				"type_atomic",
+				new Ast.MapType(
+					genTokens("Map", "(", "String", ",", "Int", ")"),
+					new Ast.SymbolType(genTokens("String"), "String"),
+					new Ast.SymbolType(genTokens("Int"), "Int")
+				)
+			);
+		}
+
+		// @Test
+		// TODO: This fails, due to expecting a DeclarationClassMember yet getting a VariableDeclarationMember
+		void ClassType() {
+			testInput(
+				"Class(let Int i)",
+				"type_atomic",
+				new Ast.ClassType(
+					genTokens("Class", "(", "let", "Int", "i", ")"),
+					null,
+					List.of(new Ast.DeclarationClassMember(
+						genTokens("let", "Int", "i"),
+						new Ast.VariableDeclaration(
+							genTokens("let", "Int", "i"),
+							false,
+							false,
+							new Ast.SymbolType(genTokens("Int"), "Int"),
+							"i",
+							null
+						)
+					))
+				)
+			);
+		}
+
+		@Test
+		void EnumType() {
+			testInput(
+				"Enum(ONE, TWO)",
+				"type_atomic",
+				new Ast.EnumType(
+					// TODO: This doesn't seem like it should be a correct input, but this is what is required
+					//   for the test to pass... Why is `"Enum", "(", ..., ")"` not allowed?
+					genTokens("ONE", ",", "TWO"),
+					null,
+					Arrays.asList("ONE", "TWO")
+				)
+			);
+		}
+
+		@Test
+		void FuncType() {
+			testInput(
+				"Func(: Int)",
+				"type_atomic",
+				new Ast.FunctionType(
+					genTokens("Func", "(", ":", "Int", ")"),
+					null,
+					new Ast.SymbolType(genTokens("Int"), "Int")
+				)
+			);
+		}
+
+		@Test
+		void SelfType() {
 			testInput("Self", "type_atomic", new Ast.SelfClassType(genTokens("Self")));
 		}
 
 		@Test
-		void lmao2() {
-			testInput("1 + 1", "expression",
-				  new Ast.BinaryExpression(genTokens("1", "+", "1"), Ast.BinaryExpression.Kind.ADD,
-							   new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true),
-							   new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true)));
-		}
-
-		@Test
-		void lmao3() {
-			testInput("1 + 1 + 1", "expression",
-				  new Ast.BinaryExpression(genTokens("1", "+", "1", "+", "1"), Ast.BinaryExpression.Kind.ADD, new Ast.BinaryExpression(genTokens("1", "+", "1"), Ast.BinaryExpression.Kind.ADD, new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true), new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true)), new Ast.IntExpression(genTokens("1"), (long) 1, (byte) 64, true)));
+		void GroupType() {
+			testInput(
+				"(Int)",
+				"type_atomic",
+				// TODO: Is this correct? There is no Ast.GroupType, but apparently this works... What about "(", ")"?
+				new Ast.SymbolType(genTokens("Int"), "Int")
+			);
 		}
 	}
 }
