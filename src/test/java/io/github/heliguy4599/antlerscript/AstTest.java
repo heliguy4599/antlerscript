@@ -43,6 +43,15 @@ class AstTest {
 		return result;
 	}
 
+	static Ast.SymbolType symbolTypeFor(String name) {
+		assert name != null;
+		return new Ast.SymbolType(genTokens(name), name);
+	}
+
+	static Ast.BooleanExpression boolExpFor(boolean value) {
+		return new Ast.BooleanExpression(genTokens(value ? "true" : "false"), value);
+	}
+
 	@Nested
 	@DisplayName("Program")
 	class ProgamTests {
@@ -73,7 +82,7 @@ class AstTest {
 					genTokens("let", "Int", "i"),
 					false,
 					false,
-					new Ast.SymbolType(genTokens("Int"), "Int"),
+					symbolTypeFor("Int"),
 					"i",
 					null
 				)
@@ -93,7 +102,7 @@ class AstTest {
 				new Ast.UnaryExpression(
 					genTokens("not", "true"),
 					Ast.UnaryExpression.Kind.NOT,
-					new Ast.BooleanExpression(genTokens("true"), true)
+					boolExpFor(true)
 				)
 			);
 		}
@@ -110,7 +119,7 @@ class AstTest {
 					new Ast.UnaryExpression(
 						genTokens("not", "true"),
 						Ast.UnaryExpression.Kind.NOT,
-						new Ast.BooleanExpression(genTokens("true"), true)
+						boolExpFor(true)
 					)
 				)
 			);
@@ -155,7 +164,7 @@ class AstTest {
 	class TypeTests {
 		@Test
 		void SymbolType() {
-			testInput("Int", "type_atomic", new Ast.SymbolType(genTokens("Int"), "Int"));
+			testInput("Int", "type_atomic", symbolTypeFor("Int"));
 		}
 
 		@Test
@@ -165,7 +174,7 @@ class AstTest {
 				"type_atomic",
 				new Ast.ListType(
 					genTokens("List", "(", "Int", ")"),
-					new Ast.SymbolType(genTokens("Int"), "Int")
+					symbolTypeFor("Int")
 				)
 			);
 		}
@@ -178,7 +187,7 @@ class AstTest {
 				"type_atomic",
 				new Ast.ArrayType(
 					genTokens("Array", "(", "Int", ")"),
-					new Ast.SymbolType(genTokens("Int"), "Int"),
+					symbolTypeFor("Int"),
 					null
 				)
 			);
@@ -191,8 +200,8 @@ class AstTest {
 				"type_atomic",
 				new Ast.MapType(
 					genTokens("Map", "(", "String", ",", "Int", ")"),
-					new Ast.SymbolType(genTokens("String"), "String"),
-					new Ast.SymbolType(genTokens("Int"), "Int")
+					symbolTypeFor("String"),
+					symbolTypeFor("Int")
 				)
 			);
 		}
@@ -212,7 +221,7 @@ class AstTest {
 							genTokens("let", "Int", "i"),
 							false,
 							false,
-							new Ast.SymbolType(genTokens("Int"), "Int"),
+							symbolTypeFor("Int"),
 							"i",
 							null
 						)
@@ -244,7 +253,7 @@ class AstTest {
 				new Ast.FunctionType(
 					genTokens("Func", "(", ":", "Int", ")"),
 					null,
-					new Ast.SymbolType(genTokens("Int"), "Int")
+					symbolTypeFor("Int")
 				)
 			);
 		}
@@ -260,7 +269,7 @@ class AstTest {
 				"(Int)",
 				"type_atomic",
 				// TODO: Is this correct? There is no Ast.GroupType, but apparently this works... What about "(", ")"?
-				new Ast.SymbolType(genTokens("Int"), "Int")
+				symbolTypeFor("Int")
 			);
 		}
 	}
