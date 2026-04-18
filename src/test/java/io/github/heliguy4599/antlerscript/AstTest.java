@@ -82,6 +82,7 @@ class AstTest {
 					genTokens("let", "Int", "i"),
 					false,
 					false,
+					false,
 					symbolTypeFor("Int"),
 					"i",
 					null
@@ -219,6 +220,7 @@ class AstTest {
 						genTokens("let", "Int", "i"),
 						new Ast.VariableDeclaration(
 							genTokens("let", "Int", "i"),
+							false,
 							false,
 							false,
 							symbolTypeFor("Int"),

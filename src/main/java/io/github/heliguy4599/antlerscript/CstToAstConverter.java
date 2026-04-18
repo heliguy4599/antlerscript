@@ -1529,7 +1529,7 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		return new Ast.VariableDeclaration(
-			getTokens(ctx), false, ctx.isMutable != null, visitType(ctx.type()), ctx.variableName.getText(), null
+			getTokens(ctx), false, ctx.isMutable != null, ctx.isSealed != null, visitType(ctx.type()), ctx.variableName.getText(), null
 		);
 	}
 
@@ -1539,7 +1539,7 @@ AntlerScriptParserVisitor<Object> {
 
 		var type = ctx.type();
 		return new Ast.VariableDeclaration(
-			getTokens(ctx), false, ctx.isMutable != null, type != null ? visitType(type) : null, ctx.variableName.getText(), visitExpression(ctx.expression())
+			getTokens(ctx), false, ctx.isMutable != null, ctx.isSealed != null, type != null ? visitType(type) : null, ctx.variableName.getText(), visitExpression(ctx.expression())
 		);
 	}
 
@@ -1549,7 +1549,7 @@ AntlerScriptParserVisitor<Object> {
 
 		var type = ctx.type();
 		return new Ast.VariableDeclaration(
-			getTokens(ctx), true, false, type != null ? visitType(type) : null, ctx.variableName.getText(), visitExpression(ctx.expression())
+			getTokens(ctx), true, false, false, type != null ? visitType(type) : null, ctx.variableName.getText(), visitExpression(ctx.expression())
 		);
 	}
 

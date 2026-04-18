@@ -92,6 +92,7 @@ NULL: 'null' ;
 OPERATOR: 'operator';
 OR: 'or' ;
 RETURN: 'return' ;
+SEALED: 'sealed' ;
 SELF_CLASS: 'Self' ;
 SELF_INSTANCE: 'self' ;
 SELECT: 'select' ;

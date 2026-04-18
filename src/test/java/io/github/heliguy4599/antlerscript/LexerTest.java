@@ -339,6 +339,11 @@ class LexerTest {
 	}
 
 	@Test
+	void sealed() {
+		testInput("sealed", L.SEALED);
+	}
+
+	@Test
 	void newline() {
 		testInput("\n", L.NEWLINE);
 		testInput("\r", L.NEWLINE);

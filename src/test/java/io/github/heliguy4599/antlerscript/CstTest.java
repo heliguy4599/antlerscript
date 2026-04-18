@@ -465,6 +465,11 @@ class AntlerScriptTest {
 		}
 
 		@Test
+		void statement_declaration_let_sealed_assign() {
+			testInput("let sealed name = 2 + 2", "declaration");
+		}
+
+		@Test
 		void statement_declaration_const_type_assign() {
 			testInput("const Int name = 2 + 2", "declaration");
 		}
@@ -477,6 +482,11 @@ class AntlerScriptTest {
 		@Test
 		void statement_declaration_let_mut_type_assign() {
 			testInput("let mut Int name = 2 + 2", "declaration");
+		}
+
+		@Test
+		void statement_declaration_let_sealed_type_assign() {
+			testInput("let sealed Int name = 2 + 2", "declaration");
 		}
 
 		@Test
@@ -582,6 +592,16 @@ class AntlerScriptTest {
 		@Test
 		void fail_statement_declaration_let_mut() {
 			testInputNoRule("let mut name", "declaration");
+		}
+
+		@Test
+		void fail_statement_declaration_let_mut_sealed() {
+			testInputNoRule("let mut sealed name", "declaration");
+		}
+
+		@Test
+		void fail_statement_declaration_let_sealed_mut() {
+			testInputNoRule("let sealed mut name", "declaration");
 		}
 
 		@Test

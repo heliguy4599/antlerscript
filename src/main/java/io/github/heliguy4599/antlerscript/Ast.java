@@ -716,17 +716,20 @@ public class Ast {
 	public static class VariableDeclaration extends Statement {
 		public final boolean isConst;
 		public final boolean isMutable;
+		public final boolean isSealed;
 		public final Type type;
 		public final String name;
 		public final Expression initializer;
 
-		public VariableDeclaration(List<Token> tokens, boolean isConst, boolean isMutable, Type type, String name, Expression initializer) {
+		public VariableDeclaration(List<Token> tokens, boolean isConst, boolean isMutable, boolean isSealed, Type type, String name, Expression initializer) {
 			super(tokens);
 
 			assert type != null || initializer != null;
+			assert !(isMutable && isSealed);
 
 			this.isConst = isConst;
 			this.isMutable = isMutable;
+			this.isSealed = isSealed;
 			this.type = type;
 			this.name = name;
 			this.initializer = initializer;
