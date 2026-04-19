@@ -159,6 +159,7 @@ PIPE_EQ: '|=';
 AMP_EQ: '&=';
 TILDE_EQ: '~=';
 CARRET_EQ: '^=';
+FUNC_PIPE: '|>';
 BIT_LSHIFT_EQ: '<<=';
 BIT_RSHIFT_EQ: '>>=';
 DOUBLE_PLUS_EQ: '++=';

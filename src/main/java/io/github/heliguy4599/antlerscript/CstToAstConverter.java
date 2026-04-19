@@ -53,6 +53,9 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	private static void getTokensInternal(List<ParseTree> parseTrees, List<Token> out) {
+		assert parseTrees != null;
+		assert out != null;
+
 		for (ParseTree pt : parseTrees) {
 			Object pl = pt.getPayload();
 
@@ -125,6 +128,8 @@ AntlerScriptParserVisitor<Object> {
 
 	@Override
 	public List<List<String>> visitUsing_directive(AntlerScriptParser.Using_directiveContext ctx) {
+		assert ctx != null;
+
 		List<Ast.ClassExtendsAccess> ceas = ctx.class_extends_access().stream().map(this::visitClass_extends_access).toList();
 
 		List<List<String>> ret = new ArrayList<>();
@@ -137,6 +142,8 @@ AntlerScriptParserVisitor<Object> {
 
 	@Override
 	public Object visitRepeatable_directive(AntlerScriptParser.Repeatable_directiveContext ctx) {
+		assert ctx != null;
+
 		return visit(ctx.using_directive() != null ? ctx.using_directive() : ctx.other_directive());
 	}
 
@@ -812,14 +819,14 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.Expression visitExpression_cmp(AntlerScriptParser.Expression_cmpContext ctx) {
 		assert ctx != null;
 
-		Ast.Expression latest = visitExpression_bit_or(ctx.expression_bit_or());
+		Ast.Expression latest = visitExpression_func_pipe(ctx.expression_func_pipe());
 
-		List<Token> tokens = getTokens(ctx.expression_bit_or());
+		List<Token> tokens = getTokens(ctx.expression_func_pipe());
 
 		for (AntlerScriptParser.Expression_cmp_rightContext cmpCtx : ctx.expression_cmp_right()) {
 			var acc = getTokens(cmpCtx);
 			tokens.addAll(acc);
-			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_cmp_right(cmpCtx), latest, visitExpression_bit_or(cmpCtx.expression_bit_or()));
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_cmp_right(cmpCtx), latest, visitExpression_func_pipe(cmpCtx.expression_func_pipe()));
 		}
 
 		return latest;
@@ -840,6 +847,39 @@ AntlerScriptParserVisitor<Object> {
 			case AntlerScriptParser.NOT_EQUAL -> Ast.BinaryExpression.Kind.NOT_EQUAL;
 			case AntlerScriptParser.IN -> Ast.BinaryExpression.Kind.IN;
 			case AntlerScriptParser.IS -> Ast.BinaryExpression.Kind.IS;
+			default -> null;
+		};
+
+		assert kind != null;
+
+		return kind;
+	}
+
+	@Override
+	public Ast.Expression visitExpression_func_pipe(AntlerScriptParser.Expression_func_pipeContext ctx) {
+		assert ctx != null;
+
+		Ast.Expression latest = visitExpression_bit_or(ctx.expression_bit_or());
+
+		List<Token> tokens = getTokens(ctx.expression_bit_or());
+
+		for (AntlerScriptParser.Expression_func_pipe_rightContext funcPipeCtx : ctx.expression_func_pipe_right()) {
+			var acc = getTokens(funcPipeCtx);
+			tokens.addAll(acc);
+			latest = new Ast.BinaryExpression(new ArrayList<Token>(tokens), visitExpression_func_pipe_right(funcPipeCtx), latest, visitExpression_bit_or(funcPipeCtx.expression_bit_or()));
+		}
+
+		return latest;
+	}
+
+	@Override
+	public Ast.BinaryExpression.Kind visitExpression_func_pipe_right(AntlerScriptParser.Expression_func_pipe_rightContext ctx) {
+		assert ctx != null;
+
+		Token op = ctx.operator;
+
+		Ast.BinaryExpression.Kind kind = switch (op.getType()) {
+			case AntlerScriptParser.FUNC_PIPE -> Ast.BinaryExpression.Kind.FUNC_PIPE;
 			default -> null;
 		};
 

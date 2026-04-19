@@ -659,6 +659,7 @@ class AntlerScriptTest {
 			"!=,  expression_cmp",
 			"is,  expression_cmp",
 			"in,  expression_cmp",
+			"|>, expression_func_pipe",
 			"|,  expression_bit_or",
 			"^,  expression_bit_xor",
 			"&,  expression_bit_and",
@@ -897,6 +898,9 @@ class AntlerScriptTest {
 			"a + b * c ** d / e - f % g",
 			"x << 2 + y >> 3 & mask | flags",
 			"not a and b or c and not d",
+			"data |> Func(Int x: Int){x * 2}",
+			"lmao <= data |> Func(Int x: Int){x * 2} | false",
+			"lmao | data |> Func(Int x: Int){x * 2} == false",
 		})
 		void complexExpression(String expr) {
 			testInput(expr, "expression");

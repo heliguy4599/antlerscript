@@ -295,18 +295,26 @@ expression_logical_not
 	;
 
 expression_cmp
-	: expression_bit_or expression_cmp_right*
+	: expression_func_pipe expression_cmp_right*
 	;
 
 expression_cmp_right
-	: operator='<' expression_bit_or
-	| operator='>' expression_bit_or
-	| operator='<=' expression_bit_or
-	| operator='>=' expression_bit_or
-	| operator='==' expression_bit_or
-	| operator='!=' expression_bit_or
-	| operator=IN expression_bit_or
-	| operator=IS expression_bit_or
+	: operator='<' expression_func_pipe
+	| operator='>' expression_func_pipe
+	| operator='<=' expression_func_pipe
+	| operator='>=' expression_func_pipe
+	| operator='==' expression_func_pipe
+	| operator='!=' expression_func_pipe
+	| operator=IN expression_func_pipe
+	| operator=IS expression_func_pipe
+	;
+
+expression_func_pipe
+	: expression_bit_or expression_func_pipe_right*
+	;
+
+expression_func_pipe_right
+	: operator='|>' expression_bit_or
 	;
 
 expression_bit_or

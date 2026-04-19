@@ -1099,6 +1099,9 @@ public class Ast {
 			// Comparison
 			OR, NULLISH, AND, LESSER_THAN, GREATER_THAN, LESSER_OR_EQUAL, GREATER_OR_EQUAL, EQUAL, NOT_EQUAL, IS, IN,
 
+			// Function pipe
+			FUNC_PIPE,
+
 			// Bitwise
 			BIT_OR, BIT_XOR, BIT_AND, BIT_LSHIFT, BIT_RSHIFT,
 

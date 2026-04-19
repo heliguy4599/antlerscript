@@ -430,6 +430,18 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression_cmp_right(AntlerScriptParser.Expression_cmp_rightContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#expression_func_pipe}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpression_func_pipe(AntlerScriptParser.Expression_func_pipeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#expression_func_pipe_right}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpression_func_pipe_right(AntlerScriptParser.Expression_func_pipe_rightContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#expression_bit_or}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -696,6 +696,11 @@ class LexerTest {
 	}
 
 	@Test
+	void funcPipe() {
+		testInput("|>", L.FUNC_PIPE);
+	}
+
+	@Test
 	void bitLshiftEq() {
 		testInput("<<=", L.BIT_LSHIFT_EQ);
 	}
