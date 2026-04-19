@@ -55,6 +55,18 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMain_directive(AntlerScriptParser.Main_directiveContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#using_directive}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUsing_directive(AntlerScriptParser.Using_directiveContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#repeatable_directive}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRepeatable_directive(AntlerScriptParser.Repeatable_directiveContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#main_program}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

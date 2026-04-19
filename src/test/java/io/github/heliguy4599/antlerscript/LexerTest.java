@@ -26,6 +26,9 @@ class LexerTest {
 
 	@Test
 	void directive() {
+		testInput(":: classname", L.CLASSNAME_DIRECTIVE);
+		testInput(":: namespace", L.NAMESPACE_DIRECTIVE);
+		testInput(":: using", L.USING_DIRECTIVE);
 		testInput("::", L.OTHER_DIRECTIVE);
 	}
 

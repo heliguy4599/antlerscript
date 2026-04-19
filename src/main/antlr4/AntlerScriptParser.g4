@@ -45,21 +45,30 @@ main_directive
 	: MAIN_DIRECTIVE
 	;
 
+using_directive
+	: USING_DIRECTIVE class_extends_access ( ',' class_extends_access )*
+	;
+
+repeatable_directive
+	: other_directive
+	| using_directive
+	;
+
 main_program
-	: semicolon* main_directive ( semicolon+ other_directive )* ( semicolon+ statement )* semicolon* EOF
+	: semicolon* main_directive ( semicolon+ repeatable_directive )* ( semicolon+ statement )* semicolon* EOF
 	;
 
 class_program
-	: semicolon* ( namespace_directive semicolon+ )? classname_directive ( semicolon+ other_directive )* ( semicolon+ class_top_level )? semicolon* EOF
+	: semicolon* ( namespace_directive semicolon+ )? classname_directive ( semicolon+ repeatable_directive )* ( semicolon+ class_top_level )? semicolon* EOF
 	;
 
 namespace_program
-	: semicolon* namespace_directive ( semicolon+ other_directive )* ( semicolon+ namespace_member )* semicolon* EOF
+	: semicolon* namespace_directive ( semicolon+ repeatable_directive )* ( semicolon+ namespace_member )* semicolon* EOF
 	;
 
 implicit_namespace_program
-	: semicolon* ( other_directive semicolon+ )* namespace_member ( semicolon+ namespace_member )* semicolon* EOF
-	| semicolon* other_directive ( semicolon+ other_directive )* ( namespace_member ( semicolon+ namespace_member )* )? semicolon* EOF
+	: semicolon* ( repeatable_directive semicolon+ )* namespace_member ( semicolon+ namespace_member )* semicolon* EOF
+	| semicolon* repeatable_directive ( semicolon+ repeatable_directive )* ( namespace_member ( semicolon+ namespace_member )* )? semicolon* EOF
 	;
 
 namespace_member

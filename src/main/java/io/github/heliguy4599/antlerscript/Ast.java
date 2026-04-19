@@ -49,15 +49,22 @@ public class Ast {
 	// ====================
 
 	public static abstract class Program extends Node {
-		public Program(List<Token> tokens) { super(tokens); }
+		// :: using MyNamespace.MyClass, MyNamespace.MyOtherNamespace.MyVar
+		// turns into -> [[MyNamespace, MyClass], [MyNamespace, MyOtherNamespace, MyVar]]
+		public final List<List<String>> using;
+		public final List<FileDirective> directives;
+		public Program(List<Token> tokens, List<List<String>> using, List<FileDirective> directives) {
+			super(tokens);
+			this.using = using != null ? using : new ArrayList<>();
+			this.directives = directives != null ? directives : new ArrayList<>();
+		}
 	}
 
 	public static class MainProgram extends Program {
-		public final List<FileDirective> directives;
 		public final List<Statement> statements;
 
-		public MainProgram(List<Token> tokens, List<FileDirective> directives, List<Statement> statements) {
-			super(tokens);
+		public MainProgram(List<Token> tokens, List<List<String>> using, List<FileDirective> directives, List<Statement> statements) {
+			super(tokens, using, directives);
 
 			if (directives == null || directives.isEmpty()) {
 				assert statements != null && !statements.isEmpty();
@@ -66,7 +73,6 @@ public class Ast {
 				assert directives != null && !directives.isEmpty();
 			}
 
-			this.directives = directives != null ? directives : new ArrayList<>();
 			this.statements = statements != null ? statements : new ArrayList<>();
 		}
 
@@ -91,17 +97,15 @@ public class Ast {
 	public static class ClassProgram extends Program {
 		public final String namespace;
 		public final String className;
-		public final List<FileDirective> directives;
 		public final ClassType topLevel;
 
-		public ClassProgram(List<Token> tokens, String namespace, String className, List<FileDirective> directives, ClassType topLevel) {
-			super(tokens);
+		public ClassProgram(List<Token> tokens, List<List<String>> using, List<FileDirective> directives, String namespace, String className, ClassType topLevel) {
+			super(tokens, using, directives);
 
 			assert className != null && !className.isEmpty();
 
 			this.namespace = namespace;
 			this.className = className;
-			this.directives = directives != null ? directives : new ArrayList<>();
 			this.topLevel = topLevel;
 		}
 
@@ -127,11 +131,10 @@ public class Ast {
 
 	public static class NamespaceProgram extends Program {
 		public final String name;
-		public final List<FileDirective> directives;
 		public final List<NamespaceMember> members;
 
-		public NamespaceProgram(List<Token> tokens, String name, List<FileDirective> directives, List<NamespaceMember> members) {
-			super(tokens);
+		public NamespaceProgram(List<Token> tokens, List<List<String>> using, List<FileDirective> directives, String name, List<NamespaceMember> members) {
+			super(tokens, using, directives);
 
 			if (name != null) {
 				assert !name.isEmpty();
@@ -140,7 +143,6 @@ public class Ast {
 			}
 
 			this.name = name;
-			this.directives = directives != null ? directives : new ArrayList<>();
 			this.members = members != null ? members : new ArrayList<>();
 		}
 

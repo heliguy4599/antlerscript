@@ -131,6 +131,7 @@ class AntlerScriptTest {
 		@ValueSource(strings = {
 			":: main",
 			":: main;",
+			":: main; :: using Math.FourRedSevenGreen",
 			";;::main;;",
 			":: main; :: thing \"other\"; print(10)",
 		})
@@ -141,6 +142,7 @@ class AntlerScriptTest {
 		@ParameterizedTest
 		@ValueSource(strings = {
 			":: classname Test",
+			":: classname Test; :: using Math.touchEuler",
 			":: classname Test; :: thing",
 			":: classname Test; extends One.Two; let Int i = 10",
 			":: namespace Hi; :: classname YourMom; constructor() {}",
@@ -152,6 +154,7 @@ class AntlerScriptTest {
 		@ParameterizedTest
 		@ValueSource(strings = {
 			":: namespace YourMom",
+			":: namespace YourMom; :: using Math",
 			":: namespace YourMom; :: thing \"value\"",
 			":: namespace YourMom; type Thing = Class()",
 			":: namespace YourMom; :: thing \"value\"; let Int i = 24",
@@ -167,6 +170,13 @@ class AntlerScriptTest {
 			"type Thing = Class()",
 			";;type Thing = Class();;",
 			";;;:: thing \"value\"; :: thing; type Thing = Class(); let Int i = potato;;",
+			":: using Potato",
+			":: using Lmao, Language.AST.Statements.ForLoop",
+			":: using Potato;:: using Lmao, Language.AST.Statements.ForLoop",
+			":: using Potato;:: thing \"lmao\"",
+			":: thing \"lmao\";:: using Potato",
+			":: using Lmao, Language.AST.Statements.ForLoop",
+			":: using Potato;:: using Lmao, Language.AST.Statements.ForLoop",
 		})
 		void file_implicit_namespace_program(String input) {
 			testInput(input, "implicit_namespace_program");

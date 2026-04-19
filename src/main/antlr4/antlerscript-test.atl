@@ -1,6 +1,11 @@
 :: namespace SomeNameSpace
 :: classname SomeClass
 
+# `using` directives are file-local, NOT like C header files
+# Can refer to namespaces, classes, and namespace variables
+:: using Lmao, Language.AST.Statements.ForLoop
+:: using Potato
+
 extends One.Two.Three.Four.Five
 
 constructor(i, j, Int ...a){ print(j); print(j) }

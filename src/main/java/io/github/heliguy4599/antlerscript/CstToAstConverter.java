@@ -124,6 +124,23 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
+	public List<List<String>> visitUsing_directive(AntlerScriptParser.Using_directiveContext ctx) {
+		List<Ast.ClassExtendsAccess> ceas = ctx.class_extends_access().stream().map(this::visitClass_extends_access).toList();
+
+		List<List<String>> ret = new ArrayList<>();
+		for (Ast.ClassExtendsAccess cea : ceas) {
+			ret.add(cea.symbols());
+		}
+
+		return ret;
+	}
+
+	@Override
+	public Object visitRepeatable_directive(AntlerScriptParser.Repeatable_directiveContext ctx) {
+		return visit(ctx.using_directive() != null ? ctx.using_directive() : ctx.other_directive());
+	}
+
+	@Override
 	public Ast.FileDirective visitOther_directive(AntlerScriptParser.Other_directiveContext ctx) {
 		assert ctx != null;
 
@@ -167,14 +184,34 @@ AntlerScriptParserVisitor<Object> {
 		return new Ast.FileDirective(ctx.MAIN_DIRECTIVE().getText(), null);
 	}
 
+	public static void segregateDirectives(List<Object> inDirectives, List<List<String>> outUsing, List<Ast.FileDirective> outOther) {
+		assert inDirectives != null;
+		assert outUsing != null;
+		assert outOther != null;
+
+		for (Object directive : inDirectives) {
+			if (directive instanceof Ast.FileDirective) {
+				outOther.add((Ast.FileDirective) directive);
+			} else { // List<List<String>> (using directive)
+				@SuppressWarnings("unchecked")
+				List<List<String>> usingDirective = (List<List<String>>) directive;
+				outUsing.addAll(usingDirective);
+			}
+		}
+	}
+
 	@Override
 	public Ast.MainProgram visitMain_program(AntlerScriptParser.Main_programContext ctx) {
 		assert ctx != null;
 
 		List<Ast.Statement> statements = ctx.statement().stream().map(this::visitStatement).toList();
-		List<Ast.FileDirective> directives = ctx.other_directive().stream().map(this::visitOther_directive).toList();
 
-		return new Ast.MainProgram(getTokens(ctx), directives, statements);
+		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
+		List<List<String>> using = new ArrayList<>();
+		List<Ast.FileDirective> other = new ArrayList<>();
+		segregateDirectives(directives, using, other);
+
+		return new Ast.MainProgram(getTokens(ctx), using, other, statements);
 	}
 
 	@Override
@@ -183,10 +220,14 @@ AntlerScriptParserVisitor<Object> {
 
 		String namespace = visitNamespace_directive(ctx.namespace_directive());
 		String classname = visitClassname_directive(ctx.classname_directive());
-		List<Ast.FileDirective> directives = ctx.other_directive().stream().map(this::visitOther_directive).toList();
 		Ast.ClassType topLevel = visitClass_top_level(ctx.class_top_level());
 
-		return new Ast.ClassProgram(getTokens(ctx), namespace, classname, directives, topLevel);
+		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
+		List<List<String>> using = new ArrayList<>();
+		List<Ast.FileDirective> other = new ArrayList<>();
+		segregateDirectives(directives, using, other);
+
+		return new Ast.ClassProgram(getTokens(ctx), using, other, namespace, classname, topLevel);
 	}
 
 	@Override
@@ -194,20 +235,28 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		String namespace = visitNamespace_directive(ctx.namespace_directive());
-		List<Ast.FileDirective> directives = ctx.other_directive().stream().map(this::visitOther_directive).toList();
 		List<Ast.NamespaceMember> members = ctx.namespace_member().stream().map(this::visitNamespace_member).toList();
 
-		return new Ast.NamespaceProgram(getTokens(ctx), namespace, directives, members);
+		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
+		List<List<String>> using = new ArrayList<>();
+		List<Ast.FileDirective> other = new ArrayList<>();
+		segregateDirectives(directives, using, other);
+
+		return new Ast.NamespaceProgram(getTokens(ctx), using, other, namespace, members);
 	}
 
 	@Override
 	public Ast.NamespaceProgram visitImplicit_namespace_program(AntlerScriptParser.Implicit_namespace_programContext ctx) {
 		assert ctx != null;
 
-		List<Ast.FileDirective> directives = ctx.other_directive().stream().map(this::visitOther_directive).toList();
 		List<Ast.NamespaceMember> members = ctx.namespace_member().stream().map(this::visitNamespace_member).toList();
 
-		return new Ast.NamespaceProgram(getTokens(ctx), null, directives, members);
+		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
+		List<List<String>> using = new ArrayList<>();
+		List<Ast.FileDirective> other = new ArrayList<>();
+		segregateDirectives(directives, using, other);
+
+		return new Ast.NamespaceProgram(getTokens(ctx), using, other, null, members);
 	}
 
 	@Override
