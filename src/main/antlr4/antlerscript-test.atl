@@ -39,6 +39,9 @@ let Func(Int a, Int b : Int) fn = Func(Int a, Int b : Int) {
 	return a + b
 }
 
+# Functions with a single expression statement implicitly return that expression
+Func(:Int){3}
+
 # const values are forward declared (and so is type), so thats okay, but not let
 const fn1 = Func(:){fn2()}
 const fn2 = Func(:){fn1()}
