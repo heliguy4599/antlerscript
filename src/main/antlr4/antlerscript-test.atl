@@ -42,9 +42,17 @@ let Func(Int a, Int b : Int) fn = Func(Int a, Int b : Int) {
 # Functions with a single expression statement implicitly return that expression
 Func(:Int){3}
 
-# const values are forward declared (and so is type), so thats okay, but not let
-const fn1 = Func(:){fn2()}
-const fn2 = Func(:){fn1()}
+# const needs to have a compile-time defined value (like constexpr in C++)
+# const can only appear in function bodies (not forward-declared), or in
+# namespaces (forward-declared)
+const i = 10
+
+# BTW, about forward-declaration. Function bodies and :: main don't contain
+# forward-declared delcarations, but class bodies and namespace bodies do
+
+# Constant functions need to be pure and can be called during comp-time
+# (not yet implemented yet)
+const fn = Func(:){}
 
 const my_array = Array(Int, 5){ 10, 20, 30, 40, 50 }
 
