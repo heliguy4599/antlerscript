@@ -711,6 +711,13 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSelectExpression(AntlerScriptParser.SelectExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code objectLiteralExpression}
+	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObjectLiteralExpression(AntlerScriptParser.ObjectLiteralExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code groupedExpression}
 	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
 	 * @param ctx the parse tree
@@ -759,6 +766,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSelect(AntlerScriptParser.SelectContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#object_literal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitObject_literal(AntlerScriptParser.Object_literalContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#keypair_list}.
 	 * @param ctx the parse tree

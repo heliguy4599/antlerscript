@@ -723,7 +723,8 @@ class AntlerScriptTest {
 			"🪐",
 			"(1 + -1 * ~1 ** 1)",
 			"Func(:){}",
-			"select(true: true)"
+			"select(true: true)",
+			"object{}"
 		})
 		void atom(String word) {
 			testInput(word, "expression_atom");
@@ -938,6 +939,18 @@ class AntlerScriptTest {
 		@Test
 		void keypair_clause() {
 			testInput("\"key\" : value", "keypair_clause");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"object{}",
+			"object { }",
+			"object{\n\n\n;;;}",
+			"object{;\n;\nlet Int i = 10;\n;\n}",
+			"object{;\n;\nlet Int i = 10;\nlet f = Func(:){}}"
+		})
+		void objectLiteralExpression(String expr) {
+			testInput(expr, "object_literal");
 		}
 	}
 

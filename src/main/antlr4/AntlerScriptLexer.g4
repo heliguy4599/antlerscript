@@ -88,6 +88,7 @@ MAP: 'Map' ;
 MUT: 'mut' ;
 NOT: 'not' ;
 NULL: 'null' ;
+OBJECT: 'object' ;
 OPERATOR: 'operator';
 OR: 'or' ;
 RETURN: 'return' ;

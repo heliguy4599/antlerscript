@@ -227,7 +227,9 @@ AntlerScriptParserVisitor<Object> {
 
 		String namespace = visitNamespace_directive(ctx.namespace_directive());
 		String classname = visitClassname_directive(ctx.classname_directive());
-		Ast.ClassType topLevel = visitClass_top_level(ctx.class_top_level());
+		Ast.ClassType topLevel = ctx.class_top_level() == null
+			? new Ast.ClassType(getTokens(ctx), null, null)
+			: visitClass_top_level(ctx.class_top_level());
 
 		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
 		List<Ast.SymbolChain> using = new ArrayList<>();
@@ -1456,6 +1458,24 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		return new Ast.SelectExpression(getTokens(ctx), visitExpression(ctx.expression()), visitKeypair_list(ctx.keypair_list()));
+	}
+
+	@Override
+	public Ast.NewObjectLiteralExpression visitObjectLiteralExpression(AntlerScriptParser.ObjectLiteralExpressionContext ctx) {
+		assert ctx != null;
+
+		return visitObject_literal(ctx.object_literal());
+	}
+
+	@Override
+	public Ast.NewObjectLiteralExpression visitObject_literal(AntlerScriptParser.Object_literalContext ctx) {
+		assert ctx != null;
+
+		Ast.ClassType topLevel = ctx.class_top_level() == null
+			? new Ast.ClassType(getTokens(ctx), null, null)
+			: visitClass_top_level(ctx.class_top_level());
+
+		return new Ast.NewObjectLiteralExpression(getTokens(ctx), topLevel);
 	}
 
 	@Override

@@ -428,6 +428,7 @@ expression_atom
 	| new_class_instance    # newClassInstance
 	| lambda                # lambdaExpression
 	| select                # selectExpression
+	| object_literal        # objectLiteralExpression
 	| '(' expression ')'    # groupedExpression
 	;
 
@@ -473,6 +474,10 @@ new_map_instance
 
 select
 	: SELECT ( '[' value=expression ']' )? '(' keypair_list ')'
+	;
+
+object_literal
+	: OBJECT '{' semicolon* class_top_level? semicolon* '}'
 	;
 
 keypair_list

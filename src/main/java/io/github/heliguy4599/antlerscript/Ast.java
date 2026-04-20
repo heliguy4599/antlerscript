@@ -1793,6 +1793,37 @@ public class Ast {
 		}
 	}
 
+	public static class NewObjectLiteralExpression extends Expression {
+		public final ClassType classType;
+
+		public NewObjectLiteralExpression(
+			List<Token> tokens,
+			ClassType classType
+		) {
+			super(tokens);
+
+			assert classType != null;
+
+			this.classType = classType;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitNewObjectLiteralExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (NewObjectLiteralExpression) object;
+
+			return Objects.equals(classType, other.classType);
+		}
+	}
+
 	// ====================
 	// UTILITIES
 	// ====================
@@ -2011,5 +2042,7 @@ public class Ast {
 		T visitNewObjectExpression(NewObjectExpression node);
 
 		T visitNewClassInstance(NewClassInstance node);
+
+		T visitNewObjectLiteralExpression(NewObjectLiteralExpression node);
 	}
 }
