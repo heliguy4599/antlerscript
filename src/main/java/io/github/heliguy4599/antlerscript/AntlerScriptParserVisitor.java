@@ -115,11 +115,11 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitClass_extends(AntlerScriptParser.Class_extendsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#class_extends_access}.
+	 * Visit a parse tree produced by {@link AntlerScriptParser#symbol_chain}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitClass_extends_access(AntlerScriptParser.Class_extends_accessContext ctx);
+	T visitSymbol_chain(AntlerScriptParser.Symbol_chainContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#constructor}.
 	 * @param ctx the parse tree
@@ -879,6 +879,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIterate(AntlerScriptParser.IterateContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#decorator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecorator(AntlerScriptParser.DecoratorContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code letDeclaration}
 	 * labeled alternative in {@link AntlerScriptParser#declaration}.

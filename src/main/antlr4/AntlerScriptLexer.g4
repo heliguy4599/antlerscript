@@ -21,8 +21,6 @@ CLASSNAME_DIRECTIVE: '::' WHITESPACE* 'classname' ;
 USING_DIRECTIVE: '::' WHITESPACE* 'using' ;
 OTHER_DIRECTIVE: '::' ;
 
-ANNOTATION: '@' IDENTIFIER ;
-
 // Numbers
 fragment DEC_INTEGER: [0-9] ( '_'? [0-9] )* ;
 fragment BIN_INTEGER: [01] ( '_'? [01] )* ;
@@ -118,6 +116,7 @@ RBRACK: ']' { ignoreSemicolons.pollFirst(); } ;
 LCURLY: '{' { ignoreSemicolons.push(false); } ;
 RCURLY: '}' { ignoreSemicolons.pollFirst(); } ;
 NULL_ACCESS: '?.' ;
+DECORATOR: '@' ;
 QMARK: '?' ;
 RARROW: '->' ;
 COLON: ':' ;

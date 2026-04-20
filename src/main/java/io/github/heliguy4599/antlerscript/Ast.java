@@ -33,7 +33,12 @@ public class Ast {
 			}
 
 			for (int i = 0; i < tokens.size(); i++) {
-				if (!tokens.get(i).getText().equals(node.tokens.get(i).getText())) {
+				if (
+					!tokens
+					.get(i)
+					.getText()
+					.equals(node.tokens.get(i).getText())
+				) {
 					return false;
 				}
 			}
@@ -51,29 +56,44 @@ public class Ast {
 	public static abstract class Program extends Node {
 		// :: using MyNamespace.MyClass, MyNamespace.MyOtherNamespace.MyVar
 		// turns into -> [[MyNamespace, MyClass], [MyNamespace, MyOtherNamespace, MyVar]]
-		public final List<List<String>> using;
+		public final List<SymbolChain> using;
 		public final List<FileDirective> directives;
-		public Program(List<Token> tokens, List<List<String>> using, List<FileDirective> directives) {
+		public Program(
+			List<Token> tokens,
+			List<SymbolChain> using,
+			List<FileDirective> directives
+		) {
 			super(tokens);
 			this.using = using != null ? using : new ArrayList<>();
-			this.directives = directives != null ? directives : new ArrayList<>();
+			this.directives = directives != null
+				? directives
+				: new ArrayList<>();
 		}
 	}
 
 	public static class MainProgram extends Program {
 		public final List<Statement> statements;
 
-		public MainProgram(List<Token> tokens, List<List<String>> using, List<FileDirective> directives, List<Statement> statements) {
+		public MainProgram(
+			List<Token> tokens,
+			List<SymbolChain> using,
+			List<FileDirective> directives,
+			List<Statement> statements
+		) {
 			super(tokens, using, directives);
 
 			if (directives == null || directives.isEmpty()) {
-				assert statements != null && !statements.isEmpty();
+				assert statements != null
+					&& !statements.isEmpty();
 			}
 			if (statements == null || statements.isEmpty()) {
-				assert directives != null && !directives.isEmpty();
+				assert directives != null
+					&& !directives.isEmpty();
 			}
 
-			this.statements = statements != null ? statements : new ArrayList<>();
+			this.statements = statements != null
+				? statements
+				: new ArrayList<>();
 		}
 
 		@Override
@@ -99,7 +119,14 @@ public class Ast {
 		public final String className;
 		public final ClassType topLevel;
 
-		public ClassProgram(List<Token> tokens, List<List<String>> using, List<FileDirective> directives, String namespace, String className, ClassType topLevel) {
+		public ClassProgram(
+			List<Token> tokens,
+			List<SymbolChain> using,
+			List<FileDirective> directives,
+			String namespace,
+			String className,
+			ClassType topLevel
+		) {
 			super(tokens, using, directives);
 
 			assert className != null && !className.isEmpty();
@@ -133,17 +160,31 @@ public class Ast {
 		public final String name;
 		public final List<NamespaceMember> members;
 
-		public NamespaceProgram(List<Token> tokens, List<List<String>> using, List<FileDirective> directives, String name, List<NamespaceMember> members) {
+		public NamespaceProgram(
+			List<Token> tokens,
+			List<SymbolChain> using,
+			List<FileDirective> directives,
+			String name,
+			List<NamespaceMember> members
+		) {
 			super(tokens, using, directives);
 
 			if (name != null) {
 				assert !name.isEmpty();
 			} else {
-				assert (directives != null && !directives.isEmpty()) || (members != null && !members.isEmpty());
+				assert (
+					directives != null
+					&& !directives.isEmpty()
+				) || (
+					members != null
+					&& !members.isEmpty()
+				);
 			}
 
 			this.name = name;
-			this.members = members != null ? members : new ArrayList<>();
+			this.members = members != null
+				? members
+				: new ArrayList<>();
 		}
 
 		@Override
@@ -182,7 +223,12 @@ public class Ast {
 		public final Type left;
 		public final Type right;
 
-		public UnionType(List<Token> tokens, Kind kind, Type left, Type right) {
+		public UnionType(
+			List<Token> tokens,
+			Kind kind,
+			Type left,
+			Type right
+		) {
 			super(tokens);
 
 			assert kind != null;
@@ -270,7 +316,11 @@ public class Ast {
 		public final Type items;
 		public final Expression size;
 
-		public ArrayType(List<Token> tokens, Type items, Expression size) {
+		public ArrayType(
+			List<Token> tokens,
+			Type items,
+			Expression size
+		) {
 			super(tokens);
 
 			this.items = items;
@@ -302,7 +352,11 @@ public class Ast {
 		public MapType(List<Token> tokens, Type keys, Type values) {
 			super(tokens);
 
-			assert (keys == null && values == null) || (keys != null && values != null);
+			assert (
+				keys == null && values == null
+			) || (
+				keys != null && values != null
+			);
 
 			this.keys = keys;
 			this.values = values;
@@ -330,10 +384,16 @@ public class Ast {
 		public final List<FunctionParameter> parameters;
 		public final Type returnType;
 
-		public FunctionType(List<Token> tokens, List<FunctionParameter> parameters, Type returnType) {
+		public FunctionType(
+			List<Token> tokens,
+			List<FunctionParameter> parameters,
+			Type returnType
+		) {
 			super(tokens);
 
-			this.parameters = parameters != null ? parameters : new ArrayList<>();
+			this.parameters = parameters != null
+				? parameters
+				: new ArrayList<>();
 			this.returnType = returnType;
 		}
 
@@ -356,10 +416,14 @@ public class Ast {
 	}
 
 	public static class EnumType extends Type {
-		public final ClassExtendsAccess extendsAccess;
+		public final SymbolChain extendsAccess;
 		public final List<String> memberSymbols;
 
-		public EnumType(List<Token> tokens, ClassExtendsAccess extendsAccess, List<String> memberSymbols) {
+		public EnumType(
+			List<Token> tokens,
+			SymbolChain extendsAccess,
+			List<String> memberSymbols
+		) {
 			super(tokens);
 
 			if (extendsAccess != null) {
@@ -391,10 +455,10 @@ public class Ast {
 	}
 
 	public static class ClassType extends Type {
-		public final List<ClassExtendsAccess> classExtends;
+		public final List<SymbolChain> classExtends;
 		public final List<ClassMember> members;
 
-		public ClassType(List<Token> tokens, List<ClassExtendsAccess> classExtends, List<ClassMember> members) {
+		public ClassType(List<Token> tokens, List<SymbolChain> classExtends, List<ClassMember> members) {
 			super(tokens);
 
 			this.classExtends = classExtends != null ? classExtends : new ArrayList<>();
@@ -575,13 +639,13 @@ public class Ast {
 	}
 
 	public static class CaptureClassMember extends ClassMember {
-		public final ClassExtendsAccess extendsAccess;
+		public final SymbolChain extendsAccess;
 		public final String originSymbol;
 		public final String targetSymbol;
 		public final ExtendsAssignClassMember extendsAssign;
 
 		public CaptureClassMember(
-			List<Token> tokens, ClassExtendsAccess extendsAccess, String originSymbol, String targetSymbol, ExtendsAssignClassMember extendsAssign
+			List<Token> tokens, SymbolChain extendsAccess, String originSymbol, String targetSymbol, ExtendsAssignClassMember extendsAssign
 		) {
 			super(tokens);
 
@@ -722,8 +786,18 @@ public class Ast {
 		public final Type type;
 		public final String name;
 		public final Expression initializer;
+		public final List<Decorator> decorators;
 
-		public VariableDeclaration(List<Token> tokens, boolean isConst, boolean isMutable, boolean isSealed, Type type, String name, Expression initializer) {
+		public VariableDeclaration(
+			List<Token> tokens,
+			boolean isConst,
+			boolean isMutable,
+			boolean isSealed,
+			Type type,
+			String name,
+			Expression initializer,
+			List<Decorator> decorators
+		) {
 			super(tokens);
 
 			assert type != null || initializer != null;
@@ -735,6 +809,7 @@ public class Ast {
 			this.type = type;
 			this.name = name;
 			this.initializer = initializer;
+			this.decorators = decorators == null ? new ArrayList<>() : decorators;
 		}
 
 		@Override
@@ -839,7 +914,13 @@ public class Ast {
 		public final List<ElifBranch> elifBranches;
 		public final StatementBlock elseBranch;
 
-		public IfStatement(List<Token> tokens, Expression test, StatementBlock thenBranch, List<ElifBranch> elifBranches, StatementBlock elseBranch) {
+		public IfStatement(
+			List<Token> tokens,
+			Expression test,
+			StatementBlock thenBranch,
+			List<ElifBranch> elifBranches,
+			StatementBlock elseBranch
+		) {
 			super(tokens);
 
 			assert test != null;
@@ -908,7 +989,12 @@ public class Ast {
 		public final List<CaseBranch> cases;
 		public final StatementBlock defaultCase;
 
-		public SwitchStatement(List<Token> tokens, Expression value, List<CaseBranch> cases, StatementBlock defaultCase) {
+		public SwitchStatement(
+			List<Token> tokens,
+			Expression value,
+			List<CaseBranch> cases,
+			StatementBlock defaultCase
+		) {
 			super(tokens);
 
 			assert value != null;
@@ -1011,7 +1097,14 @@ public class Ast {
 		public final String variable;
 		public final StatementBlock body;
 
-		public LoopStatement(List<Token> tokens, Expression from, Expression to, Expression by, String variable, StatementBlock body) {
+		public LoopStatement(
+			List<Token> tokens,
+			Expression from,
+			Expression to,
+			Expression by,
+			String variable,
+			StatementBlock body
+		) {
 			super(tokens);
 
 			assert to != null;
@@ -1051,7 +1144,13 @@ public class Ast {
 		public final String elementVariable;
 		public final StatementBlock body;
 
-		public IterateStatement(List<Token> tokens, Expression iterable, String indexVariable, String elementVariable, StatementBlock body) {
+		public IterateStatement(
+			List<Token> tokens,
+			Expression iterable,
+			String indexVariable,
+			String elementVariable,
+			StatementBlock body
+		) {
 			super(tokens);
 
 			assert iterable != null;
@@ -1119,7 +1218,12 @@ public class Ast {
 		public final Expression left;
 		public final Expression right;
 
-		public BinaryExpression(List<Token> tokens, Kind operation, Expression left, Expression right) {
+		public BinaryExpression(
+			List<Token> tokens,
+			Kind operation,
+			Expression left,
+			Expression right
+		) {
 			super(tokens);
 
 			assert operation != null;
@@ -1727,10 +1831,10 @@ public class Ast {
 		}
 	}
 
-	public record ClassExtendsAccess(
+	public record SymbolChain(
 		List<String> symbols
 	) {
-		public ClassExtendsAccess {
+		public SymbolChain {
 			assert symbols != null;
 			assert !symbols.isEmpty();
 		}
@@ -1761,6 +1865,19 @@ public class Ast {
 	) {
 		public Argument {
 			assert (value != null && !isBlank) || (value == null && keyword == null && isBlank);
+		}
+	}
+
+	public record Decorator(
+		SymbolChain symbolChain,
+		List<Argument> arguments
+	) {
+		public Decorator {
+			assert symbolChain != null;
+
+			if (arguments == null) {
+				arguments = new ArrayList<>();
+			}
 		}
 	}
 

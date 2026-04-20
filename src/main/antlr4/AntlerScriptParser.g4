@@ -46,7 +46,7 @@ main_directive
 	;
 
 using_directive
-	: USING_DIRECTIVE class_extends_access ( ',' class_extends_access )*
+	: USING_DIRECTIVE symbol_chain ( ',' symbol_chain )*
 	;
 
 repeatable_directive
@@ -91,10 +91,10 @@ class_header_inside
 	;
 
 class_extends
-	: EXTENDS class_extends_access ( ',' class_extends_access )*
+	: EXTENDS symbol_chain ( ',' symbol_chain )*
 	;
 
-class_extends_access
+symbol_chain
 	: symbol ( '.' symbol )*
 	;
 
@@ -151,7 +151,7 @@ overridable
 	;
 
 capture
-	: CAPTURE '(' class_extends_access ')' '.' origin=symbol '->' ( target=symbol | extends_assign )
+	: CAPTURE '(' symbol_chain ')' '.' origin=symbol '->' ( target=symbol | extends_assign )
 	;
 
 extends_assign
@@ -163,7 +163,7 @@ extends_assign
 //-----------------------
 
 enum_header_inside
-	: EXTENDS class_extends_access ( ',' symbol ( ',' symbol )* ','? )?
+	: EXTENDS symbol_chain ( ',' symbol ( ',' symbol )* ','? )?
 	| symbol ( ',' symbol )* ','?
 	;
 
@@ -518,10 +518,14 @@ iterate
 	: ITERATE iterable=expression ( '->' ( element=symbol | index=symbol ',' element=symbol ) )? block=statement_block
 	;
 
+decorator
+	: '@' symbol_chain ( '(' arguments? ')' )?
+	;
+
 declaration
-	: LET ( isMutable=MUT | isSealed=SEALED )? variableType=type variableName=symbol                              # letDeclaration
-	| LET ( isMutable=MUT | isSealed=SEALED )? variableType=type? variableName=symbol '=' initialValue=expression # letDefinition
-	| CONST variableType=type? variableName=symbol '=' initialValue=expression                                    # constDefinition
+	: decorator* LET ( isMutable=MUT | isSealed=SEALED )? variableType=type variableName=symbol                              # letDeclaration
+	| decorator* LET ( isMutable=MUT | isSealed=SEALED )? variableType=type? variableName=symbol '=' initialValue=expression # letDefinition
+	| decorator* CONST variableType=type? variableName=symbol '=' initialValue=expression                                    # constDefinition
 	;
 
 typedef

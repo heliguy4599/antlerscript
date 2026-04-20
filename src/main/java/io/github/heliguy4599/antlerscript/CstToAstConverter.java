@@ -130,11 +130,11 @@ AntlerScriptParserVisitor<Object> {
 	public List<List<String>> visitUsing_directive(AntlerScriptParser.Using_directiveContext ctx) {
 		assert ctx != null;
 
-		List<Ast.ClassExtendsAccess> ceas = ctx.class_extends_access().stream().map(this::visitClass_extends_access).toList();
+		List<Ast.SymbolChain> symbolChains = ctx.symbol_chain().stream().map(this::visitSymbol_chain).toList();
 
 		List<List<String>> ret = new ArrayList<>();
-		for (Ast.ClassExtendsAccess cea : ceas) {
-			ret.add(cea.symbols());
+		for (Ast.SymbolChain symbolChain : symbolChains) {
+			ret.add(symbolChain.symbols());
 		}
 
 		return ret;
@@ -191,7 +191,7 @@ AntlerScriptParserVisitor<Object> {
 		return new Ast.FileDirective(ctx.MAIN_DIRECTIVE().getText(), null);
 	}
 
-	public static void segregateDirectives(List<Object> inDirectives, List<List<String>> outUsing, List<Ast.FileDirective> outOther) {
+	public static void segregateDirectives(List<Object> inDirectives, List<Ast.SymbolChain> outUsing, List<Ast.FileDirective> outOther) {
 		assert inDirectives != null;
 		assert outUsing != null;
 		assert outOther != null;
@@ -199,9 +199,9 @@ AntlerScriptParserVisitor<Object> {
 		for (Object directive : inDirectives) {
 			if (directive instanceof Ast.FileDirective) {
 				outOther.add((Ast.FileDirective) directive);
-			} else { // List<List<String>> (using directive)
+			} else { // List<SymbolChain> (using directive)
 				@SuppressWarnings("unchecked")
-				List<List<String>> usingDirective = (List<List<String>>) directive;
+				List<Ast.SymbolChain> usingDirective = (List<Ast.SymbolChain>) directive;
 				outUsing.addAll(usingDirective);
 			}
 		}
@@ -214,7 +214,7 @@ AntlerScriptParserVisitor<Object> {
 		List<Ast.Statement> statements = ctx.statement().stream().map(this::visitStatement).toList();
 
 		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
-		List<List<String>> using = new ArrayList<>();
+		List<Ast.SymbolChain> using = new ArrayList<>();
 		List<Ast.FileDirective> other = new ArrayList<>();
 		segregateDirectives(directives, using, other);
 
@@ -230,7 +230,7 @@ AntlerScriptParserVisitor<Object> {
 		Ast.ClassType topLevel = visitClass_top_level(ctx.class_top_level());
 
 		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
-		List<List<String>> using = new ArrayList<>();
+		List<Ast.SymbolChain> using = new ArrayList<>();
 		List<Ast.FileDirective> other = new ArrayList<>();
 		segregateDirectives(directives, using, other);
 
@@ -245,7 +245,7 @@ AntlerScriptParserVisitor<Object> {
 		List<Ast.NamespaceMember> members = ctx.namespace_member().stream().map(this::visitNamespace_member).toList();
 
 		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
-		List<List<String>> using = new ArrayList<>();
+		List<Ast.SymbolChain> using = new ArrayList<>();
 		List<Ast.FileDirective> other = new ArrayList<>();
 		segregateDirectives(directives, using, other);
 
@@ -259,7 +259,7 @@ AntlerScriptParserVisitor<Object> {
 		List<Ast.NamespaceMember> members = ctx.namespace_member().stream().map(this::visitNamespace_member).toList();
 
 		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
-		List<List<String>> using = new ArrayList<>();
+		List<Ast.SymbolChain> using = new ArrayList<>();
 		List<Ast.FileDirective> other = new ArrayList<>();
 		segregateDirectives(directives, using, other);
 
@@ -290,7 +290,7 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.ClassType visitClass_top_level(AntlerScriptParser.Class_top_levelContext ctx) {
 		assert ctx != null;
 
-		List<Ast.ClassExtendsAccess> extendsAccess = visitClass_extends(ctx.class_extends());
+		List<Ast.SymbolChain> extendsAccess = visitClass_extends(ctx.class_extends());
 		List<Ast.ClassMember> members = ctx.class_member().stream().map(this::visitClassMember).toList();
 
 		return new Ast.ClassType(getTokens(ctx), extendsAccess, members);
@@ -300,24 +300,24 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.ClassType visitClass_header_inside(AntlerScriptParser.Class_header_insideContext ctx) {
 		assert ctx != null;
 
-		List<Ast.ClassExtendsAccess> extendsAccess = visitClass_extends(ctx.class_extends());
+		List<Ast.SymbolChain> extendsAccess = visitClass_extends(ctx.class_extends());
 		List<Ast.ClassMember> members = ctx.class_member().stream().map(this::visitClassMember).toList();
 
 		return new Ast.ClassType(getTokens(ctx), extendsAccess, members);
 	}
 
 	@Override
-	public List<Ast.ClassExtendsAccess> visitClass_extends(AntlerScriptParser.Class_extendsContext ctx) {
+	public List<Ast.SymbolChain> visitClass_extends(AntlerScriptParser.Class_extendsContext ctx) {
 		assert ctx != null;
 
-		return ctx.class_extends_access().stream().map(this::visitClass_extends_access).toList();
+		return ctx.symbol_chain().stream().map(this::visitSymbol_chain).toList();
 	}
 
 	@Override
-	public Ast.ClassExtendsAccess visitClass_extends_access(AntlerScriptParser.Class_extends_accessContext ctx) {
+	public Ast.SymbolChain visitSymbol_chain(AntlerScriptParser.Symbol_chainContext ctx) {
 		assert ctx != null;
 
-		return new Ast.ClassExtendsAccess(ctx.symbol().stream().map(RuleContext::getText).toList());
+		return new Ast.SymbolChain(ctx.symbol().stream().map(RuleContext::getText).toList());
 	}
 
 	@Override
@@ -444,7 +444,7 @@ AntlerScriptParserVisitor<Object> {
 
 		String target = ctx.target == null ? null : ctx.target.getText();
 		var extendsAssign = ctx.extends_assign() == null ? null : visitExtends_assign(ctx.extends_assign());
-		return new Ast.CaptureClassMember(getTokens(ctx), visitClass_extends_access(ctx.class_extends_access()), ctx.origin.getText(), target, extendsAssign);
+		return new Ast.CaptureClassMember(getTokens(ctx), visitSymbol_chain(ctx.symbol_chain()), ctx.origin.getText(), target, extendsAssign);
 	}
 
 	@Override
@@ -460,7 +460,7 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.EnumType visitEnum_header_inside(AntlerScriptParser.Enum_header_insideContext ctx) {
 		assert ctx != null;
 
-		Ast.ClassExtendsAccess extendsAccess = ctx.class_extends_access() == null ? null : visitClass_extends_access(ctx.class_extends_access());
+		Ast.SymbolChain extendsAccess = ctx.symbol_chain() == null ? null : visitSymbol_chain(ctx.symbol_chain());
 		List<String> memberSymbols = ctx.symbol().isEmpty() ? null : ctx.symbol().stream().map(AntlerScriptParser.SymbolContext::getText).toList();
 
 		return new Ast.EnumType(getTokens(ctx), extendsAccess, memberSymbols);
@@ -1617,8 +1617,12 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.VariableDeclaration visitLetDeclaration(AntlerScriptParser.LetDeclarationContext ctx) {
 		assert ctx != null;
 
+		Ast.Type type = visitType(ctx.type());
+		String name = ctx.variableName.getText();
+		List<Ast.Decorator> decorators = ctx.decorator().stream().map(this::visitDecorator).toList();
+
 		return new Ast.VariableDeclaration(
-			getTokens(ctx), false, ctx.isMutable != null, ctx.isSealed != null, visitType(ctx.type()), ctx.variableName.getText(), null
+			getTokens(ctx), false, ctx.isMutable != null, ctx.isSealed != null, type, name, null, decorators
 		);
 	}
 
@@ -1626,9 +1630,13 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.VariableDeclaration visitLetDefinition(AntlerScriptParser.LetDefinitionContext ctx) {
 		assert ctx != null;
 
-		var type = ctx.type();
+		Ast.Type type = ctx.type() != null ? visitType(ctx.type()) : null;
+		Ast.Expression expression = visitExpression(ctx.expression());
+		String name = ctx.variableName.getText();
+		List<Ast.Decorator> decorators = ctx.decorator().stream().map(this::visitDecorator).toList();
+
 		return new Ast.VariableDeclaration(
-			getTokens(ctx), false, ctx.isMutable != null, ctx.isSealed != null, type != null ? visitType(type) : null, ctx.variableName.getText(), visitExpression(ctx.expression())
+			getTokens(ctx), false, ctx.isMutable != null, ctx.isSealed != null, type, name, expression, decorators
 		);
 	}
 
@@ -1636,10 +1644,26 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.VariableDeclaration visitConstDefinition(AntlerScriptParser.ConstDefinitionContext ctx) {
 		assert ctx != null;
 
-		var type = ctx.type();
+		Ast.Type type = ctx.type() != null ? visitType(ctx.type()) : null;
+		Ast.Expression expression = visitExpression(ctx.expression());
+		String name = ctx.variableName.getText();
+		List<Ast.Decorator> decorators = ctx.decorator().stream().map(this::visitDecorator).toList();
+
 		return new Ast.VariableDeclaration(
-			getTokens(ctx), true, false, false, type != null ? visitType(type) : null, ctx.variableName.getText(), visitExpression(ctx.expression())
+			getTokens(ctx), true, false, false, type, name, expression, decorators
 		);
+	}
+
+	@Override
+	public Ast.Decorator visitDecorator(AntlerScriptParser.DecoratorContext ctx) {
+		assert ctx != null;
+
+		Ast.SymbolChain symbolChain = visitSymbol_chain(ctx.symbol_chain());
+		List<Ast.Argument> arguments = ctx.arguments() == null
+			? null
+			: visitArguments(ctx.arguments());
+
+		return new Ast.Decorator(symbolChain, arguments);
 	}
 
 	@Override
@@ -1647,6 +1671,7 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		Ast.Type type = visitType(ctx.type());
+
 		return new Ast.Typedef(getTokens(ctx), ctx.symbol().getText(), type);
 	}
 

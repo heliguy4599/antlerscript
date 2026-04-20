@@ -85,6 +85,7 @@ class AstTest {
 					false,
 					symbolTypeFor("Int"),
 					"i",
+					null,
 					null
 				)
 			);
@@ -225,6 +226,7 @@ class AstTest {
 							false,
 							symbolTypeFor("Int"),
 							"i",
+							null,
 							null
 						)
 					))

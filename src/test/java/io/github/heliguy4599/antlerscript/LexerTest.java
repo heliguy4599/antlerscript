@@ -33,8 +33,8 @@ class LexerTest {
 	}
 
 	@Test
-	void annotation() {
-		testInput("@test", L.ANNOTATION);
+	void decorator() {
+		testInput("@", L.DECORATOR);
 	}
 
 	@Test

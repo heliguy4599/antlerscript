@@ -139,7 +139,7 @@ public class AntlerScriptParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitClass_extends_access(AntlerScriptParser.Class_extends_accessContext ctx) { return visitChildren(ctx); }
+	@Override public T visitSymbol_chain(AntlerScriptParser.Symbol_chainContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -966,6 +966,13 @@ public class AntlerScriptParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitIterate(AntlerScriptParser.IterateContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitDecorator(AntlerScriptParser.DecoratorContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
