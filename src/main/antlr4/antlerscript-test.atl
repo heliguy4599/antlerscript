@@ -99,6 +99,18 @@ let casting = Func(:) {
 	3
 }
 
+# About null safety:
+# ?. to dereference safely (return null)
+# !. to dereference and panic if null (only in debug builds, otherwise same as ?. in release build) (to implement)
+# ?? to return a value on the right if the left operand is null
+# ??= only assign if left operand is null
+# ?|> (same as ?. but for function piping) (to implement)
+# !|> (same as !. but for function piping) (to implement)
+# Every single type can have a ? after them
+# Can do this, skip if null: a?.b?.c = 10
+
+let Array(Int?)? lmao
+
 let misc = Func(Int a:) {
 	let Int | String i = select (a == 10: 27, true: "lmao")
 	# i is now either `27` or `"lmao"`
@@ -299,7 +311,7 @@ let math = Func(:) {
 	i != 4 or some_bool
 }
 
-# Can't operate assignment operators, is, in, ., ?.
+# Can't operate assignment operators, is, in, ., ?., |>
 operator+(MyType mt : MyType) {
 	return MyType{inner_number + mt.inner_number}
 
