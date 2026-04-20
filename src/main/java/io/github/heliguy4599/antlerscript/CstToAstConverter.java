@@ -1639,7 +1639,9 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Type type = visitType(ctx.type());
 		String name = ctx.variableName.getText();
-		List<Ast.Decorator> decorators = ctx.decorator().stream().map(this::visitDecorator).toList();
+		List<Ast.Decorator> decorators = ctx.decorator_chain() == null
+			? null
+			: visitDecorator_chain(ctx.decorator_chain());
 
 		return new Ast.VariableDeclaration(
 			getTokens(ctx), false, ctx.isMutable != null, ctx.isSealed != null, type, name, null, decorators
@@ -1653,7 +1655,9 @@ AntlerScriptParserVisitor<Object> {
 		Ast.Type type = ctx.type() != null ? visitType(ctx.type()) : null;
 		Ast.Expression expression = visitExpression(ctx.expression());
 		String name = ctx.variableName.getText();
-		List<Ast.Decorator> decorators = ctx.decorator().stream().map(this::visitDecorator).toList();
+		List<Ast.Decorator> decorators = ctx.decorator_chain() == null
+			? null
+			: visitDecorator_chain(ctx.decorator_chain());
 
 		return new Ast.VariableDeclaration(
 			getTokens(ctx), false, ctx.isMutable != null, ctx.isSealed != null, type, name, expression, decorators
@@ -1667,7 +1671,9 @@ AntlerScriptParserVisitor<Object> {
 		Ast.Type type = ctx.type() != null ? visitType(ctx.type()) : null;
 		Ast.Expression expression = visitExpression(ctx.expression());
 		String name = ctx.variableName.getText();
-		List<Ast.Decorator> decorators = ctx.decorator().stream().map(this::visitDecorator).toList();
+		List<Ast.Decorator> decorators = ctx.decorator_chain() == null
+			? null
+			: visitDecorator_chain(ctx.decorator_chain());
 
 		return new Ast.VariableDeclaration(
 			getTokens(ctx), true, false, false, type, name, expression, decorators
@@ -1684,6 +1690,13 @@ AntlerScriptParserVisitor<Object> {
 			: visitArguments(ctx.arguments());
 
 		return new Ast.Decorator(symbolChain, arguments);
+	}
+
+	@Override
+	public List<Ast.Decorator> visitDecorator_chain(AntlerScriptParser.Decorator_chainContext ctx) {
+		assert ctx != null;
+
+		return ctx.decorator().stream().map(this::visitDecorator).toList();
 	}
 
 	@Override

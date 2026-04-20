@@ -899,6 +899,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDecorator(AntlerScriptParser.DecoratorContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#decorator_chain}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecorator_chain(AntlerScriptParser.Decorator_chainContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code letDeclaration}
 	 * labeled alternative in {@link AntlerScriptParser#declaration}.
 	 * @param ctx the parse tree

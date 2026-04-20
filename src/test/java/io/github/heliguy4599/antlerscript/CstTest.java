@@ -499,6 +499,19 @@ class AntlerScriptTest {
 			testInput("let sealed Int name = 2 + 2", "declaration");
 		}
 
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"@Lmao\n",
+			"@Lmao()\n",
+			"@Lmao(1)\n",
+			"@Lmao(pineapple=1)\n",
+			"@Lmao(pineapple=1, pizza)\n",
+			"@Lmao\n@Lmao;@Lmao\n",
+		})
+		void statement_declaration_decorators(String input) {
+			testInput(input, "decorator_chain");
+		}
+
 		@Test
 		void statement_typedef() {
 			testInput("type MyType = Int", "typedef");

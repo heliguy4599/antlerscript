@@ -527,10 +527,14 @@ decorator
 	: '@' symbol_chain ( '(' arguments? ')' )?
 	;
 
+decorator_chain
+	: decorator ( semicolon decorator )* semicolon
+	;
+
 declaration
-	: decorator* LET ( isMutable=MUT | isSealed=SEALED )? variableType=type variableName=symbol                              # letDeclaration
-	| decorator* LET ( isMutable=MUT | isSealed=SEALED )? variableType=type? variableName=symbol '=' initialValue=expression # letDefinition
-	| decorator* CONST variableType=type? variableName=symbol '=' initialValue=expression                                    # constDefinition
+	: decorator_chain? LET ( isMutable=MUT | isSealed=SEALED )? variableType=type variableName=symbol                              # letDeclaration
+	| decorator_chain? LET ( isMutable=MUT | isSealed=SEALED )? variableType=type? variableName=symbol '=' initialValue=expression # letDefinition
+	| decorator_chain? CONST variableType=type? variableName=symbol '=' initialValue=expression                                    # constDefinition
 	;
 
 typedef
