@@ -385,10 +385,10 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
-	public Ast.CaptureClassMember visitCaptureClassMember(AntlerScriptParser.CaptureClassMemberContext ctx) {
+	public Ast.AliasClassMember visitAliasClassMember(AntlerScriptParser.AliasClassMemberContext ctx) {
 		assert ctx != null;
 
-		return visitCapture(ctx.capture());
+		return visitAlias(ctx.alias());
 	}
 
 	@Override
@@ -441,12 +441,12 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
-	public Ast.CaptureClassMember visitCapture(AntlerScriptParser.CaptureContext ctx) {
+	public Ast.AliasClassMember visitAlias(AntlerScriptParser.AliasContext ctx) {
 		assert ctx != null;
 
 		String target = ctx.target == null ? null : ctx.target.getText();
 		var extendsAssign = ctx.extends_assign() == null ? null : visitExtends_assign(ctx.extends_assign());
-		return new Ast.CaptureClassMember(getTokens(ctx), visitSymbol_chain(ctx.symbol_chain()), ctx.origin.getText(), target, extendsAssign);
+		return new Ast.AliasClassMember(getTokens(ctx), visitSymbol_chain(ctx.symbol_chain()), ctx.origin.getText(), target, extendsAssign);
 	}
 
 	@Override

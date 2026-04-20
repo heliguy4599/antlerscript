@@ -227,7 +227,7 @@ class AntlerScriptTest {
 		@ValueSource(strings = {
 			"extends One;;const i = 10",
 			"let Int j = 23",
-			"capture(Two).i -> j",
+			"alias(Two).i -> j",
 		})
 		void class_top_level(String input) {
 			testInput(input, "class_top_level");
@@ -236,7 +236,7 @@ class AntlerScriptTest {
 		@ParameterizedTest
 		@ValueSource(strings = {
 			"extends One, Two, thing = 3, let item = false",
-			"const a = 5, capture(Two).three -> item",
+			"const a = 5, alias(Two).three -> item",
 			"extends Two",
 		})
 		void class_header_inside(String input) {
@@ -321,11 +321,11 @@ class AntlerScriptTest {
 
 		@ParameterizedTest
 		@ValueSource(strings = {
-			"capture (Thing.A).B -> C",
-			"capture (Other).item -> whatever = 2 + 2",
+			"alias (Thing.A).B -> C",
+			"alias (Other).item -> whatever = 2 + 2",
 		})
-		void class_capture(String input) {
-			testInput(input, "capture");
+		void class_alias(String input) {
+			testInput(input, "alias");
 		}
 
 		@Test

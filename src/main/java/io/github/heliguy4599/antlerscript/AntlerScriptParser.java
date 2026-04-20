@@ -21,7 +21,7 @@ public class AntlerScriptParser extends Parser {
 	public static final int
 		MAIN_DIRECTIVE=1, NAMESPACE_DIRECTIVE=2, CLASSNAME_DIRECTIVE=3, USING_DIRECTIVE=4, 
 		OTHER_DIRECTIVE=5, INTEGER=6, FLOAT=7, WHITESPACE=8, COMMENT=9, RAW_STRING=10, 
-		STRING=11, AND=12, ARRAY=13, AS=14, BREAK=15, BY=16, CAPTURE=17, CASE=18, 
+		STRING=11, AND=12, ARRAY=13, AS=14, BREAK=15, BY=16, ALIAS=17, CASE=18, 
 		CAST=19, CLASS=20, CONST=21, CONSTRUCTOR=22, CONTINUE=23, DEFER=24, ELIF=25, 
 		ELLIPSIS=26, ELSE=27, ENUM=28, EXTENDS=29, FALSE=30, FROM=31, FUNC=32, 
 		IF=33, IN=34, IS=35, ITERATE=36, LET=37, LIST=38, LOOP=39, MAP=40, MUT=41, 
@@ -47,7 +47,7 @@ public class AntlerScriptParser extends Parser {
 		RULE_class_extends = 16, RULE_symbol_chain = 17, RULE_constructor = 18, 
 		RULE_constructor_params = 19, RULE_constructor_params_elm = 20, RULE_var_args = 21, 
 		RULE_class_member = 22, RULE_cast = 23, RULE_operator_overload = 24, RULE_overridable = 25, 
-		RULE_capture = 26, RULE_extends_assign = 27, RULE_enum_header_inside = 28, 
+		RULE_alias = 26, RULE_extends_assign = 27, RULE_enum_header_inside = 28, 
 		RULE_type = 29, RULE_type_or = 30, RULE_type_or_right = 31, RULE_type_and = 32, 
 		RULE_type_and_right = 33, RULE_type_atomic = 34, RULE_list_header = 35, 
 		RULE_array_header = 36, RULE_map_header = 37, RULE_func_header = 38, RULE_func_params = 39, 
@@ -80,10 +80,10 @@ public class AntlerScriptParser extends Parser {
 			"namespace_member", "class_top_level", "class_header_inside", "class_extends", 
 			"symbol_chain", "constructor", "constructor_params", "constructor_params_elm", 
 			"var_args", "class_member", "cast", "operator_overload", "overridable", 
-			"capture", "extends_assign", "enum_header_inside", "type", "type_or", 
-			"type_or_right", "type_and", "type_and_right", "type_atomic", "list_header", 
-			"array_header", "map_header", "func_header", "func_params", "func_param_elm", 
-			"lambda", "class_header", "enum_header", "expression", "expression_assignment", 
+			"alias", "extends_assign", "enum_header_inside", "type", "type_or", "type_or_right", 
+			"type_and", "type_and_right", "type_atomic", "list_header", "array_header", 
+			"map_header", "func_header", "func_params", "func_param_elm", "lambda", 
+			"class_header", "enum_header", "expression", "expression_assignment", 
 			"expression_assignment_right", "expression_logical_or", "expression_logical_or_right", 
 			"expression_logical_and", "expression_logical_and_right", "expression_logical_not", 
 			"expression_cmp", "expression_cmp_right", "expression_func_pipe", "expression_func_pipe_right", 
@@ -105,16 +105,16 @@ public class AntlerScriptParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, null, null, null, null, "'::'", null, null, null, null, null, null, 
-			"'and'", "'Array'", "'as'", "'break'", "'by'", "'capture'", "'case'", 
-			"'cast'", "'Class'", "'const'", "'constructor'", "'continue'", "'defer'", 
-			"'elif'", "'...'", "'else'", "'Enum'", "'extends'", "'false'", "'from'", 
-			"'Func'", "'if'", "'in'", "'is'", "'iterate'", "'let'", "'List'", "'loop'", 
-			"'Map'", "'mut'", "'not'", "'null'", "'object'", "'operator'", "'or'", 
-			"'return'", "'sealed'", "'Self'", "'self'", "'select'", "'super'", "'switch'", 
-			"'to'", "'true'", "'type'", "'_'", "'while'", null, null, "';'", "'('", 
-			"')'", "'['", "']'", "'{'", "'}'", "'?.'", "'@'", "'?'", "'->'", "':'", 
-			"','", "'.'", "'='", "'+'", "'-'", "'*'", "'/'", "'%'", "'<'", "'>'", 
-			"'|'", "'&'", "'^'", "'~'", "'<<'", "'>>'", "'??'", "'++'", "'**'", "'//'", 
+			"'and'", "'Array'", "'as'", "'break'", "'by'", "'alias'", "'case'", "'cast'", 
+			"'Class'", "'const'", "'constructor'", "'continue'", "'defer'", "'elif'", 
+			"'...'", "'else'", "'Enum'", "'extends'", "'false'", "'from'", "'Func'", 
+			"'if'", "'in'", "'is'", "'iterate'", "'let'", "'List'", "'loop'", "'Map'", 
+			"'mut'", "'not'", "'null'", "'object'", "'operator'", "'or'", "'return'", 
+			"'sealed'", "'Self'", "'self'", "'select'", "'super'", "'switch'", "'to'", 
+			"'true'", "'type'", "'_'", "'while'", null, null, "';'", "'('", "')'", 
+			"'['", "']'", "'{'", "'}'", "'?.'", "'@'", "'?'", "'->'", "':'", "','", 
+			"'.'", "'='", "'+'", "'-'", "'*'", "'/'", "'%'", "'<'", "'>'", "'|'", 
+			"'&'", "'^'", "'~'", "'<<'", "'>>'", "'??'", "'++'", "'**'", "'//'", 
 			"'%%'", "'=='", "'.='", "'!='", "'+='", "'-='", "'*='", "'**='", "'/='", 
 			"'//='", "'%='", "'%%='", "'<='", "'>='", "'|='", "'&='", "'~='", "'^='", 
 			"'|>'", "'<<='", "'>>='", "'++='", "'??='"
@@ -126,7 +126,7 @@ public class AntlerScriptParser extends Parser {
 			null, "MAIN_DIRECTIVE", "NAMESPACE_DIRECTIVE", "CLASSNAME_DIRECTIVE", 
 			"USING_DIRECTIVE", "OTHER_DIRECTIVE", "INTEGER", "FLOAT", "WHITESPACE", 
 			"COMMENT", "RAW_STRING", "STRING", "AND", "ARRAY", "AS", "BREAK", "BY", 
-			"CAPTURE", "CASE", "CAST", "CLASS", "CONST", "CONSTRUCTOR", "CONTINUE", 
+			"ALIAS", "CASE", "CAST", "CLASS", "CONST", "CONSTRUCTOR", "CONTINUE", 
 			"DEFER", "ELIF", "ELLIPSIS", "ELSE", "ENUM", "EXTENDS", "FALSE", "FROM", 
 			"FUNC", "IF", "IN", "IS", "ITERATE", "LET", "LIST", "LOOP", "MAP", "MUT", 
 			"NOT", "NULL", "OBJECT", "OPERATOR", "OR", "RETURN", "SEALED", "SELF_CLASS", 
@@ -1525,7 +1525,7 @@ public class AntlerScriptParser extends Parser {
 				}
 				break;
 			case BY:
-			case CAPTURE:
+			case ALIAS:
 			case CAST:
 			case CONST:
 			case CONSTRUCTOR:
@@ -1657,7 +1657,7 @@ public class AntlerScriptParser extends Parser {
 				}
 				break;
 			case BY:
-			case CAPTURE:
+			case ALIAS:
 			case CAST:
 			case CONST:
 			case CONSTRUCTOR:
@@ -2138,6 +2138,18 @@ public class AntlerScriptParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
+	public static class AliasClassMemberContext extends Class_memberContext {
+		public AliasContext alias() {
+			return getRuleContext(AliasContext.class,0);
+		}
+		public AliasClassMemberContext(Class_memberContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitAliasClassMember(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
 	public static class ConstructorClassMemberContext extends Class_memberContext {
 		public ConstructorContext constructor() {
 			return getRuleContext(ConstructorContext.class,0);
@@ -2170,18 +2182,6 @@ public class AntlerScriptParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitOperatorOverloadClassMember(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
-	public static class CaptureClassMemberContext extends Class_memberContext {
-		public CaptureContext capture() {
-			return getRuleContext(CaptureContext.class,0);
-		}
-		public CaptureClassMemberContext(Class_memberContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitCaptureClassMember(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2251,12 +2251,12 @@ public class AntlerScriptParser extends Parser {
 				constructor();
 				}
 				break;
-			case CAPTURE:
-				_localctx = new CaptureClassMemberContext(_localctx);
+			case ALIAS:
+				_localctx = new AliasClassMemberContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(564);
-				capture();
+				alias();
 				}
 				break;
 			case BY:
@@ -2551,10 +2551,10 @@ public class AntlerScriptParser extends Parser {
 	}
 
 	@SuppressWarnings("CheckReturnValue")
-	public static class CaptureContext extends ParserRuleContext {
+	public static class AliasContext extends ParserRuleContext {
 		public SymbolContext origin;
 		public SymbolContext target;
-		public TerminalNode CAPTURE() { return getToken(AntlerScriptParser.CAPTURE, 0); }
+		public TerminalNode ALIAS() { return getToken(AntlerScriptParser.ALIAS, 0); }
 		public TerminalNode LPAREN() { return getToken(AntlerScriptParser.LPAREN, 0); }
 		public Symbol_chainContext symbol_chain() {
 			return getRuleContext(Symbol_chainContext.class,0);
@@ -2571,25 +2571,25 @@ public class AntlerScriptParser extends Parser {
 		public Extends_assignContext extends_assign() {
 			return getRuleContext(Extends_assignContext.class,0);
 		}
-		public CaptureContext(ParserRuleContext parent, int invokingState) {
+		public AliasContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_capture; }
+		@Override public int getRuleIndex() { return RULE_alias; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitCapture(this);
+			if ( visitor instanceof AntlerScriptParserVisitor ) return ((AntlerScriptParserVisitor<? extends T>)visitor).visitAlias(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final CaptureContext capture() throws RecognitionException {
-		CaptureContext _localctx = new CaptureContext(_ctx, getState());
-		enterRule(_localctx, 52, RULE_capture);
+	public final AliasContext alias() throws RecognitionException {
+		AliasContext _localctx = new AliasContext(_ctx, getState());
+		enterRule(_localctx, 52, RULE_alias);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(600);
-			match(CAPTURE);
+			match(ALIAS);
 			setState(601);
 			match(LPAREN);
 			setState(602);
@@ -2599,7 +2599,7 @@ public class AntlerScriptParser extends Parser {
 			setState(604);
 			match(DOT);
 			setState(605);
-			((CaptureContext)_localctx).origin = symbol();
+			((AliasContext)_localctx).origin = symbol();
 			setState(606);
 			match(RARROW);
 			setState(609);
@@ -2608,7 +2608,7 @@ public class AntlerScriptParser extends Parser {
 			case 1:
 				{
 				setState(607);
-				((CaptureContext)_localctx).target = symbol();
+				((AliasContext)_localctx).target = symbol();
 				}
 				break;
 			case 2:

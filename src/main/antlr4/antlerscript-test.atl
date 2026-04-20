@@ -220,9 +220,9 @@ let class_stuff = Func(:) {
 
 		let Int i
 
-		capture(A).fn -> fn_a
-		capture(B).fn -> fn_b
-		capture(B).fn -> fn_b = Func(:){}
+		alias(A).fn -> fn_a
+		alias(B).fn -> fn_b
+		alias(B).fn -> fn_b = Func(:){}
 
 		fn_b = Func(:) {
 			print("class Bottom")

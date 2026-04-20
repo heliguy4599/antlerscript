@@ -638,13 +638,13 @@ public class Ast {
 		}
 	}
 
-	public static class CaptureClassMember extends ClassMember {
+	public static class AliasClassMember extends ClassMember {
 		public final SymbolChain extendsAccess;
 		public final String originSymbol;
 		public final String targetSymbol;
 		public final ExtendsAssignClassMember extendsAssign;
 
-		public CaptureClassMember(
+		public AliasClassMember(
 			List<Token> tokens, SymbolChain extendsAccess, String originSymbol, String targetSymbol, ExtendsAssignClassMember extendsAssign
 		) {
 			super(tokens);
@@ -670,7 +670,7 @@ public class Ast {
 				return false;
 			}
 
-			var other = (CaptureClassMember) object;
+			var other = (AliasClassMember) object;
 
 			return Objects.equals(extendsAccess, other.extendsAccess)
 				&& Objects.equals(originSymbol, other.originSymbol)
@@ -1967,7 +1967,7 @@ public class Ast {
 
 		T visitConstructorClassMember(ConstructorClassMember node);
 
-		T visitCaptureClassMember(CaptureClassMember node);
+		T visitCaptureClassMember(AliasClassMember node);
 
 		T visitExtendsAssignClassMember(ExtendsAssignClassMember node);
 

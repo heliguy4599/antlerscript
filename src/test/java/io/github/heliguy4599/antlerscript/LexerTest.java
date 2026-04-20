@@ -222,8 +222,8 @@ class LexerTest {
 	}
 
 	@Test
-	void capture() {
-		testInput("capture", L.CAPTURE);
+	void alias() {
+		testInput("alias", L.ALIAS);
 	}
 
 	@Test

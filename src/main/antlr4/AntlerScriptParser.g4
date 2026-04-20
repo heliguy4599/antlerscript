@@ -122,7 +122,7 @@ class_member
 	| declaration           # declarationClassMember
 	| operator_overload     # operatorOverloadClassMember
 	| constructor           # constructorClassMember
-	| capture               # captureClassMember
+	| alias                 # aliasClassMember
 	| extends_assign        # extendsClassMember
 	;
 
@@ -150,8 +150,8 @@ overridable
 	| operator='[' ']'
 	;
 
-capture
-	: CAPTURE '(' symbol_chain ')' '.' origin=symbol '->' ( target=symbol | extends_assign )
+alias
+	: ALIAS '(' symbol_chain ')' '.' origin=symbol '->' ( target=symbol | extends_assign )
 	;
 
 extends_assign

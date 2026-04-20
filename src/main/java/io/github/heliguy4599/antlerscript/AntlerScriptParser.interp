@@ -16,7 +16,7 @@ null
 'as'
 'break'
 'by'
-'capture'
+'alias'
 'case'
 'cast'
 'Class'
@@ -135,7 +135,7 @@ ARRAY
 AS
 BREAK
 BY
-CAPTURE
+ALIAS
 CASE
 CAST
 CLASS
@@ -263,7 +263,7 @@ class_member
 cast
 operator_overload
 overridable
-capture
+alias
 extends_assign
 enum_header_inside
 type

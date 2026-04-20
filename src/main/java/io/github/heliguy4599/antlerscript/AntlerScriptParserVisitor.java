@@ -173,12 +173,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitConstructorClassMember(AntlerScriptParser.ConstructorClassMemberContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code captureClassMember}
+	 * Visit a parse tree produced by the {@code aliasClassMember}
 	 * labeled alternative in {@link AntlerScriptParser#class_member}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCaptureClassMember(AntlerScriptParser.CaptureClassMemberContext ctx);
+	T visitAliasClassMember(AntlerScriptParser.AliasClassMemberContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code extendsClassMember}
 	 * labeled alternative in {@link AntlerScriptParser#class_member}.
@@ -205,11 +205,11 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOverridable(AntlerScriptParser.OverridableContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#capture}.
+	 * Visit a parse tree produced by {@link AntlerScriptParser#alias}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCapture(AntlerScriptParser.CaptureContext ctx);
+	T visitAlias(AntlerScriptParser.AliasContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#extends_assign}.
 	 * @param ctx the parse tree

@@ -61,7 +61,7 @@ ARRAY: 'Array' ;
 AS: 'as' ;
 BREAK: 'break' ;
 BY: 'by' ;
-CAPTURE: 'capture' ;
+ALIAS: 'alias' ;
 CASE: 'case' ;
 CAST: 'cast' ;
 CLASS: 'Class' ;
