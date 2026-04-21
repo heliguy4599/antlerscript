@@ -200,8 +200,12 @@ type_atomic
 	| enum_header   # enumType
 	| func_header   # funcType
 	| SELF_CLASS    # selfType
+	| template      # templateType
 	| '(' type ')'  # typeGroup
 	;
+
+// TODO: maybe abstract List(GenericType), Map, and Array into a general generic type?
+// TODO: check for the generic types to have the target typing feature (e.g. let DataHolder(Int) implicit = DataHolder(){ 10 })
 
 list_header
 	: LIST '(' type? ')'
@@ -217,7 +221,13 @@ map_header
 	;
 
 func_header
-	: FUNC '(' func_params? ':' type? ')'
+	: FUNC '(' func_header_body? ':' type? ')'
+	;
+
+func_header_body
+	: t_definitions ',' func_params
+	| t_definitions ','?
+	| func_params
 	;
 
 func_params
@@ -226,6 +236,18 @@ func_params
 
 func_param_elm
 	: type symbol ( '=' expression )?
+	;
+
+template
+	: TEMPLATE '(' t_definitions ':' type ')'
+	;
+
+t_definitions
+	: t_definition ( ',' t_definition )*
+	;
+
+t_definition
+	: '<' type '>' symbol
 	;
 
 lambda
@@ -395,10 +417,16 @@ expression_postfix
 	;
 
 expression_access
-	: '[' expression ']'    # indexAccess
-	| '(' arguments? ')'    # functionCall
-	| '.' symbol            # memberAccess
-	| '?.' symbol           # nullishAccess
+	: '[' expression ']'      # indexAccess
+	| '(' func_call_body? ')' # functionCall
+	| '.' symbol              # memberAccess
+	| '?.' symbol             # nullishAccess
+	;
+
+func_call_body
+	: t_definitions ',' arguments
+	| t_definitions ','?
+	| arguments
 	;
 
 arguments

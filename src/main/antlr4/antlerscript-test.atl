@@ -325,3 +325,24 @@ operator+(MyType mt : MyType) {
 
 # Can't have a declarator in the wild
 # @a_decorator
+
+
+# Generics for classes and more
+# Generics do not do type erasure and work like Java by casting to Object
+type DataHolder = Template(<Any> T : Class(
+    T data,
+    constructor(data) {},
+))
+
+
+let int_holder = DataHolder(Int){ 10 }
+let DataHolder(Int) implicit = DataHolder(){ 10 }
+
+# Generics for function arguments
+let add = Func(<Int> T, <Float> T2 :) {
+    return a + b
+}
+
+print(add(10.2, 14.1)) # 24.3, still a Float
+# alternatively, you can be specific
+add(<Float>, 10.2, 14.1)

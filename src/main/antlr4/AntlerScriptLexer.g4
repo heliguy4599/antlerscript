@@ -98,6 +98,7 @@ SELF_INSTANCE: 'self' ;
 SELECT: 'select' ;
 SUPER: 'super' ;
 SWITCH: 'switch' ;
+TEMPLATE: 'Template' ;
 TO: 'to' ;
 TRUE: 'true' ;
 TYPE: 'type' ;

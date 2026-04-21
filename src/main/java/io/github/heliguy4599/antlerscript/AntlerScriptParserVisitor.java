@@ -309,6 +309,13 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSelfType(AntlerScriptParser.SelfTypeContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code templateType}
+	 * labeled alternative in {@link AntlerScriptParser#type_atomic}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTemplateType(AntlerScriptParser.TemplateTypeContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code typeGroup}
 	 * labeled alternative in {@link AntlerScriptParser#type_atomic}.
 	 * @param ctx the parse tree
@@ -340,6 +347,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunc_header(AntlerScriptParser.Func_headerContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#func_header_body}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunc_header_body(AntlerScriptParser.Func_header_bodyContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#func_params}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -351,6 +364,24 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFunc_param_elm(AntlerScriptParser.Func_param_elmContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#template}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTemplate(AntlerScriptParser.TemplateContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#t_definitions}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitT_definitions(AntlerScriptParser.T_definitionsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#t_definition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitT_definition(AntlerScriptParser.T_definitionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#lambda}.
 	 * @param ctx the parse tree
@@ -571,6 +602,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNullishAccess(AntlerScriptParser.NullishAccessContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#func_call_body}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunc_call_body(AntlerScriptParser.Func_call_bodyContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#arguments}.
 	 * @param ctx the parse tree

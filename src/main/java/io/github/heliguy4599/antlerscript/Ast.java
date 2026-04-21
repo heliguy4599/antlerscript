@@ -1360,14 +1360,16 @@ public class Ast {
 	public static class CallExpression extends Expression {
 		public final Expression function;
 		public final List<Argument> arguments;
+		public final List<Type> generics;
 
-		public CallExpression(List<Token> tokens, Expression function, List<Argument> arguments) {
+		public CallExpression(List<Token> tokens, Expression function, List<Argument> arguments, List<Type> generics) {
 			super(tokens);
 
 			assert function != null;
 
 			this.function = function;
 			this.arguments = arguments != null ? arguments : new ArrayList<>();
+			this.generics = generics != null ? generics : new ArrayList<>();
 		}
 
 		@Override
