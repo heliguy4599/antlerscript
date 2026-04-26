@@ -6,6 +6,15 @@
 :: using Lmao, Language.AST.Statements.ForLoop
 :: using Potato
 
+# Users can define their own file directives
+# File directives can be retrieved in runtime,
+# or with the AntlerScript compiler with a flag to retrieve them as JSON.
+# Using this flag, AntlerScript only does static analysis, there is no risk
+# of running risky code like there is with Lua
+:: my_custom_file_directive "it contains this value"
+:: version "0.1.0"
+:: license "MIT"
+
 extends One.Two.Three.Four.Five
 
 constructor(i, j, Int ...a){ print(j); print(j) }
@@ -38,6 +47,7 @@ let Func(Int a, Int b : Int) fn = Func(Int a, Int b : Int) {
 
 # Functions with a single expression statement implicitly return that expression
 Func(:Int){3}
+Func(:Int){return 3}
 
 # const needs to have a compile-time defined value (like constexpr in C++)
 # const can only appear in function bodies (not forward-declared), or in
