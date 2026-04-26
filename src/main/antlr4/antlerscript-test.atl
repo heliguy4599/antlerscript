@@ -29,9 +29,6 @@ constructor(Int i, innerClassMember, Int j) {
 
 let Int thereCanBeDeclarationsInBetween = 0
 
-# Can only have one at most (can be before constructor())
-__constructor() {}
-
 # Can't do file directives after code:
 #   :: namespace Whatever
 
