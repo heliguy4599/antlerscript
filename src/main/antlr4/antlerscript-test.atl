@@ -76,6 +76,33 @@ let cheese = Func(Func(:) f: Func(:)) {
 @cheese # or @cheese()
 let func_with_dec = Func(:){}
 
+# Enums
+type Directions = Enum(
+  UP,
+  DOWN,
+  LEFT,
+  RIGHT,
+)
+# ...
+let Directions dir = Directions.UP
+type MoreDirections = Enum(
+  extends Directions,
+  FORWARD,
+  BACKWARD,
+)
+let mut MoreDirections more_dir = MoreDirections.FORWARD
+more_dir = MoreDirections.UP
+more_dir = Directions.RIGHT
+# all of these are valid
+
+# Enums naturally support binary flags. Meaning that you can always do
+# Directions.UP | Directions.DOWN to mean either, and myDirs & Direction.UP to
+# check if it contains Direction.UP. All enums have the value "NONE" (so, it is
+# reserved), so Direction.UP & Direction.DOWN == Direction.NONE, even if it is
+# never explicitly defined in the enum
+
+# Enums can be turned into strings baked in with `MyEnum.VALUE as String`
+
 const my_array = Array(Int, 5){ 10, 20, 30, 40, 50 }
 
 fn(b = 20, a = 30)
