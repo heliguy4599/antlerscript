@@ -773,11 +773,17 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitObject_literal(AntlerScriptParser.Object_literalContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#keypair_list}.
+	 * Visit a parse tree produced by {@link AntlerScriptParser#keypair_list_select}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitKeypair_list(AntlerScriptParser.Keypair_listContext ctx);
+	T visitKeypair_list_select(AntlerScriptParser.Keypair_list_selectContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#keypair_list_map}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitKeypair_list_map(AntlerScriptParser.Keypair_list_mapContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#keypair_clause}.
 	 * @param ctx the parse tree

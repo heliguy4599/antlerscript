@@ -860,7 +860,14 @@ public class AntlerScriptParserBaseVisitor<T> extends AbstractParseTreeVisitor<T
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitKeypair_list(AntlerScriptParser.Keypair_listContext ctx) { return visitChildren(ctx); }
+	@Override public T visitKeypair_list_select(AntlerScriptParser.Keypair_list_selectContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitKeypair_list_map(AntlerScriptParser.Keypair_list_mapContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

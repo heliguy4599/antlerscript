@@ -1449,7 +1449,7 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		Ast.MapType type = visitMap_header(ctx.map_header());
-		List<Ast.KeyValuePair> pairs = visitKeypair_list(ctx.keypair_list());
+		List<Ast.KeyValuePair> pairs = visitKeypair_list_map(ctx.keypair_list_map());
 		return new Ast.NewMapExpression(getTokens(ctx), type, pairs);
 	}
 
@@ -1457,7 +1457,7 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.SelectExpression visitSelect(AntlerScriptParser.SelectContext ctx) {
 		assert ctx != null;
 
-		return new Ast.SelectExpression(getTokens(ctx), visitExpression(ctx.expression()), visitKeypair_list(ctx.keypair_list()));
+		return new Ast.SelectExpression(getTokens(ctx), visitExpression(ctx.expression()), visitKeypair_list_select(ctx.keypair_list_select()));
 	}
 
 	@Override
@@ -1479,7 +1479,35 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
-	public List<Ast.KeyValuePair> visitKeypair_list(AntlerScriptParser.Keypair_listContext ctx) {
+	public List<Ast.KeyValuePair> visitKeypair_list_select(AntlerScriptParser.Keypair_list_selectContext ctx) {
+		assert ctx != null;
+
+		List<Ast.KeyValuePair> keypairList;
+
+		if (ctx.keypair_clause() != null) {
+			keypairList = ctx.keypair_clause().stream().map(this::visitKeypair_clause).toList();
+		} else {
+			keypairList = new ArrayList<>();
+		}
+
+		if (ctx.elseClause != null) {
+			assert ctx.elseToken != null;
+
+			List<Token> elseToken = Arrays.asList(ctx.elseToken);
+
+			Ast.KeyValuePair pair = new Ast.KeyValuePair(
+				new Ast.BooleanExpression(elseToken, true),
+				visitExpression(ctx.elseClause)
+			);
+
+			keypairList.add(pair);
+		}
+
+		return keypairList;
+	}
+
+	@Override
+	public List<Ast.KeyValuePair> visitKeypair_list_map(AntlerScriptParser.Keypair_list_mapContext ctx) {
 		assert ctx != null;
 
 		return ctx.keypair_clause().stream().map(this::visitKeypair_clause).toList();

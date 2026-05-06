@@ -468,19 +468,24 @@ new_map_instance
 		lexer.ignoreSemicolons.pollFirst();
 		lexer.ignoreSemicolons.push(true);
 	}
-	keypair_list?
+	keypair_list_map?
 	'}'
 	;
 
 select
-	: SELECT ( '[' value=expression ']' )? '(' keypair_list ')'
+	: SELECT  value=expression? '(' keypair_list_select ')'
 	;
 
 object_literal
 	: OBJECT '{' semicolon* class_top_level? semicolon* '}'
 	;
 
-keypair_list
+keypair_list_select
+	: keypair_clause ( ',' keypair_clause )* ( ',' elseToken=ELSE ':' elseClause=expression )? ','?
+	| elseToken=ELSE ':' elseClause=expression ','?
+	;
+
+keypair_list_map
 	: keypair_clause ( ',' keypair_clause )* ','?
 	;
 

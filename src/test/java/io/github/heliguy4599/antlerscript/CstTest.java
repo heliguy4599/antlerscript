@@ -746,9 +746,13 @@ class AntlerScriptTest {
 		@ParameterizedTest
 		@ValueSource(strings = {
 			"select(true: true)",
-			"select[0](0: \"is zero\", true: \"is not zero\")",
-			"select[0](0: \"is zero\", true: \"is not zero\",)",
-			"select[0](0: \"is zero\",\ntrue: \"is not zero\",\n)",
+			"select 0 (0: \"is zero\", true: \"is not zero\")",
+			"select 0(0: \"is zero\", true: \"is not zero\",)",
+			"select 0(0: \"is zero\",\ntrue: \"is not zero\",\n)",
+			"select 0(0: \"is zero\",\ntrue: \"is not zero\",else: 0\n)",
+			"select 0(0: \"is zero\",\ntrue: \"is not zero\",else: 0,\n)",
+			"select 0(else: 0\n)",
+			"select 0(else: 0,\n)",
 		})
 		void select(String expr) {
 			testInput(expr, "expression_postfix");
@@ -885,8 +889,9 @@ class AntlerScriptTest {
 			"path ++ \"/\" ++ filename ++ \".txt\"",
 			"List(){1, 2, 3, 4}[2] + Array(int){x, y, z}.length()",
 			"Map(){\"x\": 10, \"y\": 20}[key] ?? 0",
-			"select[condition](true: positive_result, false: negative_result)",
-			"select[x > 0](true: x ** 2, false: -x) + offset",
+			"select condition (true: positive_result, false: negative_result)",
+			"select condition (else: 0)",
+			"select x > 0 (true: x ** 2, false: -x, else: \"potato\") + offset",
 			"numbers.map(Func(Int n: Int){return n}, int{n * 2 + 1})",
 			"items.filter(Func(Int x: bool){x.valid and not x.expired})",
 			"Class(x = value, y = other){compute(), transform(), validate()}",
