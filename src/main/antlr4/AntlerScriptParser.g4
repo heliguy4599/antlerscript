@@ -184,11 +184,15 @@ type_or_right
 	;
 
 type_and
-	: left=type_atomic right=type_and_right?
+	: left=type_nullable right=type_and_right?
 	;
 
 type_and_right
 	: '&' type_and
+	;
+
+type_nullable
+	: type_atomic nullable='?'?
 	;
 
 type_atomic

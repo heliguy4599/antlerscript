@@ -253,6 +253,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitType_and_right(AntlerScriptParser.Type_and_rightContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#type_nullable}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType_nullable(AntlerScriptParser.Type_nullableContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code symbolType}
 	 * labeled alternative in {@link AntlerScriptParser#type_atomic}.
 	 * @param ctx the parse tree

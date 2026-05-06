@@ -985,20 +985,20 @@ class AntlerScriptTest {
 			"List(( Int | Float ) & Pineapple)",
 			"Array()",
 			"Array(Int)",
-			"Array(Int, 5)",
+			"Array(Int?, 5)",
 			"Array(5)",
-			"Array(( Int | Float ) & Pineapple)",
+			"Array(( Int | Float ) & Pineapple?)",
 			"Array(( Int | Float ) & Pineapple, 10 * 2 + 3 * hello())",
 			"Map()",
 			"Map(Int, Int)",
 			"Map(Int, ( Int | Float ) & Pineapple)",
 			"Map(( Int | Float ) & Pineapple, Int)",
-			"Map(( Int | Float ) & Pineapple, ( Int | Float ) & Pineapple)",
+			"Map(( Int | Float? ) & Pineapple, ( Int | Float ) & Pineapple)",
 			"Func(:)",
 			"Func(: Int)",
-			"Func(Int a: Int)",
-			"Func(Int a, Int b = 0: Int)",
-			"Func(( Int | Float ) & Pineapple a = 0, ( Int | Float ) & Pineapple b = 0: ( Int | Float ) & Pineapple)",
+			"Func(Int a: Int?)",
+			"Func(Int? a, Int b = 0: Int)",
+			"Func(( Int? | Float ) & Pineapple a = 0, ( Int | Float )? & Pineapple b = 0: ( Int | Float? ) & Pineapple)",
 			"Class()",
 			"Class(let Int a)",
 			"Class(let ( Int | Float ) & Pineapple a = 0,)",
@@ -1007,6 +1007,7 @@ class AntlerScriptTest {
 			"Enum(extends Other, ONE, TWO)",
 		})
 		void atomic(String type) {
+			testInput(type + "?", "type_nullable");
 			testInput(type, "type_atomic");
 		}
 
@@ -1046,6 +1047,7 @@ class AntlerScriptTest {
 			"Enum(One, Two",
 		})
 		void fail_atomic(String type) {
+			testInputNoRule(type + "??", "type_nullable");
 			testInputNoRule(type, "type_atomic");
 		}
 	}

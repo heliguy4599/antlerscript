@@ -502,10 +502,10 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		if (ctx.right == null) {
-			return visitTypeAtomic(ctx.left);
+			return visitType_nullable(ctx.left);
 		}
 
-		return new Ast.UnionType(getTokens(ctx), Ast.UnionType.Kind.AND, visitTypeAtomic(ctx.left), visitType_and(ctx.right.type_and()));
+		return new Ast.UnionType(getTokens(ctx), Ast.UnionType.Kind.AND, visitType_nullable(ctx.left), visitType_and(ctx.right.type_and()));
 	}
 
 	@Override
@@ -515,6 +515,24 @@ AntlerScriptParserVisitor<Object> {
 		// Should be handled by the caller
 		assert false;
 		return null;
+	}
+
+	@Override
+	public Ast.Type visitType_nullable(AntlerScriptParser.Type_nullableContext ctx) {
+		assert ctx != null;
+
+		Ast.Type atomic = visitTypeAtomic(ctx.type_atomic());
+		if (ctx.nullable == null) {
+			return atomic;
+		}
+
+		List<Token> questionMark = Arrays.asList(ctx.nullable);
+		return new Ast.UnionType(
+			getTokens(ctx),
+			Ast.UnionType.Kind.OR,
+			atomic,
+			new Ast.SymbolType(questionMark, "Null")
+		);
 	}
 
 	// Helper, not an override
