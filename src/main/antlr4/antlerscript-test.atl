@@ -49,6 +49,9 @@ let Func(Int a, Int b : Int) fn = Func(Int a, Int b : Int) {
 Func(:Int){3}
 Func(:Int){return 3}
 
+# It is possible to narrow-down the type of functions
+let Func(Int a:) f = Func(Int | String a: String){ return "" }
+
 # const needs to have a compile-time defined value (like constexpr in C++)
 # const can only appear in function bodies (not forward-declared), or in
 # namespaces (forward-declared)
@@ -152,7 +155,6 @@ let misc = Func(Int a:) {
 		defer print("3rd")
 		defer print("2nd")
 		defer print("1st")
-		yield 10
 	} # prints 1st, 2nd, 3rd at the end of this scope
 	print(ls[
 		2
@@ -234,6 +236,46 @@ let control_flow = Func(:) {
 		print("the number didn't match any of our checks")
 	}
 }
+
+# Object creation shorthand
+let o = object {
+	let Int i = 0
+}
+# Same as
+let o = Class(
+	let Int i = 0,
+        constructor(){},
+){}
+
+
+# Using the `sealed` keywork to set a variable as readonly outside the class, but mutable inside the class
+type Node = Class(
+    let String data
+    let Self? next = null
+
+    constructor(data) {}
+)
+type LinkedListOrSomething = Class(
+    lut mut Node? _tail= null
+    
+    sealed UInt length = 0
+    
+    let append = Func(String data :) {
+        if (_tail == null) {
+            _tail = Node{data}
+        } else {
+            let new_node = Node{data}
+            _tail.next = new_node
+            _tail = new_node
+        }
+        length += 1
+    }
+)
+let ll = LinkedListOrSomething{}
+ll.append("first")
+ll.append("second")
+print(ll.length) # prints "2"
+ll.length = 3 # error! can't externally assign to a sealed variable
 
 @a_decorator
 let class_stuff = Func(:) {
@@ -359,3 +401,131 @@ operator+(MyType mt : MyType) {
 
 # Can't have a declarator in the wild
 # @a_decorator
+
+
+# The idiomatic way of handling errors in AntlerScript is by using the Error
+# class and passing a string to it for user feedback. To compare error types, it
+# is entirely possible to use a Java-style inheritance chain and to check the
+# error type, but idiomatically, errors should be globally allocated objects and
+# returned errors should, if needed, be compared with those original objects.
+# Pointer comparisons are fast and precise.
+
+# Another useful pattern is Go's wrapped errors where functions have the classic
+# Error() method to get the error message as a string, but also an Unwrap()
+# function to get the "prototype chain" of the error. This is great for
+# developers who want to have their own wrappers around error messages, like by
+# wrapping "not found" into "database error: not found." This pattern is
+# possible in AntlerScript, but a new class must be defined to signal this
+# pattern. Possibly, "WrappedError" or something like that. It is currently
+# uncertain whether the AS standard library will make use of such a pattern.
+
+let err_not_found = Error{"item not found"}
+let err_invalid_input = Error{"invalid input provided"}
+
+# `! Error` indicates "I'm a function that throws, so it must be caught, and the
+# thrown type is `Error`. A function cannot me marked as throwing with ! without
+# actually throwing, and a function that throws must be marked as throwing with
+# !
+let find_user = Func(String id : String)! Error {
+    if id == "" {
+        # Functions that throw need to provide a default value for the normal
+        # return value of the function. If the callee doesn't want to handle it
+        # in the slightest, it can always pass NULL, like for complex objects
+        throw err_invalid_input
+    }
+
+    if id == "admin" {
+        return "Admin User"
+    }
+
+    throw err_not_found
+}
+let runner = Func(: Int)! Error {
+    let String input = "user name"
+
+    # Every throwing function must explicitely be handled by the parent scope of
+    # the caller
+    let String user = try find_user(input) else err { # `err`'s type cannot be
+                                                      # specified. If you need
+                                                      # your errors to be
+                                                      # upcasted, what is wrong
+                                                      # with you?
+        print(user) # compile time crash, user cannot be read until it is written in this scope
+        user = "not found"
+        switch err case err_not_found {
+            print("user not found for {input}")
+        } case err_invalid_input {
+            print("invalid input: '{input}' for find_user call")
+        }
+
+        # If user is never written to, the scope must be exited here
+        # with return, continue, break, etc.
+    }
+
+    # If the error is to be rethrown to the parent scope, do this
+    let String? user = try find_user(input) else error {
+        throw 0, error
+    }
+
+    # When there is no else statement, just rethrow with the same type
+    let example = try find_user("")
+}
+
+# Error is not a special type, this function doesn't need to be handled
+let error_create = Func(String input : Error) {
+    return Error{input}
+}
+
+# Weird, but okay
+let return_error_code = Func(:)! Int {
+    throw 9
+}
+
+### Coroutines
+
+# AntlerScript coroutines are:
+# 1. Stackless
+# 2. Primitive (no async/await runtime baked in)
+# 3. Asymmetric (cannot transfer ownership)
+# 4. Bidirectional data transfer
+# 5. No cancellation (User-based)
+# 6. Unstructured (structure is user-based)
+# 7. First-class coroutine handles (Tasks)
+
+# Coroutines can't throw
+let myCo = Coroutine(Float f : Class()) yield String : Int {
+	print(f)
+
+	let mut has_shat = false
+
+	loop to 3 -> i {
+		let String yielded = yield i
+		if yielded == "poop" {
+			has_shat = true
+		}
+	}
+
+	if has_shat {
+		return object{}
+	} else {
+		return Error{"has not shat"}
+	}
+}
+
+# TODO: figure out how to write the type of the task (it only cares about the return type, and yield input/output types
+let myTask = myCo(10.2) # Prints 10.2
+print(myTask.next("not poop")) # Prints 0, true
+print(myTask.is_done) # Prints false
+print(myTask.next("not poop")) # Prints 1, true
+print(myTask.next("not poop")) # Prints 2, true
+print(myTask.next("not poop")) # Prints 2, false (because invalid yield)
+print(myTask.is_done) # Prints true
+
+let result1 = myTask.retrieve_or_panic()
+let result2 = try myTask.retrieve() else err {
+	# Not gonna run
+	print(err is string) # true
+	print(err) # would run something like "invalid coroutine state"
+}
+
+return result1 == result2 # true
