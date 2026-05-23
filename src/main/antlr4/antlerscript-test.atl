@@ -257,9 +257,9 @@ type Node = Class(
 )
 type LinkedListOrSomething = Class(
     lut mut Node? _tail= null
-    
+
     sealed UInt length = 0
-    
+
     let append = Func(String data :) {
         if (_tail == null) {
             _tail = Node{data}
@@ -529,3 +529,14 @@ let result2 = try myTask.retrieve() else err {
 }
 
 return result1 == result2 # true
+
+
+# # C API Design
+# 1. All glue code is on the AntlerScript side
+# 2. Slots (ephemeral) and handles (long lasting) for C to call in AntlerScript (no ABI)
+# 3. Arenas for AntlerScript to pass to a C call
+# 4. GC paused while calling C
+# 5. GC doesn't free stuff in slots and handles
+# Big inspiration: Wren + Java Panama
+# No syntax defined yet because no new core syntax must be present for the C API
+# to work, only standard library interfaces, which will come later
