@@ -554,3 +554,44 @@ return result1 == result2 # true
 # // Now disable — no new cycles will start
 # prev := debug.SetGCPercent(-1)
 # defer debug.SetGCPercent(prev)
+
+# Generics
+
+# Generic classes
+
+# Normal class
+type Printable = Class(
+	let Func(:String) to_string
+)
+
+# Generic class (types are restrictions, not actual types. Any means no restrictions)
+type Element = Class<Any T>(
+	let T value
+	constructor(value){}
+)
+
+type Pair = Class<Any T, Printable & Element<T> A, Printable & Element<T> B>(
+	let A a,
+	let B b,
+	constructor(a, b, T t){
+		# No type erasure
+		print(Class(
+			extends A,
+			# Type information of T is still available
+			# Assuming Strings.convert<Any T> exists in the std lib
+			to_string = Func(:String){return Strings.convert<T>(value)},
+			constructor(value){},
+		){t}.to_string())
+	},
+)
+
+# Generic functions
+
+type Comparable = Class(
+	let Func(Self : Bool) greater_than
+)
+
+let myfunc = Func<Comparable T>(T a, T b : Bool) {
+	return a.greater_than(b)
+}
+
