@@ -1113,68 +1113,22 @@ public class Ast {
 		}
 	}
 
-	public static class WhileStatement extends Statement {
-		public final Expression test;
+	public static abstract class LoopStatement extends Statement {
 		public final StatementBlock body;
 
-		public WhileStatement(List<Token> tokens, Expression test, StatementBlock body) {
-			super(tokens);
-
-			assert test != null;
-			assert body != null;
-
-			this.test = test;
-			this.body = body;
+		enum TestPosition {
+			LEFT, RIGHT
 		}
-
-		@Override
-		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitWhileStatement(this);
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (!super.equals(object)) {
-				return false;
-			}
-
-			var other = (WhileStatement) object;
-
-			return Objects.equals(test, other.test)
-				&& Objects.equals(body, other.body);
-		}
-	}
-
-	public static class LoopStatement extends Statement {
-		public final Expression from;
-		public final Expression to;
-		public final Expression by;
-		public final String variable;
-		public final StatementBlock body;
 
 		public LoopStatement(
 			List<Token> tokens,
-			Expression from,
-			Expression to,
-			Expression by,
-			String variable,
 			StatementBlock body
 		) {
 			super(tokens);
 
-			assert to != null;
 			assert body != null;
 
-			this.from = from;
-			this.to = to;
-			this.by = by;
-			this.variable = variable;
 			this.body = body;
-		}
-
-		@Override
-		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitLoopStatement(this);
 		}
 
 		@Override
@@ -1185,41 +1139,26 @@ public class Ast {
 
 			var other = (LoopStatement) object;
 
-			return Objects.equals(from, other.from)
-				&& Objects.equals(to, other.to)
-				&& Objects.equals(by, other.by)
-				&& Objects.equals(variable, other.variable)
-				&& Objects.equals(body, other.body);
+			return Objects.equals(body, other.body);
 		}
 	}
 
-	public static class IterateStatement extends Statement {
-		public final Expression iterable;
-		public final String indexVariable;
-		public final String elementVariable;
-		public final StatementBlock body;
+	public static class LoopWhileStatement extends LoopStatement {
+		public final Expression test;
 
-		public IterateStatement(
+		public LoopWhileStatement(
 			List<Token> tokens,
-			Expression iterable,
-			String indexVariable,
-			String elementVariable,
-			StatementBlock body
+			StatementBlock body,
+			Expression test
 		) {
-			super(tokens);
+			super(tokens, body);
 
-			assert iterable != null;
-			assert body != null;
-
-			this.iterable = iterable;
-			this.indexVariable = indexVariable;
-			this.elementVariable = elementVariable;
-			this.body = body;
+			this.test = test;
 		}
 
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitIterateStatement(this);
+			return visitor.visitLoopWhileStatement(this);
 		}
 
 		@Override
@@ -1228,12 +1167,164 @@ public class Ast {
 				return false;
 			}
 
-			var other = (IterateStatement) object;
+			var other = (LoopWhileStatement) object;
 
-			return Objects.equals(iterable, other.iterable)
-				&& Objects.equals(indexVariable, other.indexVariable)
-				&& Objects.equals(elementVariable, other.elementVariable)
-				&& Objects.equals(body, other.body);
+			return Objects.equals(test, other.test);
+		}
+	}
+
+	public static class LoopIndexStatement extends LoopStatement {
+		public final String capture;
+		public final Expression test;
+		public final TestPosition testPosition;
+
+		public LoopIndexStatement(
+			List<Token> tokens,
+			StatementBlock block,
+			String capture,
+			Expression test,
+			TestPosition testPosition
+		) {
+			super(tokens, block);
+
+			assert capture != null && !capture.isEmpty();
+			if (test != null) {
+				assert testPosition != null;
+			}
+
+			this.capture = capture;
+			this.test = test;
+			this.testPosition = testPosition;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitLoopIndexStatement(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (LoopIndexStatement) object;
+
+			return Objects.equals(capture, other.capture)
+				&& Objects.equals(test, other.test)
+				&& testPosition == other.testPosition;
+		}
+	}
+
+	public static class LoopRangeStatement extends LoopStatement {
+		public final String capture;
+		public final Expression from;
+		public final Expression to;
+		public final Expression by;
+		public final Expression test;
+		public final TestPosition testPosition;
+
+		public LoopRangeStatement(
+			List<Token> tokens,
+			StatementBlock block,
+			String capture,
+			Expression from,
+			Expression to,
+			Expression by,
+			Expression test,
+			TestPosition testPosition
+		) {
+			super(tokens, block);
+
+			assert from != null || to != null || by != null;
+			if (test != null) {
+				assert testPosition != null;
+			}
+			if (capture != null) {
+				assert !capture.isEmpty();
+			}
+
+			this.capture = capture;
+			this.from = from;
+			this.to = to;
+			this.by = by;
+			this.test = test;
+			this.testPosition = testPosition;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitLoopRangeStatement(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (LoopRangeStatement) object;
+
+			return Objects.equals(capture, other.capture)
+				&& Objects.equals(from, other.from)
+				&& Objects.equals(to, other.to)
+				&& Objects.equals(by, other.by)
+				&& Objects.equals(test, other.test)
+				&& testPosition == other.testPosition;
+		}
+	}
+
+	public static class LoopIterationStatement extends LoopStatement {
+		public final Expression collection;
+		public final String indexCapture;
+		public final String elementCapture;
+		public final Expression test;
+		public final TestPosition testPosition;
+
+		public LoopIterationStatement(
+			List<Token> tokens,
+			StatementBlock block,
+			Expression collection,
+			String indexCapture,
+			String elementCapture,
+			Expression test,
+			TestPosition testPosition
+		) {
+			super(tokens, block);
+
+			assert collection != null;
+			if (indexCapture != null) {
+				assert elementCapture != null;
+			}
+			if (test != null) {
+				assert testPosition != null;
+			}
+
+			this.collection = collection;
+			this.indexCapture = indexCapture;
+			this.elementCapture = elementCapture;
+			this.test = test;
+			this.testPosition = testPosition;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitLoopIterationStatement(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (LoopIterationStatement) object;
+
+			return Objects.equals(collection, other.collection)
+				&& Objects.equals(indexCapture, other.indexCapture)
+				&& Objects.equals(elementCapture, other.elementCapture)
+				&& Objects.equals(test, other.test)
+				&& testPosition == other.testPosition;
 		}
 	}
 
@@ -2215,11 +2306,13 @@ public class Ast {
 
 		T visitCaseBranch(CaseBranch node);
 
-		T visitWhileStatement(WhileStatement node);
+		T visitLoopWhileStatement(LoopWhileStatement node);
 
-		T visitLoopStatement(LoopStatement node);
+		T visitLoopIndexStatement(LoopIndexStatement node);
 
-		T visitIterateStatement(IterateStatement node);
+		T visitLoopRangeStatement(LoopRangeStatement node);
+
+		T visitLoopIterationStatement(LoopIterationStatement node);
 
 		T visitThrowStatement(ThrowStatement node);
 

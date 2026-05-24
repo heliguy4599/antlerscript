@@ -890,20 +890,6 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLoopStatement(AntlerScriptParser.LoopStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code whileStatement}
-	 * labeled alternative in {@link AntlerScriptParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitWhileStatement(AntlerScriptParser.WhileStatementContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code iterateStatement}
-	 * labeled alternative in {@link AntlerScriptParser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIterateStatement(AntlerScriptParser.IterateStatementContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code declarationStatement}
 	 * labeled alternative in {@link AntlerScriptParser#statement}.
 	 * @param ctx the parse tree
@@ -958,17 +944,41 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLoop(AntlerScriptParser.LoopContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#while}.
+	 * Visit a parse tree produced by {@link AntlerScriptParser#loop_header_inside}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitWhile(AntlerScriptParser.WhileContext ctx);
+	T visitLoop_header_inside(AntlerScriptParser.Loop_header_insideContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#iterate}.
+	 * Visit a parse tree produced by {@link AntlerScriptParser#loop_capture}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIterate(AntlerScriptParser.IterateContext ctx);
+	T visitLoop_capture(AntlerScriptParser.Loop_captureContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#loop_capture_2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLoop_capture_2(AntlerScriptParser.Loop_capture_2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#loop_range}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLoop_range(AntlerScriptParser.Loop_rangeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#loop_while}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLoop_while(AntlerScriptParser.Loop_whileContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#loop_iteration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLoop_iteration(AntlerScriptParser.Loop_iterationContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#decorator}.
 	 * @param ctx the parse tree

@@ -408,64 +408,115 @@ class AntlerScriptTest {
 			testInput("return 2 + 2", "statement");
 		}
 
-		@Test
-		void statement_loop_to() {
-			testInput("loop to 2 + 2 {}", "loop");
-		}
-
-		@Test
-		void statement_loop_from_to() {
-			testInput("loop from 2 + 2 to 2 + 2 {}", "loop");
-		}
-
-		@Test
-		void statement_loop_to_by() {
-			testInput("loop to 2 + 2 by 2 + 2 {}", "loop");
-		}
-
-		@Test
-		void statement_loop_from_to_by() {
-			testInput("loop from 2 + 2 to 2 + 2 by 2 + 2 {}", "loop");
-		}
-
-		@Test
-		void statement_loop_to_arrow() {
-			testInput("loop to 2 + 2 -> i {}", "loop");
-		}
-
-		@Test
-		void statement_loop_from_to_arrow() {
-			testInput("loop from 2 + 2 to 2 + 2 -> i {}", "loop");
-		}
-
-		@Test
-		void statement_loop_to_by_arrow() {
-			testInput("loop to 2 + 2 by 2 + 2 -> i {}", "loop");
-		}
-
-		@Test
-		void statement_loop_from_to_by_arrow() {
-			testInput("loop from 2 + 2 to 2 + 2 by 2 + 2 -> i {}", "loop");
-		}
-
-		@Test
-		void statement_while() {
-			testInput("while 2 + 2 {}", "while_");
-		}
-
-		@Test
-		void statement_iterate() {
-			testInput("iterate 2 + 2 {}", "iterate");
-		}
-
-		@Test
-		void statement_iterate_one_arg() {
-			testInput("iterate 2 + 2 -> i {}", "iterate");
-		}
-
-		@Test
-		void statement_iterate_two_args() {
-			testInput("iterate 2 + 2 -> i, j {}", "iterate");
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"loop {}",
+			"loop while true {}",
+			"loop -> i {}",
+			"loop while true -> i {}",
+			"loop -> i while true {}",
+			"loop over my_list {}",
+			"loop over my_list while true {}",
+			"loop while true over my_list {}",
+			"loop over my_list -> e {}",
+			"loop over my_list -> e while true {}",
+			"loop while true over my_list -> e {}",
+			"loop over my_list -> i, e {}",
+			"loop over my_list -> i, e while true {}",
+			"loop while true over my_list -> i, e {}",
+			"loop from 1 {}",
+			"loop from 1 to 1 {}",
+			"loop from 1 by 1 {}",
+			"loop from 1 to 1 by 1 {}",
+			"loop from 1 by 1 to 1 {}",
+			"loop to 1 {}",
+			"loop to 1 by 1 {}",
+			"loop to 1 from 1 {}",
+			"loop to 1 by 1 from 1 {}",
+			"loop to 1 from 1 by 1 {}",
+			"loop by 1 {}",
+			"loop by 1 to 1 {}",
+			"loop by 1 from 1 {}",
+			"loop by 1 to 1 from 1 {}",
+			"loop by 1 from 1 to 1 {}",
+			"loop from 1 -> i {}",
+			"loop from 1 to 1 -> i {}",
+			"loop from 1 by 1 -> i {}",
+			"loop from 1 to 1 by 1 -> i {}",
+			"loop from 1 by 1 to 1 -> i {}",
+			"loop to 1 -> i {}",
+			"loop to 1 by 1 -> i {}",
+			"loop to 1 from 1 -> i {}",
+			"loop to 1 by 1 from 1 -> i {}",
+			"loop to 1 from 1 by 1 -> i {}",
+			"loop by 1 -> i {}",
+			"loop by 1 to 1 -> i {}",
+			"loop by 1 from 1 -> i {}",
+			"loop by 1 to 1 from 1 -> i {}",
+			"loop by 1 from 1 to 1 -> i {}",
+			"loop while true from 1 {}",
+			"loop while true from 1 to 1 {}",
+			"loop while true from 1 by 1 {}",
+			"loop while true from 1 to 1 by 1 {}",
+			"loop while true from 1 by 1 to 1 {}",
+			"loop while true to 1 {}",
+			"loop while true to 1 by 1 {}",
+			"loop while true to 1 from 1 {}",
+			"loop while true to 1 by 1 from 1 {}",
+			"loop while true to 1 from 1 by 1 {}",
+			"loop while true by 1 {}",
+			"loop while true by 1 to 1 {}",
+			"loop while true by 1 from 1 {}",
+			"loop while true by 1 to 1 from 1 {}",
+			"loop while true by 1 from 1 to 1 {}",
+			"loop while true from 1 -> i {}",
+			"loop while true from 1 to 1 -> i {}",
+			"loop while true from 1 by 1 -> i {}",
+			"loop while true from 1 to 1 by 1 -> i {}",
+			"loop while true from 1 by 1 to 1 -> i {}",
+			"loop while true to 1 -> i {}",
+			"loop while true to 1 by 1 -> i {}",
+			"loop while true to 1 from 1 -> i {}",
+			"loop while true to 1 by 1 from 1 -> i {}",
+			"loop while true to 1 from 1 by 1 -> i {}",
+			"loop while true by 1 -> i {}",
+			"loop while true by 1 to 1 -> i {}",
+			"loop while true by 1 from 1 -> i {}",
+			"loop while true by 1 to 1 from 1 -> i {}",
+			"loop while true by 1 from 1 to 1 -> i {}",
+			"loop from 1 while true {}",
+			"loop from 1 to 1 while true {}",
+			"loop from 1 by 1 while true {}",
+			"loop from 1 to 1 by 1 while true {}",
+			"loop from 1 by 1 to 1 while true {}",
+			"loop to 1 while true {}",
+			"loop to 1 by 1 while true {}",
+			"loop to 1 from 1 while true {}",
+			"loop to 1 by 1 from 1 while true {}",
+			"loop to 1 from 1 by 1 while true {}",
+			"loop by 1 while true {}",
+			"loop by 1 to 1 while true {}",
+			"loop by 1 from 1 while true {}",
+			"loop by 1 to 1 from 1 while true {}",
+			"loop by 1 from 1 to 1 while true {}",
+			"loop from 1 -> i while true {}",
+			"loop from 1 to 1 -> i while true {}",
+			"loop from 1 by 1 -> i while true {}",
+			"loop from 1 to 1 by 1 -> i while true {}",
+			"loop from 1 by 1 to 1 -> i while true {}",
+			"loop to 1 -> i while true {}",
+			"loop to 1 by 1 -> i while true {}",
+			"loop to 1 from 1 -> i while true {}",
+			"loop to 1 by 1 from 1 -> i while true {}",
+			"loop to 1 from 1 by 1 -> i while true {}",
+			"loop by 1 -> i while true {}",
+			"loop by 1 to 1 -> i while true {}",
+			"loop by 1 from 1 -> i while true {}",
+			"loop by 1 to 1 from 1 -> i while true {}",
+			"loop by 1 from 1 to 1 -> i while true {}",
+		})
+		void statement_loop(String input) {
+			testInput(input, "loop");
 		}
 
 		@Test
@@ -649,6 +700,86 @@ class AntlerScriptTest {
 		@Test
 		void fail_statement_if_else_elif() {
 			testInputPartialMatch("if 2 + 2 {} else {} elif 2 + 2", "if_");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			// Range keyword appears more than once
+			// "from" twice
+			"loop from 1 from 2 {}",
+			// "to" twice
+			"loop to 1 to 2 {}",
+			// "by" twice
+			"loop by 1 by 2 {}",
+			// "from" twice with other range parts
+			"loop from 1 from 2 to 3 {}",
+			"loop from 1 to 2 from 3 {}",
+			// "to" twice with other range parts
+			"loop from 1 to 2 to 3 {}",
+			"loop to 1 from 2 to 3 {}",
+			// "by" twice with other range parts
+			"loop from 1 to 2 by 1 by 2 {}",
+			"loop by 1 from 2 to 3 by 4 {}",
+			// with arrow capture
+			"loop from 1 from 2 -> i {}",
+			"loop to 1 to 2 -> i {}",
+			"loop by 1 by 2 -> i {}",
+			// with while
+			"loop while true from 1 from 2 {}",
+			"loop while true to 1 to 2 {}",
+			"loop while true by 1 by 2 {}",
+
+			// Two "while" sections — one at beginning and one at end
+			"loop while true over my_list while true {}",
+			"loop while true from 1 to 2 while true {}",
+			"loop while true -> i while true {}",
+			"loop while true while true {}",
+			"loop while true over my_list -> e while true {}",
+			"loop while true from 1 to 2 by 1 -> i while true {}",
+			"loop while true by 1 from 1 to 1 while true {}",
+
+			// More than one arrow capture (non-"over" loops)
+			"loop -> i, e {}",
+			"loop -> i, e while true {}",
+			"loop while true -> i, e {}",
+			"loop from 1 -> i, e {}",
+			"loop from 1 to 2 -> i, e {}",
+			"loop from 1 to 2 by 1 -> i, e {}",
+			"loop to 1 -> i, e {}",
+			"loop by 1 -> i, e {}",
+			"loop from 1 -> i, e while true {}",
+			"loop while true from 1 to 2 -> i, e {}",
+
+			// Range AND "over" in the same loop header
+			"loop over my_list from 1 {}",
+			"loop over my_list to 1 {}",
+			"loop over my_list by 1 {}",
+			"loop from 1 over my_list {}",
+			"loop to 1 over my_list {}",
+			"loop by 1 over my_list {}",
+			"loop over my_list from 1 to 2 {}",
+			"loop from 1 to 2 over my_list {}",
+			"loop over my_list from 1 to 2 by 1 {}",
+			"loop from 1 to 2 by 1 over my_list {}",
+			// with while
+			"loop while true over my_list from 1 {}",
+			"loop while true from 1 over my_list {}",
+			// with arrow capture
+			"loop over my_list from 1 -> i {}",
+			"loop from 1 over my_list -> i {}",
+			"loop over my_list from 1 to 2 -> i, e {}",
+
+			// More than one "over"
+			"loop over my_list over my_other_list {}",
+			"loop over my_list over my_other_list -> e {}",
+			"loop over my_list over my_other_list -> i, e {}",
+			"loop while true over my_list over my_other_list {}",
+			"loop over my_list over my_other_list while true {}",
+			"loop while true over my_list over my_other_list -> i, e {}",
+			"loop while true over my_list over my_other_list -> e while true {}",
+		})
+		void fail_statement_loop(String input) {
+			testInputNoRule(input, "loop");
 		}
 	}
 

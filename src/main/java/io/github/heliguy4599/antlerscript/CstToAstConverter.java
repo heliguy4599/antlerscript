@@ -88,20 +88,56 @@ AntlerScriptParserVisitor<Object> {
 
 	// === MISC ===
 
+	// Invalid, should be handled by the caller with symbol().getText()
 	@Override
 	public Object visitSymbol(AntlerScriptParser.SymbolContext ctx) {
 		assert ctx != null;
 
-		// Should be handled by the caller with symbol().getText()
 		assert false;
 		return null;
 	}
 
+	// Invalid, should be handled by the caller
 	@Override
 	public Object visitSemicolon(AntlerScriptParser.SemicolonContext ctx) {
 		assert ctx != null;
 
-		// Should be handled by the caller
+		assert false;
+		return null;
+	}
+
+	// Invalid, should be handled by the caller
+	@Override
+	public Object visitLoop_capture_2(AntlerScriptParser.Loop_capture_2Context ctx) {
+		assert ctx != null;
+
+		assert false;
+		return null;
+	}
+
+	// Invalid, should be handled by the caller
+	@Override
+	public Object visitLoop_header_inside(AntlerScriptParser.Loop_header_insideContext ctx) {
+		assert ctx != null;
+
+		assert false;
+		return null;
+	}
+
+	// Invalid, should be handled by the caller
+	@Override
+	public Object visitLoop_range(AntlerScriptParser.Loop_rangeContext ctx) {
+		assert ctx != null;
+
+		assert false;
+		return null;
+	}
+
+	// Invalid, should be handled by the caller
+	@Override
+	public Object visitLoop_iteration(AntlerScriptParser.Loop_iterationContext ctx) {
+		assert ctx != null;
+
 		assert false;
 		return null;
 	}
@@ -574,6 +610,7 @@ AntlerScriptParserVisitor<Object> {
 		return visitMap_header(ctx.map_header());
 	}
 
+	@Override
 	public Ast.ClassType visitClassType(AntlerScriptParser.ClassTypeContext ctx) {
 		assert ctx != null;
 
@@ -681,8 +718,8 @@ AntlerScriptParserVisitor<Object> {
 
 		List<Ast.FunctionParameter> params = ctx.func_params() == null ? null : visitFunc_params(ctx.func_params());
 		Ast.Type returnType = ctx.returnType == null ? null : visitType(ctx.returnType);
-		Ast.Type yieldIn = ctx.returnType == null ? null : visitType(ctx.yieldIn);
-		Ast.Type yieldOut = ctx.returnType == null ? null : visitType(ctx.yieldOut);
+		Ast.Type yieldIn = ctx.yieldIn == null ? null : visitType(ctx.yieldIn);
+		Ast.Type yieldOut = ctx.yieldOut == null ? null : visitType(ctx.yieldOut);
 
 		return new Ast.CoroutineType(getTokens(ctx), params, returnType, yieldIn, yieldOut);
 	}
@@ -895,6 +932,7 @@ AntlerScriptParserVisitor<Object> {
 		return kind;
 	}
 
+	// BUG: Token collection strategy is likely wrong, switch the grammar rule to being recursive instead to fix
 	@Override
 	public Ast.Expression visitExpression_logical_not(AntlerScriptParser.Expression_logical_notContext ctx) {
 		assert ctx != null;
@@ -904,6 +942,7 @@ AntlerScriptParserVisitor<Object> {
 		var ops = ctx.NOT();
 		var iter = ops.listIterator(ops.size());
 		while (iter.hasPrevious()) {
+			iter.previous();
 			latest = new Ast.UnaryExpression(getTokens(ctx), Ast.UnaryExpression.Kind.NOT, latest);
 		}
 
@@ -1188,6 +1227,7 @@ AntlerScriptParserVisitor<Object> {
 		return kind;
 	}
 
+	// BUG: Token collection strategy is likely wrong, switch the grammar rule to being recursive instead to fix
 	@Override
 	public Ast.Expression visitExpression_unary(AntlerScriptParser.Expression_unaryContext ctx) {
 		assert ctx != null;
@@ -1684,20 +1724,6 @@ AntlerScriptParserVisitor<Object> {
 		return visitLoop(ctx.loop());
 	}
 
-	@Override
-	public Ast.WhileStatement visitWhileStatement(AntlerScriptParser.WhileStatementContext ctx) {
-		assert ctx != null;
-
-		return visitWhile(ctx.while_());
-	}
-
-	@Override
-	public Ast.IterateStatement visitIterateStatement(AntlerScriptParser.IterateStatementContext ctx) {
-		assert ctx != null;
-
-		return visitIterate(ctx.iterate());
-	}
-
 	// Helper, not an override
 	public Ast.VariableDeclaration visitDeclaration(AntlerScriptParser.DeclarationContext ctx) {
 		assert ctx != null;
@@ -1758,32 +1784,106 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.LoopStatement visitLoop(AntlerScriptParser.LoopContext ctx) {
 		assert ctx != null;
 
-		Ast.Expression from = visitExpression(ctx.from);
-		Ast.Expression to = visitExpression(ctx.to);
-		Ast.Expression by = visitExpression(ctx.by);
-		String iterationSymbol = ctx.iterator.getText();
+		List<Token> tokens = getTokens(ctx);
 		Ast.StatementBlock block = visitStatement_block(ctx.block);
-		return new Ast.LoopStatement(getTokens(ctx), from, to, by, iterationSymbol, block);
+
+		if (ctx.loop_header_inside() == null) {
+			Ast.Expression test = null;
+
+			if (ctx.loop_while() != null) {
+				test = visitLoop_while(ctx.loop_while());
+			}
+
+			return new Ast.LoopWhileStatement(tokens, block, test);
+		}
+
+		return visitLoopHeaderInside(ctx.loop_header_inside(), tokens, block);
+	}
+
+	// Helper, not an override
+	public Ast.LoopStatement visitLoopHeaderInside(AntlerScriptParser.Loop_header_insideContext ctx, List<Token> tokens, Ast.StatementBlock block) {
+		assert ctx != null;
+		assert tokens != null;
+		assert block != null;
+
+		// While
+		Ast.Expression test = null;
+		Ast.LoopStatement.TestPosition testPosition = null;
+		if (ctx.left_while != null) {
+			test = visitLoop_while(ctx.left_while);
+			testPosition = Ast.LoopStatement.TestPosition.LEFT;
+		} else if (ctx.right_while != null) {
+			test = visitLoop_while(ctx.right_while);
+			testPosition = Ast.LoopStatement.TestPosition.RIGHT;
+		}
+
+		// Infinite loops
+		if (ctx.loop_capture() != null) {
+			String capture = visitLoop_capture(ctx.loop_capture());
+			return new Ast.LoopIndexStatement(tokens, block, capture, test, testPosition);
+		}
+
+		// Ranges
+		if (ctx.loop_range() != null) {
+			AntlerScriptParser.Loop_rangeContext loopCtx = ctx.loop_range();
+			String capture = null;
+			Ast.Expression from = null;
+			Ast.Expression to = null;
+			Ast.Expression by = null;
+
+			if (loopCtx.loop_capture() != null) {
+				capture = visitLoop_capture(loopCtx.loop_capture());
+			}
+			if (loopCtx.from != null) {
+				from = visitExpression(loopCtx.from);
+			}
+			if (loopCtx.to != null) {
+				to = visitExpression(loopCtx.to);
+			}
+			if (loopCtx.by != null) {
+				by = visitExpression(loopCtx.by);
+			}
+
+			return new Ast.LoopRangeStatement(tokens, block, capture, from, to, by, test, testPosition);
+		}
+
+		// Collection iteration
+		if (ctx.loop_iteration() != null) {
+			AntlerScriptParser.Loop_iterationContext loopCtx = ctx.loop_iteration();
+			Ast.Expression collection = visitExpression(loopCtx.collection);
+			String indexCapture = null;
+			String elementCapture = null;
+
+			if (loopCtx.loop_capture_2() != null) {
+				AntlerScriptParser.Loop_capture_2Context capCtx = loopCtx.loop_capture_2();
+				if (capCtx.right != null) {
+					elementCapture = capCtx.right.getText();
+					indexCapture = capCtx.left.getText();
+				} else {
+					elementCapture = capCtx.left.getText();
+				}
+			}
+
+			return new Ast.LoopIterationStatement(tokens, block, collection, indexCapture, elementCapture, test, testPosition);
+		}
+
+		// Can't reach here, should have returned earlier
+		assert false;
+		return null;
 	}
 
 	@Override
-	public Ast.WhileStatement visitWhile(AntlerScriptParser.WhileContext ctx) {
+	public String visitLoop_capture(AntlerScriptParser.Loop_captureContext ctx) {
 		assert ctx != null;
 
-		Ast.Expression test = visitExpression(ctx.test);
-		Ast.StatementBlock block = visitStatement_block(ctx.block);
-		return new Ast.WhileStatement(getTokens(ctx), test, block);
+		return ctx.symbol().getText();
 	}
 
 	@Override
-	public Ast.IterateStatement visitIterate(AntlerScriptParser.IterateContext ctx) {
+	public Ast.Expression visitLoop_while(AntlerScriptParser.Loop_whileContext ctx) {
 		assert ctx != null;
 
-		Ast.Expression iterable = visitExpression(ctx.iterable);
-		Ast.StatementBlock block = visitStatement_block(ctx.block);
-		String indexSymbol = ctx.index.getText();
-		String elementSymbol = ctx.element.getText();
-		return new Ast.IterateStatement(getTokens(ctx), iterable, indexSymbol, elementSymbol, block);
+		return visitExpression(ctx.expression());
 	}
 
 	@Override

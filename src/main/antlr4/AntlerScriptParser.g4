@@ -11,6 +11,7 @@ symbol
 	| name=FROM
 	| name=TO
 	| name=BY
+	| name=OVER
 	;
 
 semicolon
@@ -234,7 +235,7 @@ func_param_elm
 	;
 
 coroutine_header
-	: COROUTINE '(' func_params? ':' returnType=type? ')' 
+	: COROUTINE '(' func_params? ':' returnType=type? ')'
 	| COROUTINE '(' func_params? ':' returnType=type? ')' YIELD ':' yieldIn=type
 	| COROUTINE '(' func_params? ':' returnType=type? ')' YIELD yieldOut=type ':'
 	| COROUTINE '(' func_params? ':' returnType=type? ')' YIELD yieldOut=type ':' yieldIn=type
@@ -542,8 +543,6 @@ statement
 	| CONTINUE                      # continueStatement
 	| RETURN expression?            # returnStatement
 	| loop                          # loopStatement
-	| while                         # whileStatement
-	| iterate                       # iterateStatement
 	| declaration                   # declarationStatement
 	| typedef                       # typedefStatement
 	| if                            # ifStatement
@@ -557,15 +556,47 @@ statement_block
 	;
 
 loop
-	: LOOP ( 'from' from=expression )? 'to' to=expression ( 'by' by=expression )? ( '->' iterator=symbol )? block=statement_block
+	: LOOP loop_header_inside block=statement_block
+	| LOOP loop_while? block=statement_block
 	;
 
-while
-	: WHILE test=expression block=statement_block
+loop_header_inside
+	// Index
+	: left_while=loop_while loop_capture
+	| loop_capture right_while=loop_while
+	| loop_capture
+
+	// Ranges
+	| left_while=loop_while loop_range
+	| loop_range right_while=loop_while
+	| loop_range
+
+	// Iterations
+	| left_while=loop_while loop_iteration
+	| loop_iteration right_while=loop_while
+	| loop_iteration
 	;
 
-iterate
-	: ITERATE iterable=expression ( '->' ( element=symbol | index=symbol ',' element=symbol ) )? block=statement_block
+loop_capture
+	: '->' symbol
+	;
+
+loop_capture_2
+	: '->' left=symbol ( ',' right=symbol )?
+	;
+
+loop_range
+	: FROM from=expression ( TO to=expression ( BY by=expression )? | BY by=expression ( TO to=expression )? )? loop_capture?
+	| TO to=expression ( FROM from=expression ( BY by=expression )? | BY by=expression ( FROM from=expression )? )? loop_capture?
+	| BY by=expression ( FROM from=expression ( TO to=expression )? | TO to=expression ( FROM from=expression )? )? loop_capture?
+	;
+
+loop_while
+	: WHILE expression
+	;
+
+loop_iteration
+	: OVER collection=expression loop_capture_2?
 	;
 
 decorator

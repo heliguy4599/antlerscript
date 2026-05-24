@@ -317,11 +317,6 @@ class LexerTest {
 	}
 
 	@Test
-	void iterate() {
-		testInput("iterate", L.ITERATE);
-	}
-
-	@Test
 	void let() {
 		testInput("let", L.LET);
 	}
@@ -376,6 +371,11 @@ class LexerTest {
 	@Test
 	void or() {
 		testInput("or", L.OR);
+	}
+
+	@Test
+	void over() {
+		testInput("over", L.OVER);
 	}
 
 	@Test
