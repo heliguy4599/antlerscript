@@ -540,3 +540,17 @@ return result1 == result2 # true
 # Big inspiration: Wren + Java Panama
 # No syntax defined yet because no new core syntax must be present for the C API
 # to work, only standard library interfaces, which will come later
+
+# Runtime
+# The main runtime of AntlerScript will be an embeddable bytecode VM written in
+# Go. It will compile to a C library using CGO (both static and dynamic will be
+# availble, as well as source), and there will also be a wrapper available
+# around the AntlerScript VM library to simply call AntlerScript as-is. It will
+# be similar to Lua (lua/liblua.so) or QuickJS (qjs/libquickjs.so)
+
+# // Note: how to pause the GC in Go:
+# // Force any in-flight cycle to complete first
+# runtime.GC()
+# // Now disable — no new cycles will start
+# prev := debug.SetGCPercent(-1)
+# defer debug.SetGCPercent(prev)
