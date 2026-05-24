@@ -221,7 +221,7 @@ map_header
 	;
 
 func_header
-	: FUNC '(' func_params? ':' type? ')'
+	: FUNC '(' func_params? ':' returnType=type? ')' ( '!' errorType=type )?
 	;
 
 func_params
@@ -230,6 +230,18 @@ func_params
 
 func_param_elm
 	: type symbol ( '=' expression )?
+	;
+
+composite
+	:
+	'{'
+	{
+		AntlerScriptLexer lexer = (AntlerScriptLexer)_input.getTokenSource();
+		lexer.ignoreSemicolons.pollFirst();
+		lexer.ignoreSemicolons.push(true);
+	}
+	( keypair_list_map | arguments )?
+	'}'
 	;
 
 lambda
@@ -430,9 +442,11 @@ expression_atom
 	| new_array_instance    # newArrayExpression
 	| new_map_instance      # newMapExpression
 	| new_class_instance    # newClassInstance
+	| composite             # compositeExpression
 	| lambda                # lambdaExpression
 	| select                # selectExpression
 	| object_literal        # objectLiteralExpression
+	| try_else		# tryElseExpression
 	| '(' expression ')'    # groupedExpression
 	;
 
@@ -484,6 +498,10 @@ object_literal
 	: OBJECT '{' semicolon* class_top_level? semicolon* '}'
 	;
 
+try_else
+	: TRY expression_postfix ( ELSE symbol statement_block )?
+	;
+
 keypair_list_select
 	: keypair_clause ( ',' keypair_clause )* ( ',' elseToken=ELSE ':' elseClause=expression )? ','?
 	| elseToken=ELSE ':' elseClause=expression ','?
@@ -514,6 +532,7 @@ statement
 	| if                            # ifStatement
 	| switch                        # switchStatement
 	| DEFER? statement_block        # statementBlockStatement
+	| throw				# throwStatement
 	;
 
 statement_block
@@ -568,4 +587,8 @@ switch
 
 case
 	: CASE expression ( ',' expression )* block=statement_block
+	;
+
+throw
+	: THROW expression
 	;

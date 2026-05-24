@@ -92,7 +92,7 @@ AntlerScriptParserVisitor<Object> {
 	public Object visitSymbol(AntlerScriptParser.SymbolContext ctx) {
 		assert ctx != null;
 
-		// Should be handled by the caller
+		// Should be handled by the caller with symbol().getText()
 		assert false;
 		return null;
 	}
@@ -638,9 +638,11 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.FunctionType visitFunc_header(AntlerScriptParser.Func_headerContext ctx) {
 		assert ctx != null;
 
-		Ast.Type returnType = ctx.type() == null ? null : visitType(ctx.type());
+		Ast.Type returnType = ctx.returnType == null ? null : visitType(ctx.returnType);
 		List<Ast.FunctionParameter> params = ctx.func_params() == null ? null : visitFunc_params(ctx.func_params());
-		return new Ast.FunctionType(getTokens(ctx), params, returnType);
+		Ast.Type errorType = ctx.errorType == null ? null : visitType(ctx.errorType);
+
+		return new Ast.FunctionType(getTokens(ctx), params, returnType, errorType);
 	}
 
 	@Override
@@ -664,6 +666,21 @@ AntlerScriptParserVisitor<Object> {
 		String symbol = ctx.symbol().getText();
 		Ast.Expression expr = ctx.expression() == null ? null : visitExpression(ctx.expression());
 		return new Ast.FunctionParameter(type, symbol, expr, false);
+	}
+
+	@Override
+	public Ast.CompositeExpression visitComposite(AntlerScriptParser.CompositeContext ctx) {
+		assert ctx != null;
+
+		Ast.ListArgsOrKeyValuePairs list = null;
+
+		if (ctx.keypair_list_map() != null) {
+			list = new Ast.ListKeyValuePairs(visitKeypair_list_map(ctx.keypair_list_map()));
+		} else if (ctx.arguments() != null) {
+			list = new Ast.ListArgs(visitArguments(ctx.arguments()));
+		}
+
+		return new Ast.CompositeExpression(getTokens(ctx), list);
 	}
 
 	@Override
@@ -1369,6 +1386,13 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
+	public Ast.CompositeExpression visitCompositeExpression(AntlerScriptParser.CompositeExpressionContext ctx) {
+		assert ctx != null;
+
+		return visitComposite(ctx.composite());
+	}
+
+	@Override
 	public Ast.NewObjectExpression visitNewObjectExpression(AntlerScriptParser.NewObjectExpressionContext ctx) {
 		assert ctx != null;
 
@@ -1402,6 +1426,8 @@ AntlerScriptParserVisitor<Object> {
 
 		return visitNew_class_instance(ctx.new_class_instance());
 	}
+
+	
 
 	@Override
 	public Ast.LambdaExpression visitLambdaExpression(AntlerScriptParser.LambdaExpressionContext ctx) {
@@ -1498,6 +1524,24 @@ AntlerScriptParserVisitor<Object> {
 			: visitClass_top_level(ctx.class_top_level());
 
 		return new Ast.NewObjectLiteralExpression(getTokens(ctx), topLevel);
+	}
+
+	@Override
+	public Ast.TryElseExpression visitTryElseExpression(AntlerScriptParser.TryElseExpressionContext ctx) {
+		assert ctx != null;
+
+		return visitTry_else(ctx.try_else());
+	}
+
+	@Override
+	public Ast.TryElseExpression visitTry_else(AntlerScriptParser.Try_elseContext ctx) {
+		assert ctx != null;
+
+		Ast.Expression call = visitExpression_postfix(ctx.expression_postfix());
+		String caught = ctx.symbol() == null ? null : ctx.symbol().getText();
+		Ast.StatementBlock block = ctx.statement_block() == null ? null : visitStatement_block(ctx.statement_block());
+
+		return new Ast.TryElseExpression(getTokens(ctx), call, caught, block);
 	}
 
 	@Override
@@ -1818,5 +1862,19 @@ AntlerScriptParserVisitor<Object> {
 		}
 
 		return new Ast.CaseBranch(getTokens(ctx), values, body);
+	}
+
+	@Override
+	public Ast.ThrowStatement visitThrow(AntlerScriptParser.ThrowContext ctx) {
+		assert ctx != null;
+
+		return new Ast.ThrowStatement(getTokens(ctx), visitExpression(ctx.expression()));
+	}
+
+	@Override
+	public Ast.ThrowStatement visitThrowStatement(AntlerScriptParser.ThrowStatementContext ctx) {
+		assert ctx != null;
+
+		return visitThrow(ctx.throw_());
 	}
 }

@@ -256,7 +256,8 @@ class AstTest {
 				new Ast.FunctionType(
 					genTokens("Func", "(", ":", "Int", ")"),
 					null,
-					symbolTypeFor("Int")
+					symbolTypeFor("Int"),
+					null
 				)
 			);
 		}

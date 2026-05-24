@@ -358,6 +358,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunc_param_elm(AntlerScriptParser.Func_param_elmContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#composite}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComposite(AntlerScriptParser.CompositeContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#lambda}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -703,6 +709,13 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNewClassInstance(AntlerScriptParser.NewClassInstanceContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code compositeExpression}
+	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompositeExpression(AntlerScriptParser.CompositeExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code lambdaExpression}
 	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
 	 * @param ctx the parse tree
@@ -723,6 +736,13 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitObjectLiteralExpression(AntlerScriptParser.ObjectLiteralExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code tryElseExpression}
+	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTryElseExpression(AntlerScriptParser.TryElseExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code groupedExpression}
 	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
@@ -778,6 +798,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitObject_literal(AntlerScriptParser.Object_literalContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#try_else}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTry_else(AntlerScriptParser.Try_elseContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#keypair_list_select}.
 	 * @param ctx the parse tree
@@ -881,6 +907,13 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatementBlockStatement(AntlerScriptParser.StatementBlockStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code throwStatement}
+	 * labeled alternative in {@link AntlerScriptParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThrowStatement(AntlerScriptParser.ThrowStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#statement_block}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -973,4 +1006,10 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCase(AntlerScriptParser.CaseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#throw}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThrow(AntlerScriptParser.ThrowContext ctx);
 }

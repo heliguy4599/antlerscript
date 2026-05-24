@@ -602,6 +602,11 @@ class AntlerScriptTest {
 		}
 
 		@Test
+		void statement_throw() {
+			testInput("throw (1 + 2) * 5", "throw_");
+		}
+
+		@Test
 		void fail_statement_break() {
 			testInputPartialMatch("break 5", "statement");
 		}
@@ -837,6 +842,18 @@ class AntlerScriptTest {
 
 		@ParameterizedTest
 		@ValueSource(strings = {
+				"{}",
+				"{1, 2, 3, 4, 5}",
+				"{1}",
+				"{\"a\": 10}",
+				"{\"a\": 10, c: 10.10}",
+		})
+		void composite(String composite) {
+			testInput(composite, "composite");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
 			"Class(){}",
 			"Class(){_}",
 			"Class(){_, _,\n_}",
@@ -979,6 +996,18 @@ class AntlerScriptTest {
 		void objectLiteralExpression(String expr) {
 			testInput(expr, "object_literal");
 		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"try func()",
+			"try thing.my_func()",
+			"try lmao[10].banana(1, 2, 3)",
+			"try pineapple() else err {}",
+			"try pineapple() else err {print(\"sadness\")}",
+		})
+		void tryElseExpression(String expr) {
+			testInput(expr, "try_else");
+		}
 	}
 
 	@Nested
@@ -1008,6 +1037,11 @@ class AntlerScriptTest {
 			"Func(Int a: Int?)",
 			"Func(Int? a, Int b = 0: Int)",
 			"Func(( Int? | Float ) & Pineapple a = 0, ( Int | Float )? & Pineapple b = 0: ( Int | Float? ) & Pineapple)",
+			"Func(:)! Error",
+			"Func(: Int) !SoHunry",
+			"Func(Int a: Int?)! Yummerinos",
+			"Func(Int? a, Int b = 0: Int)! Int | Float & Null",
+			"Func(( Int? | Float ) & Pineapple a = 0, ( Int | Float )? & Pineapple b = 0: ( Int | Float? ) & Pineapple) ! Int",
 			"Class()",
 			"Class(let Int a)",
 			"Class(let ( Int | Float ) & Pineapple a = 0,)",

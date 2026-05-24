@@ -69,6 +69,17 @@ public class Ast {
 				? directives
 				: new ArrayList<>();
 		}
+
+		@Override public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (Program) object;
+
+			return Objects.equals(using, other.using)
+				&& Objects.equals(directives, other.directives);
+		}
 	}
 
 	public static class MainProgram extends Program {
@@ -109,8 +120,7 @@ public class Ast {
 
 			var other = (MainProgram) object;
 
-			return Objects.equals(directives, other.directives)
-				&& Objects.equals(statements, other.statements);
+			return Objects.equals(statements, other.statements);
 		}
 	}
 
@@ -151,7 +161,6 @@ public class Ast {
 
 			return Objects.equals(namespace, other.namespace)
 				&& Objects.equals(className, other.className)
-				&& Objects.equals(directives, other.directives)
 				&& Objects.equals(topLevel, other.topLevel);
 		}
 	}
@@ -201,7 +210,6 @@ public class Ast {
 			var other = (NamespaceProgram) object;
 
 			return Objects.equals(name, other.name)
-				&& Objects.equals(directives, other.directives)
 				&& Objects.equals(members, other.members);
 		}
 	}
@@ -383,11 +391,13 @@ public class Ast {
 	public static class FunctionType extends Type {
 		public final List<FunctionParameter> parameters;
 		public final Type returnType;
+		public final Type errorType;
 
 		public FunctionType(
 			List<Token> tokens,
 			List<FunctionParameter> parameters,
-			Type returnType
+			Type returnType,
+			Type errorType
 		) {
 			super(tokens);
 
@@ -395,6 +405,7 @@ public class Ast {
 				? parameters
 				: new ArrayList<>();
 			this.returnType = returnType;
+			this.errorType = errorType;
 		}
 
 		@Override
@@ -411,7 +422,8 @@ public class Ast {
 			var other = (FunctionType) object;
 
 			return Objects.equals(parameters, other.parameters)
-				&& Objects.equals(returnType, other.returnType);
+				&& Objects.equals(returnType, other.returnType)
+				&& Objects.equals(errorType, other.errorType);
 		}
 	}
 
@@ -825,9 +837,11 @@ public class Ast {
 
 			return isConst == other.isConst
 				&& isMutable == other.isMutable
+				&& isSealed == other.isSealed
 				&& Objects.equals(type, other.type)
 				&& Objects.equals(name, other.name)
-				&& Objects.equals(initializer, other.initializer);
+				&& Objects.equals(initializer, other.initializer)
+				&& Objects.equals(decorators, other.decorators);
 		}
 	}
 
@@ -1177,6 +1191,34 @@ public class Ast {
 				&& Objects.equals(indexVariable, other.indexVariable)
 				&& Objects.equals(elementVariable, other.elementVariable)
 				&& Objects.equals(body, other.body);
+		}
+	}
+
+	public static class ThrowStatement extends Statement {
+		public final Expression thrown;
+
+		public ThrowStatement(List<Token> tokens, Expression thrown) {
+			super(tokens);
+
+			assert thrown != null;
+
+			this.thrown = thrown;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitThrowStatement(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (ThrowStatement) object;
+
+			return Objects.equals(thrown, other.thrown);
 		}
 	}
 
@@ -1728,6 +1770,35 @@ public class Ast {
 		}
 	}
 
+	public static class CompositeExpression extends Expression {
+		public final ListArgsOrKeyValuePairs list;
+
+		public CompositeExpression(
+			List<Token> tokens,
+			ListArgsOrKeyValuePairs list
+		){
+			super(tokens);
+
+			this.list = list;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitCompositeExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (CompositeExpression) object;
+
+			return Objects.equals(list, other.list);
+		}
+	}
+
 	public static class NewObjectExpression extends Expression {
 		public final String symbol;
 		public final List<Argument> arguments;
@@ -1819,6 +1890,44 @@ public class Ast {
 			var other = (NewObjectLiteralExpression) object;
 
 			return Objects.equals(classType, other.classType);
+		}
+	}
+
+	public static class TryElseExpression extends Expression {
+		public final Expression call;
+		public final String caught;
+		public final StatementBlock block;
+
+		public TryElseExpression(List<Token> tokens, Expression call, String caught, StatementBlock block) {
+			super(tokens);
+
+			assert call != null;
+			if (caught != null || block != null) {
+				assert caught != null;
+				assert block != null;
+			}
+
+			this.call = call;
+			this.caught = caught;
+			this.block = block;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitTryElseExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (TryElseExpression) object;
+
+			return Objects.equals(call, other.call)
+				&& Objects.equals(caught, other.caught)
+				&&  Objects.equals(block, other.block);
 		}
 	}
 
@@ -1929,6 +2038,11 @@ public class Ast {
 		}
 	}
 
+	sealed interface ListArgsOrKeyValuePairs permits ListArgs, ListKeyValuePairs {}
+
+	record ListArgs(List<Argument> args) implements ListArgsOrKeyValuePairs {}
+	record ListKeyValuePairs(List<KeyValuePair> pairs) implements ListArgsOrKeyValuePairs {}
+
 	// ====================
 	// VISITOR PATTERN
 	// ====================
@@ -2000,6 +2114,8 @@ public class Ast {
 
 		T visitIterateStatement(IterateStatement node);
 
+		T visitThrowStatement(ThrowStatement node);
+
 		// Expressions
 		T visitBinaryExpression(BinaryExpression node);
 
@@ -2037,10 +2153,14 @@ public class Ast {
 
 		T visitNewArrayExpression(NewArrayExpression node);
 
+		T visitCompositeExpression(CompositeExpression node);
+
 		T visitNewObjectExpression(NewObjectExpression node);
 
 		T visitNewClassInstance(NewClassInstance node);
 
 		T visitNewObjectLiteralExpression(NewObjectLiteralExpression node);
+
+		T visitTryElseExpression(TryElseExpression node);
 	}
 }

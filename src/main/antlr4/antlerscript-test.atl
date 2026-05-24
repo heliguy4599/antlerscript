@@ -462,11 +462,6 @@ let runner = Func(: Int)! Error {
         # with return, continue, break, etc.
     }
 
-    # If the error is to be rethrown to the parent scope, do this
-    let String? user = try find_user(input) else error {
-        throw 0, error
-    }
-
     # When there is no else statement, just rethrow with the same type
     let example = try find_user("")
 }
