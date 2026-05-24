@@ -86,8 +86,8 @@ class_top_level
 	;
 
 class_header_inside
-	: class_extends ( ',' class_member )* ','?
-	| class_member ( ',' class_member )* ','?
+	: class_extends ( ','? class_member )* ','?
+	| class_member ( ','? class_member )* ','?
 	;
 
 class_extends
@@ -127,11 +127,11 @@ class_member
 	;
 
 cast
-	: CAST '(' type ')' statement_block
+	: CAST '(' type ')' statement_block?
 	;
 
 operator_overload
-	: OPERATOR overridable '(' rightType=type symbol ':' returnType=type ')' statement_block
+	: OPERATOR overridable '(' rightType=type symbol ':' returnType=type ')' statement_block?
 	;
 
 overridable

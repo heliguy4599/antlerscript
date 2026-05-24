@@ -238,6 +238,7 @@ class AntlerScriptTest {
 			"extends One, Two, thing = 3, let item = false",
 			"const a = 5, alias(Two).three -> item",
 			"extends Two",
+			"extends SomeClass, AnotherClass let Int i = 5 constructor(){} cast(FuckAssType){1} operator+(RightType r : ReturnType){} alias(SomeClass).origin -> target symbol = expression",
 		})
 		void class_header_inside(String input) {
 			testInput(input, "class_header_inside");
@@ -289,14 +290,22 @@ class AntlerScriptTest {
 			testInput(input, "constructor_params_elm");
 		}
 
-		@Test
-		void class_cast() {
-			testInput("cast(Int) { 2 + 2 }", "cast");
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"cast(Int) { 2 + 2 }",
+			"cast(Int)",
+		})
+		void class_cast(String input) {
+			testInput(input, "cast");
 		}
 
-		@Test
-		void class_operator_overload() {
-			testInput("operator + (Int thing: Int) { 2 + 2 }", "operator_overload");
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"operator+ (Int thing: Int) { 2 + 2 }",
+			"operator+ (Int thing: Int)",
+		})
+		void class_operator_overload(String input) {
+			testInput(input, "operator_overload");
 		}
 
 		@ParameterizedTest

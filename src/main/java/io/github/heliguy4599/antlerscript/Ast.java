@@ -508,7 +508,6 @@ public class Ast {
 			super(tokens);
 
 			assert castedType != null;
-			assert block != null;
 
 			this.castedType = castedType;
 			this.block = block;
@@ -579,7 +578,6 @@ public class Ast {
 			assert symbol != null;
 			assert !symbol.isEmpty();
 			assert returnType != null;
-			assert block != null;
 
 			this.operator = operator;
 			this.rightType = rightType;

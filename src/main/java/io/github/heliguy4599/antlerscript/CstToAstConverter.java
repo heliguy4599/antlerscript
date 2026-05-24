@@ -402,15 +402,19 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.CastClassMember visitCast(AntlerScriptParser.CastContext ctx) {
 		assert ctx != null;
 
-		return new Ast.CastClassMember(getTokens(ctx), visitType(ctx.type()), visitStatement_block(ctx.statement_block()));
+		Ast.StatementBlock block = ctx.statement_block() == null ? null : visitStatement_block(ctx.statement_block());
+
+		return new Ast.CastClassMember(getTokens(ctx), visitType(ctx.type()), block);
 	}
 
 	@Override
 	public Ast.OperatorOverloadClassMember visitOperator_overload(AntlerScriptParser.Operator_overloadContext ctx) {
 		assert ctx != null;
 
+		Ast.StatementBlock block = ctx.statement_block() == null ? null : visitStatement_block(ctx.statement_block());
+
 		return new Ast.OperatorOverloadClassMember(
-			getTokens(ctx), visitOverridable(ctx.overridable()), visitType(ctx.rightType), ctx.symbol().getText(), visitType(ctx.returnType), visitStatement_block(ctx.statement_block())
+			getTokens(ctx), visitOverridable(ctx.overridable()), visitType(ctx.rightType), ctx.symbol().getText(), visitType(ctx.returnType), block
 		);
 	}
 
