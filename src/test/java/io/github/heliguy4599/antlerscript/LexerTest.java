@@ -262,6 +262,11 @@ class LexerTest {
 	}
 
 	@Test
+	void coroutine() {
+		testInput("Coroutine", L.COROUTINE);
+	}
+
+	@Test
 	void defer() {
 		testInput("defer", L.DEFER);
 	}
@@ -399,8 +404,18 @@ class LexerTest {
 	}
 
 	@Test
+	void throwKw() {
+		testInput("throw", L.THROW);
+	}
+
+	@Test
 	void trueKw() {
 		testInput("true", L.TRUE);
+	}
+
+	@Test
+	void tryKw() {
+		testInput("try", L.TRY);
 	}
 
 	@Test
@@ -416,6 +431,11 @@ class LexerTest {
 	@Test
 	void whileKw() {
 		testInput("while", L.WHILE);
+	}
+
+	@Test
+	void yield() {
+		testInput("yield", L.YIELD);
 	}
 
 	@Test
@@ -497,6 +517,11 @@ class LexerTest {
 	@Test
 	void colon() {
 		testInput(":", L.COLON);
+	}
+
+	@Test
+	void exclaim() {
+		testInput("!", L.EXCLAIM);
 	}
 
 	@Test

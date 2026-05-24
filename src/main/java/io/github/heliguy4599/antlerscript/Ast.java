@@ -427,6 +427,49 @@ public class Ast {
 		}
 	}
 
+	public static class CoroutineType extends Type {
+		public final List<FunctionParameter> parameters;
+		public final Type returnType;
+		public final Type yieldIn;
+		public final Type yieldOut;
+
+		public CoroutineType(
+			List<Token> tokens,
+			List<FunctionParameter> parameters,
+			Type returnType,
+			Type yieldIn,
+			Type yieldOut
+		) {
+			super(tokens);
+
+			this.parameters = parameters != null
+				? parameters
+				: new ArrayList<>();
+			this.returnType = returnType;
+			this.yieldIn = yieldIn;
+			this.yieldOut = yieldOut;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitCoroutineType(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (CoroutineType) object;
+
+			return Objects.equals(parameters, other.parameters)
+				&& Objects.equals(returnType, other.returnType)
+				&& Objects.equals(yieldIn, other.yieldIn)
+				&& Objects.equals(yieldOut, other.yieldOut);
+		}
+	}
+
 	public static class EnumType extends Type {
 		public final SymbolChain extendsAccess;
 		public final List<String> memberSymbols;
@@ -1457,6 +1500,32 @@ public class Ast {
 		}
 	}
 
+	public static class YieldExpression extends Expression {
+		public final Expression yieldOut;
+
+		public YieldExpression(List<Token> tokens, Expression yieldOut) {
+			super(tokens);
+
+			this.yieldOut = yieldOut;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitYieldExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (YieldExpression) object;
+
+			return Objects.equals(yieldOut, other.yieldOut);
+		}
+	}
+
 	public static class IntExpression extends Expression {
 		public final long value;
 		public final byte precision;
@@ -1639,6 +1708,42 @@ public class Ast {
 			}
 
 			var other = (LambdaExpression) object;
+
+			return Objects.equals(type, other.type)
+				&& Objects.equals(body, other.body);
+		}
+	}
+
+	public static class CoroutineExpression extends Expression {
+		public final CoroutineType type;
+		public final StatementBlock body;
+
+		public CoroutineExpression(
+			List<Token> tokens,
+			CoroutineType type,
+			StatementBlock body
+		) {
+			super(tokens);
+
+			assert type != null;
+			assert body != null;
+
+			this.type = type;
+			this.body = body;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitCoroutineExpression(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (CoroutineExpression) object;
 
 			return Objects.equals(type, other.type)
 				&& Objects.equals(body, other.body);
@@ -2065,6 +2170,8 @@ public class Ast {
 
 		T visitFunctionType(FunctionType node);
 
+		T visitCoroutineType(CoroutineType node);
+
 		T visitEnumType(EnumType node);
 
 		T visitClassType(ClassType node);
@@ -2129,6 +2236,8 @@ public class Ast {
 
 		T visitAccessExpression(AccessExpression node);
 
+		T visitYieldExpression(YieldExpression node);
+
 		T visitIntExpression(IntExpression node);
 
 		T visitFloatExpression(FloatExpression node);
@@ -2144,6 +2253,8 @@ public class Ast {
 		T visitStringExpression(StringExpression node);
 
 		T visitLambdaExpression(LambdaExpression node);
+
+		T visitCoroutineExpression(CoroutineExpression node);
 
 		T visitSelectExpression(SelectExpression node);
 

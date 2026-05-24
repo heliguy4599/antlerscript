@@ -308,6 +308,13 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFuncType(AntlerScriptParser.FuncTypeContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code coroutineType}
+	 * labeled alternative in {@link AntlerScriptParser#type_atomic}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCoroutineType(AntlerScriptParser.CoroutineTypeContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code selfType}
 	 * labeled alternative in {@link AntlerScriptParser#type_atomic}.
 	 * @param ctx the parse tree
@@ -358,6 +365,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunc_param_elm(AntlerScriptParser.Func_param_elmContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#coroutine_header}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCoroutine_header(AntlerScriptParser.Coroutine_headerContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#composite}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -369,6 +382,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLambda(AntlerScriptParser.LambdaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#coroutine}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCoroutine(AntlerScriptParser.CoroutineContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#class_header}.
 	 * @param ctx the parse tree
@@ -387,6 +406,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpression(AntlerScriptParser.ExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#expression_yield}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpression_yield(AntlerScriptParser.Expression_yieldContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#expression_assignment}.
 	 * @param ctx the parse tree
@@ -722,6 +747,13 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLambdaExpression(AntlerScriptParser.LambdaExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code coroutineExpression}
+	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCoroutineExpression(AntlerScriptParser.CoroutineExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code selectExpression}
 	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.

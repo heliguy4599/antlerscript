@@ -196,15 +196,16 @@ type_nullable
 	;
 
 type_atomic
-	: symbol        # symbolType
-	| list_header   # listType
-	| array_header  # arrayType
-	| map_header    # mapType
-	| class_header  # classType
-	| enum_header   # enumType
-	| func_header   # funcType
-	| SELF_CLASS    # selfType
-	| '(' type ')'  # typeGroup
+	: symbol           # symbolType
+	| list_header      # listType
+	| array_header     # arrayType
+	| map_header       # mapType
+	| class_header     # classType
+	| enum_header      # enumType
+	| func_header      # funcType
+	| coroutine_header # coroutineType
+	| SELF_CLASS       # selfType
+	| '(' type ')'     # typeGroup
 	;
 
 list_header
@@ -232,6 +233,13 @@ func_param_elm
 	: type symbol ( '=' expression )?
 	;
 
+coroutine_header
+	: COROUTINE '(' func_params? ':' returnType=type? ')' 
+	| COROUTINE '(' func_params? ':' returnType=type? ')' YIELD ':' yieldIn=type
+	| COROUTINE '(' func_params? ':' returnType=type? ')' YIELD yieldOut=type ':'
+	| COROUTINE '(' func_params? ':' returnType=type? ')' YIELD yieldOut=type ':' yieldIn=type
+	;
+
 composite
 	:
 	'{'
@@ -248,6 +256,10 @@ lambda
 	: func_header statement_block
 	;
 
+coroutine
+	: coroutine_header statement_block
+	;
+
 class_header
 	: CLASS '(' class_header_inside? ')'
 	;
@@ -261,7 +273,11 @@ enum_header
 //-----------------------
 
 expression
-	: expression_assignment
+	: expression_yield
+	;
+
+expression_yield
+	: YIELD* expression_assignment
 	;
 
 expression_assignment
@@ -444,6 +460,7 @@ expression_atom
 	| new_class_instance    # newClassInstance
 	| composite             # compositeExpression
 	| lambda                # lambdaExpression
+	| coroutine             # coroutineExpression
 	| select                # selectExpression
 	| object_literal        # objectLiteralExpression
 	| try_else		# tryElseExpression

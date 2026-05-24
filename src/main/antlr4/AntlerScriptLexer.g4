@@ -68,6 +68,7 @@ CLASS: 'Class' ;
 CONST: 'const' ;
 CONSTRUCTOR: 'constructor' ;
 CONTINUE: 'continue' ;
+COROUTINE: 'Coroutine' ;
 DEFER: 'defer' ;
 ELIF: 'elif' ;
 ELLIPSIS: '...' ;
@@ -105,6 +106,7 @@ TRY: 'try' ;
 TYPE: 'type' ;
 UNDERSCORE: '_' ;
 WHILE: 'while' ;
+YIELD: 'yield' ;
 
 // Characters
 

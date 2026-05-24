@@ -595,6 +595,13 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
+	public Ast.CoroutineType visitCoroutineType(AntlerScriptParser.CoroutineTypeContext ctx) {
+		assert ctx != null;
+
+		return visitCoroutine_header(ctx.coroutine_header());
+	}
+
+	@Override
 	public Ast.SelfClassType visitSelfType(AntlerScriptParser.SelfTypeContext ctx) {
 		assert ctx != null;
 
@@ -669,6 +676,18 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
+	public Ast.CoroutineType visitCoroutine_header(AntlerScriptParser.Coroutine_headerContext ctx) {
+		assert ctx != null;
+
+		List<Ast.FunctionParameter> params = ctx.func_params() == null ? null : visitFunc_params(ctx.func_params());
+		Ast.Type returnType = ctx.returnType == null ? null : visitType(ctx.returnType);
+		Ast.Type yieldIn = ctx.returnType == null ? null : visitType(ctx.yieldIn);
+		Ast.Type yieldOut = ctx.returnType == null ? null : visitType(ctx.yieldOut);
+
+		return new Ast.CoroutineType(getTokens(ctx), params, returnType, yieldIn, yieldOut);
+	}
+
+	@Override
 	public Ast.CompositeExpression visitComposite(AntlerScriptParser.CompositeContext ctx) {
 		assert ctx != null;
 
@@ -689,7 +708,18 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.FunctionType type = visitFunc_header(ctx.func_header());
 		Ast.StatementBlock block = visitStatement_block(ctx.statement_block());
+
 		return new Ast.LambdaExpression(getTokens(ctx), type, block);
+	}
+
+	@Override
+	public Ast.CoroutineExpression visitCoroutine(AntlerScriptParser.CoroutineContext ctx) {
+		assert ctx != null;
+
+		Ast.CoroutineType type = visitCoroutine_header(ctx.coroutine_header());
+		Ast.StatementBlock block = visitStatement_block(ctx.statement_block());
+
+		return new Ast.CoroutineExpression(getTokens(ctx), type, block);
 	}
 
 	@Override
@@ -722,7 +752,31 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.Expression visitExpression(AntlerScriptParser.ExpressionContext ctx) {
 		assert ctx != null;
 
-		return visitExpression_assignment(ctx.expression_assignment());
+		return visitExpression_yield(ctx.expression_yield());
+	}
+
+	// If the tokens of the yield expression are wrong, replace this grammar
+	// rule with a recursive one
+	@Override
+	public Ast.Expression visitExpression_yield(AntlerScriptParser.Expression_yieldContext ctx) {
+		assert ctx != null;
+
+		Ast.Expression expr = visitExpression_assignment(ctx.expression_assignment());
+		int yieldCount = ctx.YIELD() == null ? 0 : ctx.YIELD().size();
+
+		if (yieldCount <= 0) {
+			return expr;
+		}
+
+		List<Token> allTokens = getTokens(ctx);
+		List<Token> tokens = new ArrayList<>(getTokens(ctx.expression_assignment()));
+
+		for (int i = 0; i < yieldCount; i++) {
+			tokens.add(0, allTokens.get(yieldCount - i - 1));
+			expr = new Ast.YieldExpression(new ArrayList<>(tokens), expr);
+		}
+
+		return expr;
 	}
 
 	@Override
@@ -1427,13 +1481,18 @@ AntlerScriptParserVisitor<Object> {
 		return visitNew_class_instance(ctx.new_class_instance());
 	}
 
-	
-
 	@Override
 	public Ast.LambdaExpression visitLambdaExpression(AntlerScriptParser.LambdaExpressionContext ctx) {
 		assert ctx != null;
 
 		return visitLambda(ctx.lambda());
+	}
+
+	@Override
+	public Ast.CoroutineExpression visitCoroutineExpression(AntlerScriptParser.CoroutineExpressionContext ctx) {
+		assert ctx != null;
+
+		return visitCoroutine(ctx.coroutine());
 	}
 
 	@Override

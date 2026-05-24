@@ -488,7 +488,7 @@ let return_error_code = Func(:)! Int {
 # 7. First-class coroutine handles (Tasks)
 
 # Coroutines can't throw
-let myCo = Coroutine(Float f : Class()) yield String : Int {
+let myCo = Coroutine(Float f : Class()) yield Int : String {
 	print(f)
 
 	let mut has_shat = false

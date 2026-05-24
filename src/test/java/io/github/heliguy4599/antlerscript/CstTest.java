@@ -708,6 +708,11 @@ class AntlerScriptTest {
 			testInput("i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i", rule);
 		}
 
+		@Test
+		void assignment() {
+			testInput("a = b = c = d = e = f = g = 10", "expression_assignment");
+		}
+
 		@ParameterizedTest
 		@ValueSource(strings = {
 			"((x + y)\n * (a\n - b)) / (c ** 2)",
@@ -718,13 +723,33 @@ class AntlerScriptTest {
 
 		@ParameterizedTest
 		@ValueSource(strings = {
+			"yield a = 10 * -2",
+			"yield yield yield yield 5",
+		})
+		void yield(String expr) {
+			testInput(expr, "expression_yield");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
 			"+",
 			"-",
 			"~",
-			"not",
+			"+ + + + + + +",
+			"- - - - - - -",
+			"~ ~ ~ ~ ~ ~ ~",
 		})
 		void unary(String op) {
 			testInput(op + "0", "expression_unary");
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"not",
+			"not not not not not not ",
+		})
+		void not(String op) {
+			testInput(op + "0", "expression_logical_not");
 		}
 
 		@ParameterizedTest
@@ -750,6 +775,7 @@ class AntlerScriptTest {
 			"🪐",
 			"(1 + -1 * ~1 ** 1)",
 			"Func(:){}",
+			"Coroutine(:){}",
 			"select(true: true)",
 			"object{}"
 		})
@@ -1037,11 +1063,16 @@ class AntlerScriptTest {
 			"Func(Int a: Int?)",
 			"Func(Int? a, Int b = 0: Int)",
 			"Func(( Int? | Float ) & Pineapple a = 0, ( Int | Float )? & Pineapple b = 0: ( Int | Float? ) & Pineapple)",
-			"Func(:)! Error",
-			"Func(: Int) !SoHunry",
-			"Func(Int a: Int?)! Yummerinos",
-			"Func(Int? a, Int b = 0: Int)! Int | Float & Null",
-			"Func(( Int? | Float ) & Pineapple a = 0, ( Int | Float )? & Pineapple b = 0: ( Int | Float? ) & Pineapple) ! Int",
+			"(Func(:)! Error)",
+			"(Func(: Int) !SoHunry)",
+			"(Func(Int a: Int?)! Yummerinos)",
+			"(Func(Int? a, Int b = 0: Int)! Int | Float & Null)",
+			"(Func(( Int? | Float ) & Pineapple a = 0, ( Int | Float )? & Pineapple b = 0: ( Int | Float? ) & Pineapple) ! Int)",
+			"Coroutine(:)",
+			"Coroutine(Int a: Int?)",
+			"(Coroutine(:) yield : Int)",
+			"(Coroutine(:) yield String :)",
+			"(Coroutine(:) yield String : Int)",
 			"Class()",
 			"Class(let Int a)",
 			"Class(let ( Int | Float ) & Pineapple a = 0,)",
