@@ -183,11 +183,11 @@ let misc = Func(Int a:) {
 }
 
 let control_flow = Func(:) {
-	iterate ls -> index, elem { }
-	iterate ls -> elem {
+	loop over ls -> index, elem { }
+	loop over ls -> elem {
 		continue
 	}
-	iterate ls {
+	loop over ls {
 		break
 	}
 
@@ -199,9 +199,36 @@ let control_flow = Func(:) {
 	loop to 10 by 2 -> i {}
 	loop to 10 { }
 	loop to 10 -> i { }
-	while true { }
+	loop to 10 from 0 { }
+	loop to 10 from 0 by 2 { }
+	loop from 1 to -5 { }
+	loop by 3 { }
+	loop while true from 0 to 10 by 2 -> i { }
+	loop by 2 to 10 from 0 -> i while true { }
+	loop while true { }
+	loop while true { }; print("hello") # That is allowed
+	
+	# not allowed (ranges must be together, 'while' cannot appear between):
+	#  loop from 0 while true to 10 { }
+	# not allowed (captures (-> i) must be done immediately after ranges or iterators):
+	#  loop over my_list while true -> elm { }
+	# not allowed (you cannot combine range and iterate):
+	#  loop from 0 to 10 over my_list { }
+	# not allowed (you cannot capture two things from range loops)
+	#  loop to 10 -> i, j { }
 
-	while true { }; print("hello") # That is allowed, though
+	# 'while' can be combined with iterations and with ranges. The order is not enforced, but captures (-> i) cannot come *after* 'while'
+	loop while some_condition() to 20 -> i {
+		# This loop will print i from 0 to 19, but might stop if the `some_condition` function ever returns false
+		print(i)
+	}
+
+	let my_list = List{ -10, 2, -120, null, 8 }
+	loop over my_list -> elm while elm != null {
+		# This loop will print 10, 2, 120.
+		# The 'while elm != null' will cause the loop to stop when seeing the null value, thus never printing 8.
+		print(Math.abs(elm))
+	}
 
 	# if statements
 	if some_bool_expr {
@@ -589,4 +616,3 @@ type Comparable = Class(
 let myfunc = Func<Comparable T>(T a, T b : Bool) {
 	return a.greater_than(b)
 }
-
