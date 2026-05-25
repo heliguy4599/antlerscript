@@ -12,6 +12,7 @@ symbol
 	| name=TO
 	| name=BY
 	| name=OVER
+	| name=WHILE
 	;
 
 semicolon
@@ -197,33 +198,22 @@ type_nullable
 	;
 
 type_atomic
-	: symbol           # symbolType
-	| list_header      # listType
-	| array_header     # arrayType
-	| map_header       # mapType
-	| class_header     # classType
-	| enum_header      # enumType
-	| func_header      # funcType
-	| coroutine_header # coroutineType
-	| SELF_CLASS       # selfType
-	| '(' type ')'     # typeGroup
-	;
-
-list_header
-	: LIST '(' type? ')'
+	: symbol generic_args? # symbolType
+	| array_header         # arrayType
+	| class_header         # classType
+	| enum_header          # enumType
+	| func_header          # funcType
+	| coroutine_header     # coroutineType
+	| SELF_CLASS           # selfType
+	| '(' type ')'         # typeGroup
 	;
 
 array_header
-	: ARRAY '(' ( type | expression )? ')'
-	| ARRAY '(' type ',' expression ')'
-	;
-
-map_header
-	: MAP '(' ( type ',' type )? ')'
+	: ARRAY '[' type ',' expression ']'
 	;
 
 func_header
-	: FUNC '(' func_params? ':' returnType=type? ')' ( '!' errorType=type )?
+	: FUNC generic_parameters? '(' func_params? ':' returnType=type? ')' ( '!' errorType=type )?
 	;
 
 func_params
@@ -235,10 +225,10 @@ func_param_elm
 	;
 
 coroutine_header
-	: COROUTINE '(' func_params? ':' returnType=type? ')'
-	| COROUTINE '(' func_params? ':' returnType=type? ')' YIELD ':' yieldIn=type
-	| COROUTINE '(' func_params? ':' returnType=type? ')' YIELD yieldOut=type ':'
-	| COROUTINE '(' func_params? ':' returnType=type? ')' YIELD yieldOut=type ':' yieldIn=type
+	: COROUTINE generic_parameters? '(' func_params? ':' returnType=type? ')'
+	| COROUTINE generic_parameters? '(' func_params? ':' returnType=type? ')' YIELD ':' yieldIn=type
+	| COROUTINE generic_parameters? '(' func_params? ':' returnType=type? ')' YIELD yieldOut=type ':'
+	| COROUTINE generic_parameters? '(' func_params? ':' returnType=type? ')' YIELD yieldOut=type ':' yieldIn=type
 	;
 
 composite
@@ -262,11 +252,15 @@ coroutine
 	;
 
 class_header
-	: CLASS '(' class_header_inside? ')'
+	: CLASS generic_parameters? '(' class_header_inside? ')'
 	;
 
 enum_header
 	: ENUM '(' enum_header_inside ')'
+	;
+
+generic_parameters
+	: '[' type symbol ( ',' type symbol )* ']'
 	;
 
 //-----------------------
@@ -428,10 +422,10 @@ expression_postfix
 	;
 
 expression_access
-	: '[' expression ']'    # indexAccess
-	| '(' arguments? ')'    # functionCall
-	| '.' symbol            # memberAccess
-	| '?.' symbol           # nullishAccess
+	: '[' expression ']' generic_args? # indexAccess
+	| '(' arguments? ')'               # functionCall
+	| '.' symbol generic_args?         # memberAccess
+	| '?.' symbol generic_args?        # nullishAccess
 	;
 
 arguments
@@ -444,7 +438,7 @@ argument_elm
 	;
 
 expression_atom
-	: symbol                # symbolExpression
+	: symbol generic_args?  # symbolExpression
 	| STRING                # stringExpression
 	| RAW_STRING            # rawStringExpression
 	| FLOAT                 # floatExpression
@@ -455,7 +449,6 @@ expression_atom
 	| SUPER                 # superExpression
 	| SELF_INSTANCE         # selfInstanceExpression
 	| new_object_instance   # newObjectExpression
-	| new_list_instance     # newListExpression
 	| new_array_instance    # newArrayExpression
 	| new_map_instance      # newMapExpression
 	| new_class_instance    # newClassInstance
@@ -468,12 +461,12 @@ expression_atom
 	| '(' expression ')'    # groupedExpression
 	;
 
-new_object_instance
-	: symbol object_instantiation_args
+generic_args
+	: '[' type ( ',' type )* ']'
 	;
 
-new_list_instance
-	: list_header object_instantiation_args
+new_object_instance
+	: symbol generic_args? object_instantiation_args
 	;
 
 new_array_instance
@@ -481,7 +474,7 @@ new_array_instance
 	;
 
 new_class_instance
-	: class_header object_instantiation_args
+	: class_header generic_args? object_instantiation_args
 	;
 
 object_instantiation_args
@@ -497,7 +490,7 @@ object_instantiation_args
 	;
 
 new_map_instance
-	: map_header
+	: MAP '[' key=type ',' value=type ']'
 	'{'
 	{
 		AntlerScriptLexer lexer = (AntlerScriptLexer)_input.getTokenSource();

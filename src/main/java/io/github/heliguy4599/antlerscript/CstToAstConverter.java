@@ -88,6 +88,27 @@ AntlerScriptParserVisitor<Object> {
 
 	// === MISC ===
 
+	@Override
+	public List<Ast.Type> visitGeneric_args(AntlerScriptParser.Generic_argsContext ctx) {
+		assert ctx != null;
+
+		return ctx.type().stream().map(this::visitType).toList();
+	}
+
+	@Override
+	public List<Ast.GenericParameter> visitGeneric_parameters(AntlerScriptParser.Generic_parametersContext ctx) {
+		assert ctx != null;
+
+		List<Ast.GenericParameter> params = new ArrayList<>();
+
+		for (int i = 0; i < ctx.type().size(); i++) {
+			var param = new Ast.GenericParameter(visitType(ctx.type(i)), ctx.symbol(i).getText());
+			params.add(param);
+		}
+
+		return params;
+	}
+
 	// Invalid, should be handled by the caller with symbol().getText()
 	@Override
 	public Object visitSymbol(AntlerScriptParser.SymbolContext ctx) {
@@ -100,6 +121,15 @@ AntlerScriptParserVisitor<Object> {
 	// Invalid, should be handled by the caller
 	@Override
 	public Object visitSemicolon(AntlerScriptParser.SemicolonContext ctx) {
+		assert ctx != null;
+
+		assert false;
+		return null;
+	}
+
+	// Invalid, should be handled by the caller
+	@Override
+	public Ast.ClassType visitClass_header_inside(AntlerScriptParser.Class_header_insideContext ctx) {
 		assert ctx != null;
 
 		assert false;
@@ -264,7 +294,7 @@ AntlerScriptParserVisitor<Object> {
 		String namespace = visitNamespace_directive(ctx.namespace_directive());
 		String classname = visitClassname_directive(ctx.classname_directive());
 		Ast.ClassType topLevel = ctx.class_top_level() == null
-			? new Ast.ClassType(getTokens(ctx), null, null)
+			? new Ast.ClassType(getTokens(ctx), null, null, null)
 			: visitClass_top_level(ctx.class_top_level());
 
 		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
@@ -331,17 +361,7 @@ AntlerScriptParserVisitor<Object> {
 		List<Ast.SymbolChain> extendsAccess = visitClass_extends(ctx.class_extends());
 		List<Ast.ClassMember> members = ctx.class_member().stream().map(this::visitClassMember).toList();
 
-		return new Ast.ClassType(getTokens(ctx), extendsAccess, members);
-	}
-
-	@Override
-	public Ast.ClassType visitClass_header_inside(AntlerScriptParser.Class_header_insideContext ctx) {
-		assert ctx != null;
-
-		List<Ast.SymbolChain> extendsAccess = visitClass_extends(ctx.class_extends());
-		List<Ast.ClassMember> members = ctx.class_member().stream().map(this::visitClassMember).toList();
-
-		return new Ast.ClassType(getTokens(ctx), extendsAccess, members);
+		return new Ast.ClassType(getTokens(ctx), null, extendsAccess, members);
 	}
 
 	@Override
@@ -382,7 +402,10 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.ConstructorParameter visitConstructor_params_elm(AntlerScriptParser.Constructor_params_elmContext ctx) {
 		assert ctx != null;
 
-		return new Ast.ConstructorParameter(visitType(ctx.type()), ctx.symbol().getText(), visitExpression(ctx.expression()), false);
+		Ast.Type type = ctx.type() == null ? null : visitType(ctx.type());
+		Ast.Expression expr = ctx.expression() == null ? null : visitExpression(ctx.expression());
+
+		return new Ast.ConstructorParameter(type, ctx.symbol().getText(), expr, false);
 	}
 
 	@Override
@@ -571,7 +594,7 @@ AntlerScriptParserVisitor<Object> {
 			getTokens(ctx),
 			Ast.UnionType.Kind.OR,
 			atomic,
-			new Ast.SymbolType(questionMark, "Null")
+			new Ast.SymbolType(questionMark, "Null", null)
 		);
 	}
 
@@ -586,14 +609,12 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.SymbolType visitSymbolType(AntlerScriptParser.SymbolTypeContext ctx) {
 		assert ctx != null;
 
-		return new Ast.SymbolType(getTokens(ctx), ctx.symbol().getText());
-	}
+		List<Ast.Type> genericArgs = null;
+		if (ctx.generic_args() != null) {
+			genericArgs = visitGeneric_args(ctx.generic_args());
+		}
 
-	@Override
-	public Ast.ListType visitListType(AntlerScriptParser.ListTypeContext ctx) {
-		assert ctx != null;
-
-		return visitList_header(ctx.list_header());
+		return new Ast.SymbolType(getTokens(ctx), ctx.symbol().getText(), genericArgs);
 	}
 
 	@Override
@@ -601,13 +622,6 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		return visitArray_header(ctx.array_header());
-	}
-
-	@Override
-	public Ast.MapType visitMapType(AntlerScriptParser.MapTypeContext ctx) {
-		assert ctx != null;
-
-		return visitMap_header(ctx.map_header());
 	}
 
 	@Override
@@ -653,14 +667,6 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
-	public Ast.ListType visitList_header(AntlerScriptParser.List_headerContext ctx) {
-		assert ctx != null;
-
-		Ast.Type type = visitType(ctx.type());
-		return new Ast.ListType(getTokens(ctx), type);
-	}
-
-	@Override
 	public Ast.ArrayType visitArray_header(AntlerScriptParser.Array_headerContext ctx) {
 		assert ctx != null;
 
@@ -670,23 +676,25 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
-	public Ast.MapType visitMap_header(AntlerScriptParser.Map_headerContext ctx) {
-		assert ctx != null;
-
-		Ast.Type first = visitType(ctx.type(0));
-		Ast.Type second = visitType(ctx.type(1));
-		return new Ast.MapType(getTokens(ctx), first, second);
-	}
-
-	@Override
 	public Ast.FunctionType visitFunc_header(AntlerScriptParser.Func_headerContext ctx) {
 		assert ctx != null;
 
-		Ast.Type returnType = ctx.returnType == null ? null : visitType(ctx.returnType);
-		List<Ast.FunctionParameter> params = ctx.func_params() == null ? null : visitFunc_params(ctx.func_params());
-		Ast.Type errorType = ctx.errorType == null ? null : visitType(ctx.errorType);
+		List<Ast.GenericParameter> genericParams = null;
+		if (ctx.generic_parameters() != null) {
+			genericParams = visitGeneric_parameters(ctx.generic_parameters());
+		}
 
-		return new Ast.FunctionType(getTokens(ctx), params, returnType, errorType);
+		Ast.Type returnType = ctx.returnType == null
+			? null
+			: visitType(ctx.returnType);
+		List<Ast.FunctionParameter> params = ctx.func_params() == null
+			? null
+			: visitFunc_params(ctx.func_params());
+		Ast.Type errorType = ctx.errorType == null
+			? null
+			: visitType(ctx.errorType);
+
+		return new Ast.FunctionType(getTokens(ctx), params, genericParams, returnType, errorType);
 	}
 
 	@Override
@@ -716,12 +724,17 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.CoroutineType visitCoroutine_header(AntlerScriptParser.Coroutine_headerContext ctx) {
 		assert ctx != null;
 
+		List<Ast.GenericParameter> genericParams = null;
+		if (ctx.generic_parameters() != null) {
+			genericParams = visitGeneric_parameters(ctx.generic_parameters());
+		}
+
 		List<Ast.FunctionParameter> params = ctx.func_params() == null ? null : visitFunc_params(ctx.func_params());
 		Ast.Type returnType = ctx.returnType == null ? null : visitType(ctx.returnType);
 		Ast.Type yieldIn = ctx.yieldIn == null ? null : visitType(ctx.yieldIn);
 		Ast.Type yieldOut = ctx.yieldOut == null ? null : visitType(ctx.yieldOut);
 
-		return new Ast.CoroutineType(getTokens(ctx), params, returnType, yieldIn, yieldOut);
+		return new Ast.CoroutineType(getTokens(ctx), genericParams, params, returnType, yieldIn, yieldOut);
 	}
 
 	@Override
@@ -763,10 +776,20 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.ClassType visitClass_header(AntlerScriptParser.Class_headerContext ctx) {
 		assert ctx != null;
 
-		if (ctx.class_header_inside() == null) {
-			return new Ast.ClassType(getTokens(ctx), null, null);
+		List<Ast.GenericParameter> params = null;
+		if (ctx.generic_parameters() != null) {
+			params = visitGeneric_parameters(ctx.generic_parameters());
 		}
-		return visitClass_header_inside(ctx.class_header_inside());
+
+		if (ctx.class_header_inside() == null) {
+			return new Ast.ClassType(getTokens(ctx), params, null, null);
+		}
+
+		AntlerScriptParser.Class_header_insideContext ctx2 = ctx.class_header_inside();
+		List<Ast.SymbolChain> extendsAccess = visitClass_extends(ctx2.class_extends());
+		List<Ast.ClassMember> members = ctx2.class_member().stream().map(this::visitClassMember).toList();
+
+		return new Ast.ClassType(getTokens(ctx), params, extendsAccess, members);
 	}
 
 	@Override
@@ -932,7 +955,8 @@ AntlerScriptParserVisitor<Object> {
 		return kind;
 	}
 
-	// BUG: Token collection strategy is likely wrong, switch the grammar rule to being recursive instead to fix
+	// BUG: Token collection strategy is likely wrong, switch the grammar
+	// rule to being recursive instead to fix or see the yield target
 	@Override
 	public Ast.Expression visitExpression_logical_not(AntlerScriptParser.Expression_logical_notContext ctx) {
 		assert ctx != null;
@@ -1227,7 +1251,8 @@ AntlerScriptParserVisitor<Object> {
 		return kind;
 	}
 
-	// BUG: Token collection strategy is likely wrong, switch the grammar rule to being recursive instead to fix
+	// BUG: Token collection strategy is likely wrong, switch the grammar
+	// rule to being recursive instead to fix or see the yield target
 	@Override
 	public Ast.Expression visitExpression_unary(AntlerScriptParser.Expression_unaryContext ctx) {
 		assert ctx != null;
@@ -1296,20 +1321,36 @@ AntlerScriptParserVisitor<Object> {
 
 		for (AntlerScriptParser.Expression_accessContext accessCtx : ctx.expression_access()) {
 			switch (accessCtx) {
-				case AntlerScriptParser.IndexAccessContext idxCtx:
-					latest = new Ast.IndexExpression(getTokens(idxCtx), latest, visitExpression(idxCtx.expression()));
-					break;
-				case AntlerScriptParser.FunctionCallContext funcallCtx:
-					latest = new Ast.CallExpression(getTokens(funcallCtx), latest, funcallCtx.arguments() == null ? null : visitArguments(funcallCtx.arguments()));
-					break;
-				case AntlerScriptParser.MemberAccessContext memCtx:
-					latest = new Ast.AccessExpression(getTokens(memCtx), latest, memCtx.symbol().getText(), false);
-					break;
-				case AntlerScriptParser.NullishAccessContext nullCtx:
-					latest = new Ast.AccessExpression(getTokens(nullCtx), latest, nullCtx.symbol().getText(), true);
-					break;
-				default:
-					assert false;
+			case AntlerScriptParser.IndexAccessContext idxCtx: {
+				List<Ast.Type> genericArgs = null;
+				if (idxCtx.generic_args() != null) {
+					genericArgs = visitGeneric_args(idxCtx.generic_args());
+				}
+				latest = new Ast.IndexExpression(getTokens(idxCtx), latest, visitExpression(idxCtx.expression()), genericArgs);
+				break;
+			}
+			case AntlerScriptParser.FunctionCallContext funcallCtx: {
+				latest = new Ast.CallExpression(getTokens(funcallCtx), latest, funcallCtx.arguments() == null ? null : visitArguments(funcallCtx.arguments()));
+				break;
+			}
+			case AntlerScriptParser.MemberAccessContext memCtx: {
+				List<Ast.Type> genericArgs = null;
+				if (memCtx.generic_args() != null) {
+					genericArgs = visitGeneric_args(memCtx.generic_args());
+				}
+				latest = new Ast.AccessExpression(getTokens(memCtx), latest, memCtx.symbol().getText(), false, genericArgs);
+				break;
+			}
+			case AntlerScriptParser.NullishAccessContext nullCtx: {
+				List<Ast.Type> genericArgs = null;
+				if (nullCtx.generic_args() != null) {
+					genericArgs = visitGeneric_args(nullCtx.generic_args());
+				}
+				latest = new Ast.AccessExpression(getTokens(nullCtx), latest, nullCtx.symbol().getText(), true, genericArgs);
+				break;
+			}
+			default:
+				assert false;
 			}
 		}
 
@@ -1381,7 +1422,12 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.SymbolExpression visitSymbolExpression(AntlerScriptParser.SymbolExpressionContext ctx) {
 		assert ctx != null;
 
-		return new Ast.SymbolExpression(getTokens(ctx), ctx.getText());
+		List<Ast.Type> genericArgs = null;
+		if (ctx.generic_args() != null) {
+			genericArgs = visitGeneric_args(ctx.generic_args());
+		}
+
+		return new Ast.SymbolExpression(getTokens(ctx), ctx.symbol().getText(), genericArgs);
 	}
 
 	@Override
@@ -1494,13 +1540,6 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
-	public Ast.NewListExpression visitNewListExpression(AntlerScriptParser.NewListExpressionContext ctx) {
-		assert ctx != null;
-
-		return visitNew_list_instance(ctx.new_list_instance());
-	}
-
-	@Override
 	public Ast.NewArrayExpression visitNewArrayExpression(AntlerScriptParser.NewArrayExpressionContext ctx) {
 		assert ctx != null;
 
@@ -1553,17 +1592,12 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.NewObjectExpression visitNew_object_instance(AntlerScriptParser.New_object_instanceContext ctx) {
 		assert ctx != null;
 
+		List<Ast.Type> genericArgs = null;
+		if (ctx.generic_args() != null) {
+			genericArgs = visitGeneric_args(ctx.generic_args());
+		}
 		List<Ast.Argument> args = visitObject_instantiation_args(ctx.object_instantiation_args());
-		return new Ast.NewObjectExpression(getTokens(ctx), ctx.symbol().getText(), args);
-	}
-
-	@Override
-	public Ast.NewListExpression visitNew_list_instance(AntlerScriptParser.New_list_instanceContext ctx) {
-		assert ctx != null;
-
-		Ast.ListType type = visitList_header(ctx.list_header());
-		List<Ast.Argument> args = visitObject_instantiation_args(ctx.object_instantiation_args());
-		return new Ast.NewListExpression(getTokens(ctx), type, args);
+		return new Ast.NewObjectExpression(getTokens(ctx), ctx.symbol().getText(), genericArgs, args);
 	}
 
 	@Override
@@ -1579,9 +1613,14 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.NewClassInstance visitNew_class_instance(AntlerScriptParser.New_class_instanceContext ctx) {
 		assert ctx != null;
 
+		List<Ast.Type> genericArgs = null;
+		if (ctx.generic_args() != null) {
+			genericArgs = visitGeneric_args(ctx.generic_args());
+		}
+
 		List<Ast.Argument> args = visitObject_instantiation_args(ctx.object_instantiation_args());
 		Ast.ClassType type = visitClass_header(ctx.class_header());
-		return new Ast.NewClassInstance(getTokens(ctx), type, args);
+		return new Ast.NewClassInstance(getTokens(ctx), type, genericArgs, args);
 	}
 
 	@Override
@@ -1595,9 +1634,10 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.NewMapExpression visitNew_map_instance(AntlerScriptParser.New_map_instanceContext ctx) {
 		assert ctx != null;
 
-		Ast.MapType type = visitMap_header(ctx.map_header());
+		Ast.Type keyType = visitType(ctx.key);
+		Ast.Type valueType = visitType(ctx.value);
 		List<Ast.KeyValuePair> pairs = visitKeypair_list_map(ctx.keypair_list_map());
-		return new Ast.NewMapExpression(getTokens(ctx), type, pairs);
+		return new Ast.NewMapExpression(getTokens(ctx), keyType, valueType, pairs);
 	}
 
 	@Override
@@ -1619,7 +1659,7 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		Ast.ClassType topLevel = ctx.class_top_level() == null
-			? new Ast.ClassType(getTokens(ctx), null, null)
+			? new Ast.ClassType(getTokens(ctx), null, null, null)
 			: visitClass_top_level(ctx.class_top_level());
 
 		return new Ast.NewObjectLiteralExpression(getTokens(ctx), topLevel);
@@ -1647,10 +1687,10 @@ AntlerScriptParserVisitor<Object> {
 	public List<Ast.KeyValuePair> visitKeypair_list_select(AntlerScriptParser.Keypair_list_selectContext ctx) {
 		assert ctx != null;
 
-		List<Ast.KeyValuePair> keypairList;
+		List<Ast.KeyValuePair> keypairList = null;
 
 		if (ctx.keypair_clause() != null) {
-			keypairList = ctx.keypair_clause().stream().map(this::visitKeypair_clause).toList();
+			keypairList = new ArrayList<>(ctx.keypair_clause().stream().map(this::visitKeypair_clause).toList());
 		} else {
 			keypairList = new ArrayList<>();
 		}

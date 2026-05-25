@@ -45,7 +45,7 @@ class AstTest {
 
 	static Ast.SymbolType symbolTypeFor(String name) {
 		assert name != null;
-		return new Ast.SymbolType(genTokens(name), name);
+		return new Ast.SymbolType(genTokens(name), name, null);
 	}
 
 	static Ast.BooleanExpression boolExpFor(boolean value) {
@@ -169,45 +169,6 @@ class AstTest {
 			testInput("Int", "type_atomic", symbolTypeFor("Int"));
 		}
 
-		@Test
-		void ListType() {
-			testInput(
-				"List(Int)",
-				"type_atomic",
-				new Ast.ListType(
-					genTokens("List", "(", "Int", ")"),
-					symbolTypeFor("Int")
-				)
-			);
-		}
-
-		// @Test
-		// TODO: This fails
-		void ArrayType() {
-			testInput(
-				"Array(Int)",
-				"type_atomic",
-				new Ast.ArrayType(
-					genTokens("Array", "(", "Int", ")"),
-					symbolTypeFor("Int"),
-					null
-				)
-			);
-		}
-
-		@Test
-		void MapType() {
-			testInput(
-				"Map(String, Int)",
-				"type_atomic",
-				new Ast.MapType(
-					genTokens("Map", "(", "String", ",", "Int", ")"),
-					symbolTypeFor("String"),
-					symbolTypeFor("Int")
-				)
-			);
-		}
-
 		// @Test
 		// TODO: This fails, due to expecting a DeclarationClassMember yet getting a VariableDeclarationMember
 		void ClassType() {
@@ -216,6 +177,7 @@ class AstTest {
 				"type_atomic",
 				new Ast.ClassType(
 					genTokens("Class", "(", "let", "Int", "i", ")"),
+					null,
 					null,
 					List.of(new Ast.DeclarationClassMember(
 						genTokens("let", "Int", "i"),
@@ -255,6 +217,7 @@ class AstTest {
 				"type_atomic",
 				new Ast.FunctionType(
 					genTokens("Func", "(", ":", "Int", ")"),
+					null,
 					null,
 					symbolTypeFor("Int"),
 					null

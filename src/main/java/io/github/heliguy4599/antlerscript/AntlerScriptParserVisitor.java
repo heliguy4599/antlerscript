@@ -266,26 +266,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSymbolType(AntlerScriptParser.SymbolTypeContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code listType}
-	 * labeled alternative in {@link AntlerScriptParser#type_atomic}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitListType(AntlerScriptParser.ListTypeContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code arrayType}
 	 * labeled alternative in {@link AntlerScriptParser#type_atomic}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitArrayType(AntlerScriptParser.ArrayTypeContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code mapType}
-	 * labeled alternative in {@link AntlerScriptParser#type_atomic}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMapType(AntlerScriptParser.MapTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code classType}
 	 * labeled alternative in {@link AntlerScriptParser#type_atomic}.
@@ -329,23 +315,11 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTypeGroup(AntlerScriptParser.TypeGroupContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#list_header}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitList_header(AntlerScriptParser.List_headerContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#array_header}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitArray_header(AntlerScriptParser.Array_headerContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#map_header}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMap_header(AntlerScriptParser.Map_headerContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#func_header}.
 	 * @param ctx the parse tree
@@ -400,6 +374,12 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitEnum_header(AntlerScriptParser.Enum_headerContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#generic_parameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGeneric_parameters(AntlerScriptParser.Generic_parametersContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#expression}.
 	 * @param ctx the parse tree
@@ -706,13 +686,6 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNewObjectExpression(AntlerScriptParser.NewObjectExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code newListExpression}
-	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNewListExpression(AntlerScriptParser.NewListExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code newArrayExpression}
 	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
 	 * @param ctx the parse tree
@@ -783,17 +756,17 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGroupedExpression(AntlerScriptParser.GroupedExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#generic_args}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGeneric_args(AntlerScriptParser.Generic_argsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#new_object_instance}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitNew_object_instance(AntlerScriptParser.New_object_instanceContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#new_list_instance}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNew_list_instance(AntlerScriptParser.New_list_instanceContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#new_array_instance}.
 	 * @param ctx the parse tree

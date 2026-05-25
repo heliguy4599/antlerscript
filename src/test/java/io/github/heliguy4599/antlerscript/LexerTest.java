@@ -322,11 +322,6 @@ class LexerTest {
 	}
 
 	@Test
-	void list() {
-		testInput("List", L.LIST);
-	}
-
-	@Test
 	void loop() {
 		testInput("loop", L.LOOP);
 	}
@@ -497,6 +492,16 @@ class LexerTest {
 	@Test
 	void rcurly() {
 		testInput("}", L.RCURLY);
+	}
+
+	@Test
+	void lgeneric() {
+		testInput("<<<", L.LGENERIC);
+	}
+
+	@Test
+	void rgeneric() {
+		testInput(">>>", L.RGENERIC);
 	}
 
 	@Test

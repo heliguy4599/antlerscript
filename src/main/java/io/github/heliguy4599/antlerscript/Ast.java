@@ -269,13 +269,17 @@ public class Ast {
 
 	public static class SymbolType extends Type {
 		public final String name;
+		public final List<Type> genericCast;
 
-		public SymbolType(List<Token> tokens, String name) {
+		public SymbolType(List<Token> tokens, String name, List<Type> genericArgs) {
 			super(tokens);
 
 			assert name != null;
 
 			this.name = name;
+			this.genericCast = genericArgs != null
+				? genericArgs
+				: new ArrayList<>();
 		}
 
 		@Override
@@ -291,32 +295,8 @@ public class Ast {
 
 			var other = (SymbolType) object;
 
-			return Objects.equals(name, other.name);
-		}
-	}
-
-	public static class ListType extends Type {
-		public final Type items;
-
-		public ListType(List<Token> tokens, Type items) {
-			super(tokens);
-			this.items = items;
-		}
-
-		@Override
-		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitListType(this);
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (!super.equals(object)) {
-				return false;
-			}
-
-			var other = (ListType) object;
-
-			return Objects.equals(items, other.items);
+			return Objects.equals(name, other.name)
+				&& Objects.equals(genericCast, other.genericCast);
 		}
 	}
 
@@ -353,49 +333,16 @@ public class Ast {
 		}
 	}
 
-	public static class MapType extends Type {
-		public final Type keys;
-		public final Type values;
-
-		public MapType(List<Token> tokens, Type keys, Type values) {
-			super(tokens);
-
-			assert (
-				keys == null && values == null
-			) || (
-				keys != null && values != null
-			);
-
-			this.keys = keys;
-			this.values = values;
-		}
-
-		@Override
-		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitMapType(this);
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (!super.equals(object)) {
-				return false;
-			}
-
-			var other = (MapType) object;
-
-			return Objects.equals(keys, other.keys)
-				&& Objects.equals(values, other.values);
-		}
-	}
-
 	public static class FunctionType extends Type {
 		public final List<FunctionParameter> parameters;
+		public final List<GenericParameter> genericParameters;
 		public final Type returnType;
 		public final Type errorType;
 
 		public FunctionType(
 			List<Token> tokens,
 			List<FunctionParameter> parameters,
+			List<GenericParameter> genericParameters,
 			Type returnType,
 			Type errorType
 		) {
@@ -403,6 +350,9 @@ public class Ast {
 
 			this.parameters = parameters != null
 				? parameters
+				: new ArrayList<>();
+			this.genericParameters = genericParameters != null
+				? genericParameters
 				: new ArrayList<>();
 			this.returnType = returnType;
 			this.errorType = errorType;
@@ -422,6 +372,7 @@ public class Ast {
 			var other = (FunctionType) object;
 
 			return Objects.equals(parameters, other.parameters)
+				&& Objects.equals(genericParameters, other.genericParameters)
 				&& Objects.equals(returnType, other.returnType)
 				&& Objects.equals(errorType, other.errorType);
 		}
@@ -429,12 +380,14 @@ public class Ast {
 
 	public static class CoroutineType extends Type {
 		public final List<FunctionParameter> parameters;
+		public final List<GenericParameter> genericParameters;
 		public final Type returnType;
 		public final Type yieldIn;
 		public final Type yieldOut;
 
 		public CoroutineType(
 			List<Token> tokens,
+			List<GenericParameter> genericParameters,
 			List<FunctionParameter> parameters,
 			Type returnType,
 			Type yieldIn,
@@ -444,6 +397,9 @@ public class Ast {
 
 			this.parameters = parameters != null
 				? parameters
+				: new ArrayList<>();
+			this.genericParameters = genericParameters != null
+				? genericParameters
 				: new ArrayList<>();
 			this.returnType = returnType;
 			this.yieldIn = yieldIn;
@@ -464,6 +420,7 @@ public class Ast {
 			var other = (CoroutineType) object;
 
 			return Objects.equals(parameters, other.parameters)
+				&& Objects.equals(genericParameters, other.genericParameters)
 				&& Objects.equals(returnType, other.returnType)
 				&& Objects.equals(yieldIn, other.yieldIn)
 				&& Objects.equals(yieldOut, other.yieldOut);
@@ -510,14 +467,22 @@ public class Ast {
 	}
 
 	public static class ClassType extends Type {
+		public final List<GenericParameter> genericParameters;
 		public final List<SymbolChain> classExtends;
 		public final List<ClassMember> members;
 
-		public ClassType(List<Token> tokens, List<SymbolChain> classExtends, List<ClassMember> members) {
+		public ClassType(List<Token> tokens, List<GenericParameter> genericParameters, List<SymbolChain> classExtends, List<ClassMember> members) {
 			super(tokens);
 
-			this.classExtends = classExtends != null ? classExtends : new ArrayList<>();
-			this.members = members != null ? members : new ArrayList<>();
+			this.genericParameters = genericParameters != null
+				? genericParameters
+				: new ArrayList<>();
+			this.classExtends = classExtends != null
+				? classExtends
+				: new ArrayList<>();
+			this.members = members != null
+				? members
+				: new ArrayList<>();
 		}
 
 		@Override
@@ -533,7 +498,8 @@ public class Ast {
 
 			var other = (ClassType) object;
 
-			return Objects.equals(classExtends, other.classExtends)
+			return Objects.equals(genericParameters, other.genericParameters)
+				&& Objects.equals(classExtends, other.classExtends)
 				&& Objects.equals(members, other.members);
 		}
 	}
@@ -1467,8 +1433,14 @@ public class Ast {
 	public static class IndexExpression extends Expression {
 		public final Expression base;
 		public final Expression index;
+		public final List<Type> genericCast;
 
-		public IndexExpression(List<Token> tokens, Expression base, Expression index) {
+		public IndexExpression(
+			List<Token> tokens,
+			Expression base,
+			Expression index,
+			List<Type> genericCast
+		) {
 			super(tokens);
 
 			assert base != null;
@@ -1476,6 +1448,9 @@ public class Ast {
 
 			this.base = base;
 			this.index = index;
+			this.genericCast = genericCast != null
+				? genericCast
+				: new ArrayList<>();
 		}
 
 		@Override
@@ -1492,7 +1467,8 @@ public class Ast {
 			var other = (IndexExpression) object;
 
 			return Objects.equals(base, other.base)
-				&& Objects.equals(index, other.index);
+				&& Objects.equals(index, other.index)
+				&& Objects.equals(genericCast, other.genericCast);
 		}
 	}
 
@@ -1500,8 +1476,15 @@ public class Ast {
 		public final Expression object;
 		public final String member;
 		public final boolean optional;
+		public final List<Type> genericCast;
 
-		public AccessExpression(List<Token> tokens, Expression object, String member, boolean optional) {
+		public AccessExpression(
+			List<Token> tokens,
+			Expression object,
+			String member,
+			boolean optional,
+			List<Type> genericCast
+		) {
 			super(tokens);
 
 			assert object != null;
@@ -1510,6 +1493,9 @@ public class Ast {
 			this.object = object;
 			this.member = member;
 			this.optional = optional;
+			this.genericCast = genericCast != null
+				? genericCast
+				: new ArrayList<>();
 		}
 
 		@Override
@@ -1527,7 +1513,8 @@ public class Ast {
 
 			return Objects.equals(this.object, other.object)
 				&& Objects.equals(member, other.member)
-				&& optional == other.optional;
+				&& optional == other.optional
+				&& Objects.equals(genericCast, other.genericCast);
 		}
 	}
 
@@ -1564,14 +1551,22 @@ public class Ast {
 
 	public static class SymbolExpression extends Expression {
 		public final String symbol;
+		public final List<Type> genericCast;
 
-		public SymbolExpression(List<Token> tokens, String symbol) {
+		public SymbolExpression(
+			List<Token> tokens,
+			String symbol,
+			List<Type> genericCast
+		) {
 			super(tokens);
 
 			assert symbol != null;
 			assert !symbol.isEmpty();
 
 			this.symbol = symbol;
+			this.genericCast = genericCast != null
+				? genericCast
+				: new ArrayList<>();
 		}
 
 		@Override
@@ -1587,7 +1582,8 @@ public class Ast {
 
 			var other = (SymbolExpression) object;
 
-			return Objects.equals(symbol, other.symbol);
+			return Objects.equals(symbol, other.symbol)
+				&& Objects.equals(genericCast, other.genericCast);
 		}
 	}
 
@@ -1874,15 +1870,18 @@ public class Ast {
 	}
 
 	public static class NewMapExpression extends Expression {
-		public final MapType type;
+		public final Type keyType;
+		public final Type valueType;
 		public final List<KeyValuePair> keyValuePairs;
 
-		public NewMapExpression(List<Token> tokens, MapType type, List<KeyValuePair> keyValuePairs) {
+		public NewMapExpression(List<Token> tokens, Type keyType, Type valueType, List<KeyValuePair> keyValuePairs) {
 			super(tokens);
 
-			assert type != null;
+			assert keyType != null;
+			assert valueType != null;
 
-			this.type = type;
+			this.keyType = keyType;
+			this.valueType = valueType;
 			this.keyValuePairs = keyValuePairs != null ? keyValuePairs : new ArrayList<>();
 		}
 
@@ -1899,22 +1898,29 @@ public class Ast {
 
 			var other = (NewMapExpression) object;
 
-			return Objects.equals(type, other.type)
+			return Objects.equals(keyType, other.keyType)
+				&& Objects.equals(valueType, other.valueType)
 				&& Objects.equals(keyValuePairs, other.keyValuePairs);
 		}
 	}
 
 	public static class NewListExpression extends Expression {
-		public final ListType type;
+		public final Type type;
 		public final List<Argument> elements;
 
-		public NewListExpression(List<Token> tokens, ListType type, List<Argument> elements) {
+		public NewListExpression(
+			List<Token> tokens,
+			Type type,
+			List<Argument> elements
+		) {
 			super(tokens);
 
 			assert type != null;
 
 			this.type = type;
-			this.elements = elements != null ? elements : new ArrayList<>();
+			this.elements = elements != null
+				? elements
+				: new ArrayList<>();
 		}
 
 		@Override
@@ -1939,13 +1945,19 @@ public class Ast {
 		public final ArrayType type;
 		public final List<Argument> elements;
 
-		public NewArrayExpression(List<Token> tokens, ArrayType type, List<Argument> elements) {
+		public NewArrayExpression(
+			List<Token> tokens,
+			ArrayType type,
+			List<Argument> elements
+		) {
 			super(tokens);
 
 			assert type != null;
 
 			this.type = type;
-			this.elements = elements != null ? elements : new ArrayList<>();
+			this.elements = elements != null
+				? elements
+				: new ArrayList<>();
 		}
 
 		@Override
@@ -1997,15 +2009,24 @@ public class Ast {
 
 	public static class NewObjectExpression extends Expression {
 		public final String symbol;
+		public final List<Type> genericCast;
 		public final List<Argument> arguments;
 
-		public NewObjectExpression(List<Token> tokens, String symbol, List<Argument> arguments) {
+		public NewObjectExpression(
+			List<Token> tokens,
+			String symbol,
+			List<Type> genericCast,
+			List<Argument> arguments
+		) {
 			super(tokens);
 
 			assert symbol != null;
 			assert !symbol.isEmpty();
 
 			this.symbol = symbol;
+			this.genericCast = genericCast != null
+				? genericCast
+				: new ArrayList<>();
 			this.arguments = arguments != null ? arguments : new ArrayList<>();
 		}
 
@@ -2023,20 +2044,30 @@ public class Ast {
 			var other = (NewObjectExpression) object;
 
 			return Objects.equals(symbol, other.symbol)
+				&& Objects.equals(genericCast, other.genericCast)
 				&& Objects.equals(arguments, other.arguments);
 		}
 	}
 
 	public static class NewClassInstance extends Expression {
 		public final ClassType classType;
+		public final List<Type> genericCast;
 		public final List<Argument> arguments;
 
-		public NewClassInstance(List<Token> tokens, ClassType classType, List<Argument> arguments) {
+		public NewClassInstance(
+			List<Token> tokens,
+			ClassType classType,
+			List<Type> genericCast,
+			List<Argument> arguments
+		) {
 			super(tokens);
 
 			assert classType != null;
 
 			this.classType = classType;
+			this.genericCast = genericCast != null
+				? genericCast
+				: new ArrayList<>();
 			this.arguments = arguments != null ? arguments : new ArrayList<>();
 		}
 
@@ -2054,6 +2085,7 @@ public class Ast {
 			var other = (NewClassInstance) object;
 
 			return Objects.equals(classType, other.classType)
+				&& Objects.equals(genericCast, other.genericCast)
 				&& Objects.equals(arguments, other.arguments);
 		}
 	}
@@ -2174,6 +2206,16 @@ public class Ast {
 		}
 	}
 
+	public record GenericParameter(
+		Type type,
+		String string
+	) {
+		public GenericParameter {
+			assert type != null;
+			assert string != null && !string.isEmpty();
+		}
+	}
+
 	public record FunctionParameter(
 		Type type,
 		String symbol,
@@ -2253,11 +2295,7 @@ public class Ast {
 		// Types
 		T visitSymbolType(SymbolType node);
 
-		T visitListType(ListType node);
-
 		T visitArrayType(ArrayType node);
-
-		T visitMapType(MapType node);
 
 		T visitFunctionType(FunctionType node);
 

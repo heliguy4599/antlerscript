@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Testing the ANTLR4-generated concrete syntax tree (CST)")
-class AntlerScriptTest {
+class CstTest {
 	// testInput: Input fully matches rule with no errors or leftover tokens
 	// testInputNoRule: Input fails to match rule (ANTLR errors suppressed)
 	// testInputPartialMatch: Input partially matches but leaves unparsed tokens (ANTLR errors suppressed)
@@ -897,16 +897,23 @@ class AntlerScriptTest {
 			"to",
 			"from",
 			"by",
+			"over",
+			"while",
 			"myVariable",
+			"myGenericFunc[Int]",
 			"MyObject{}",
-			"List(){}",
-			"Array(){}",
+			"MyGenericObject[Int]{}",
+			"Array[Int, 5]{}",
+			"List[Int]{}",
 			"Class(){}",
-			"Map(){}",
+			"Class[Any A, Any B]()[Int, Float]{}",
+			"Map[Keys, Values]{}",
 			"🪐",
 			"(1 + -1 * ~1 ** 1)",
 			"Func(:){}",
+			"Func[Any T](:){}",
 			"Coroutine(:){}",
+			"Coroutine[Any A, Any B](:){}",
 			"select(true: true)",
 			"object{}"
 		})
@@ -960,38 +967,26 @@ class AntlerScriptTest {
 
 		@ParameterizedTest
 		@ValueSource(strings = {
-			"List(){}",
-			"List(){_}",
-			"List(){_, _,\n_}",
-			"List(){1+1,\ntrue, false}",
-			"List(){first=\"first\", false, _}",
-		})
-		void new_list_instance(String expr) {
-			testInput(expr, "expression_atom");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"Array(){}",
-			"Array(){_}",
-			"Array(){_, _,\n_}",
-			"Array(){1+1,\ntrue, false}",
-			"Array(){first=\"first\", false, _}",
-			"Array(Int){}",
-			"Array(Int){_}",
-			"Array(Int){_, _,\n_}",
-			"Array(Int){1+1,\ntrue, false}",
-			"Array(Int){first=\"first\", false, _}",
-			"Array(5){}",
-			"Array(5){_}",
-			"Array(5){_, _,\n_}",
-			"Array(5){1+1,\ntrue, false}",
-			"Array(5){first=\"first\", false, _}",
-			"Array(Int, 5){}",
-			"Array(Int, 5){_}",
-			"Array(Int, 5){_, _,\n_}",
-			"Array(Int, 5){1+1,\ntrue, false}",
-			"Array(Int, 5){first=\"first\", false, _}",
+			"Array[Int, 5]{}",
+			"Array[Int, 5]{_}",
+			"Array[Int, 5]{_, _,\n_}",
+			"Array[Int, 5]{1+1,\ntrue, false}",
+			"Array[Int, 5]{first=\"first\", false, _}",
+			"Array[Int, 5]{}",
+			"Array[Int, 5]{_}",
+			"Array[Int, 5]{_, _,\n_}",
+			"Array[Int, 5]{1+1,\ntrue, false}",
+			"Array[Int, 5]{first=\"first\", false, _}",
+			"Array[Int, 5]{}",
+			"Array[Int, 5]{_}",
+			"Array[Int, 5]{_, _,\n_}",
+			"Array[Int, 5]{1+1,\ntrue, false}",
+			"Array[Int, 5]{first=\"first\", false, _}",
+			"Array[Int, 5]{}",
+			"Array[Int, 5]{_}",
+			"Array[Int, 5]{_, _,\n_}",
+			"Array[Int, 5]{1+1,\ntrue, false}",
+			"Array[Int, 5]{first=\"first\", false, _}",
 		})
 		void new_array_instance(String expr) {
 			testInput(expr, "expression_atom");
@@ -1023,9 +1018,9 @@ class AntlerScriptTest {
 
 		@ParameterizedTest
 		@ValueSource(strings = {
-			"Map(){}",
-			"Map(){true: false}",
-			"Map(){true: false,\nfalse: true}",
+			"Map[Bool, Bool]{}",
+			"Map[Bool, Bool]{true: false}",
+			"Map[Bool, Bool]{true: false,\nfalse: true}",
 		})
 		void new_map_instance(String expr) {
 			testInput(expr, "expression_atom");
@@ -1050,7 +1045,6 @@ class AntlerScriptTest {
 			"data[i][j].transform().result?.output",
 			"api.get(\"users\")[0]?.name.toLowerCase()",
 			"compute((x + y) * 2, transform(a, b, c), result ?? default)",
-			"map(list, Func(Int x: Int){x ** 2})",
 			"filter(data, Func(Int item: bool){item.value > threshold and item.active})",
 			"((flags & MASK) | NEW_BIT) ^ (old_flags << 2)",
 			"(bits >> 4) & 0xFF | ((high & 0xF0) << 8)",
@@ -1070,12 +1064,9 @@ class AntlerScriptTest {
 			"-velocity.y + ~~Math.floor(delta * 60)",
 			"prefix ++ middle ++ suffix ++ extension",
 			"path ++ \"/\" ++ filename ++ \".txt\"",
-			"List(){1, 2, 3, 4}[2] + Array(int){x, y, z}.length()",
-			"Map(){\"x\": 10, \"y\": 20}[key] ?? 0",
 			"select condition (true: positive_result, false: negative_result)",
 			"select condition (else: 0)",
 			"select x > 0 (true: x ** 2, false: -x, else: \"potato\") + offset",
-			"numbers.map(Func(Int n: Int){return n}, int{n * 2 + 1})",
 			"items.filter(Func(Int x: bool){x.valid and not x.expired})",
 			"Class(x = value, y = other){compute(), transform(), validate()}",
 			"Config{host=\"localhost\", port=8080, secure=true}",
@@ -1087,7 +1078,6 @@ class AntlerScriptTest {
 			"~flags[i] & (mask << shift) | (data >> bits) ^ constant",
 			"(base + offset * scale) ** exponent / divisor % modulo",
 			"player.position.x += velocity.x * deltaTime * speed_multiplier",
-			"total = items.map(Func(Int i: Int){}).sum() * (1.0 - discount)",
 			"isValid = (age >= 18) and (email != \"\") and (terms_accepted)",
 			"(x +\ny -\nz)",
 			"a[\n0\n][\n1\n]",
@@ -1175,20 +1165,10 @@ class AntlerScriptTest {
 			"Symbol",
 			"Int",
 			"I",
-			"List()",
-			"List(Int)",
-			"List(( Int | Float ) & Pineapple)",
-			"Array()",
-			"Array(Int)",
-			"Array(Int?, 5)",
-			"Array(5)",
-			"Array(( Int | Float ) & Pineapple?)",
-			"Array(( Int | Float ) & Pineapple, 10 * 2 + 3 * hello())",
-			"Map()",
-			"Map(Int, Int)",
-			"Map(Int, ( Int | Float ) & Pineapple)",
-			"Map(( Int | Float ) & Pineapple, Int)",
-			"Map(( Int | Float? ) & Pineapple, ( Int | Float ) & Pineapple)",
+			"Array[Int, 5]",
+			"Array[Int?, 5]",
+			"Array[( Int | Float ) & Pineapple?, 2]",
+			"Array[( Int | Float ) & Pineapple, 10 * 2 + 3 * hello()]",
 			"Func(:)",
 			"Func(: Int)",
 			"Func(Int a: Int?)",
@@ -1223,19 +1203,10 @@ class AntlerScriptTest {
 			"(Int & & Int)",
 			"(Int |)",
 			"(Int | | Int)",
-			"List(",
-			"List(Int Int",
-			"List(( Int | Float  & Pineapple",
-			"Array(",
-			"Array(Int",
-			"Array(( Int | Float  & Pineapple",
-			"Array(",
-			"Array(Int",
-			"Map(",
-			"Map(Int, Int",
-			"Map(Int, ( Int | Float  & Pineapple",
-			"Map(( Int | Float  & Pineapple, Int",
-			"Map(( Int | Float  & Pineapple, ( Int | Float  & Pineapple",
+			"Array[Int, 5",
+			"Array[Int?, 5",
+			"Array[( Int | Float ) & Pineapple?, 2",
+			"Array[( Int | Float ) & Pineapple, 10 * 2 + 3 * hello()",
 			"Func(:",
 			"Func(: Int",
 			"Func(Int a: Int",
