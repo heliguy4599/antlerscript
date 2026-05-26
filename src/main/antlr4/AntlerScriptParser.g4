@@ -209,11 +209,22 @@ type_atomic
 	;
 
 array_header
-	: ARRAY '[' type ',' expression ']'
+	: ARRAY ( '[' type ',' expression ']' )?
 	;
 
 func_header
+	: full=func_header_full
+	| inferred=func_header_inferred
+	;
+
+func_header_full
 	: FUNC generic_parameters? '(' func_params? ':' returnType=type? ')' ( '!' errorType=type )?
+	;
+
+func_header_inferred
+	: FUNC '(' symbol ( ',' symbol )* ( ',' '...' varargs=symbol )? ','? ')' '!'?
+	| FUNC '(' '...' varargs=symbol ','? ')' '!'?
+	| FUNC '(' ')' '!'?
 	;
 
 func_params
@@ -225,10 +236,24 @@ func_param_elm
 	;
 
 coroutine_header
-	: COROUTINE generic_parameters? '(' func_params? ':' returnType=type? ')'
-	| COROUTINE generic_parameters? '(' func_params? ':' returnType=type? ')' YIELD ':' yieldIn=type
-	| COROUTINE generic_parameters? '(' func_params? ':' returnType=type? ')' YIELD yieldOut=type ':'
-	| COROUTINE generic_parameters? '(' func_params? ':' returnType=type? ')' YIELD yieldOut=type ':' yieldIn=type
+	: full=coroutine_header_full
+	| inferred=coroutine_header_inferred
+	;
+
+coroutine_header_full
+	: COROUTINE generic_parameters? '(' func_params? ':' returnType=type? ')' coroutine_header_yield?
+	;
+
+coroutine_header_inferred
+	: COROUTINE '(' symbol ( ',' symbol )* ( ',' '...' varargs=symbol )? ','? ')' YIELD?
+	| COROUTINE '(' '...' varargs=symbol ','? ')' YIELD?
+	| COROUTINE '(' ')' YIELD?
+	;
+
+coroutine_header_yield
+	: YIELD ':' yieldIn=type
+	| YIELD yieldOut=type ':'
+	| YIELD yieldOut=type ':' yieldIn=type
 	;
 
 composite

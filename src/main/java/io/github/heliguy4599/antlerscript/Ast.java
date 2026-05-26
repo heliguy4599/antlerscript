@@ -301,6 +301,7 @@ public class Ast {
 	}
 
 	public static class ArrayType extends Type {
+		// Null items and size means inferred
 		public final Type items;
 		public final Expression size;
 
@@ -310,6 +311,11 @@ public class Ast {
 			Expression size
 		) {
 			super(tokens);
+
+			if (items != null || size != null) {
+				assert items != null;
+				assert size != null;
+			}
 
 			this.items = items;
 			this.size = size;
@@ -333,13 +339,18 @@ public class Ast {
 		}
 	}
 
-	public static class FunctionType extends Type {
+
+	public static abstract class FunctionType extends Type {
+		public FunctionType(List<Token> tokens) { super(tokens); }
+	}
+
+	public static class FullFunctionType extends FunctionType {
 		public final List<FunctionParameter> parameters;
 		public final List<GenericParameter> genericParameters;
 		public final Type returnType;
 		public final Type errorType;
 
-		public FunctionType(
+		public FullFunctionType(
 			List<Token> tokens,
 			List<FunctionParameter> parameters,
 			List<GenericParameter> genericParameters,
@@ -360,7 +371,7 @@ public class Ast {
 
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitFunctionType(this);
+			return visitor.visitFullFunctionType(this);
 		}
 
 		@Override
@@ -369,7 +380,7 @@ public class Ast {
 				return false;
 			}
 
-			var other = (FunctionType) object;
+			var other = (FullFunctionType) object;
 
 			return Objects.equals(parameters, other.parameters)
 				&& Objects.equals(genericParameters, other.genericParameters)
@@ -378,14 +389,57 @@ public class Ast {
 		}
 	}
 
-	public static class CoroutineType extends Type {
+	public static class InferredFunctionType extends FunctionType {
+		public final List<String> parameters;
+		public final String varArgs;
+		public final boolean canThrow;
+
+		public InferredFunctionType(
+			List<Token> tokens,
+			List<String> parameters,
+			String varArgs,
+			boolean canThrow
+		) {
+			super(tokens);
+
+			this.parameters = parameters != null
+				? parameters
+				: new ArrayList<>();
+			this.varArgs = varArgs;
+			this.canThrow = canThrow;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitInferredFunctionType(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (InferredFunctionType) object;
+
+			return Objects.equals(parameters, other.parameters)
+				&& Objects.equals(varArgs, other.varArgs)
+				&& canThrow == other.canThrow;
+		}
+	}
+
+	public static abstract class CoroutineType extends Type {
+		public CoroutineType(List<Token> tokens) { super(tokens); }
+	}
+
+	public static class FullCoroutineType extends CoroutineType {
 		public final List<FunctionParameter> parameters;
 		public final List<GenericParameter> genericParameters;
 		public final Type returnType;
 		public final Type yieldIn;
 		public final Type yieldOut;
 
-		public CoroutineType(
+		public FullCoroutineType(
 			List<Token> tokens,
 			List<GenericParameter> genericParameters,
 			List<FunctionParameter> parameters,
@@ -408,7 +462,7 @@ public class Ast {
 
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitCoroutineType(this);
+			return visitor.visitFullCoroutineType(this);
 		}
 
 		@Override
@@ -417,13 +471,52 @@ public class Ast {
 				return false;
 			}
 
-			var other = (CoroutineType) object;
+			var other = (FullCoroutineType) object;
 
 			return Objects.equals(parameters, other.parameters)
 				&& Objects.equals(genericParameters, other.genericParameters)
 				&& Objects.equals(returnType, other.returnType)
 				&& Objects.equals(yieldIn, other.yieldIn)
 				&& Objects.equals(yieldOut, other.yieldOut);
+		}
+	}
+
+	public static class InferredCoroutineType extends CoroutineType {
+		public final List<String> parameters;
+		public final String varArgs;
+		public final boolean canYield;
+
+		public InferredCoroutineType(
+			List<Token> tokens,
+			List<String> parameters,
+			String varArgs,
+			boolean canYield
+		) {
+			super(tokens);
+
+			this.parameters = parameters != null
+				? parameters
+				: new ArrayList<>();
+			this.varArgs = varArgs;
+			this.canYield = canYield;
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitInferredCoroutineType(this);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (InferredCoroutineType) object;
+
+			return Objects.equals(parameters, other.parameters)
+				&& Objects.equals(varArgs, other.varArgs)
+				&& canYield == other.canYield;
 		}
 	}
 
@@ -2297,9 +2390,13 @@ public class Ast {
 
 		T visitArrayType(ArrayType node);
 
-		T visitFunctionType(FunctionType node);
+		T visitFullFunctionType(FullFunctionType node);
 
-		T visitCoroutineType(CoroutineType node);
+		T visitInferredFunctionType(InferredFunctionType node);
+
+		T visitFullCoroutineType(FullCoroutineType node);
+
+		T visitInferredCoroutineType(InferredCoroutineType node);
 
 		T visitEnumType(EnumType node);
 

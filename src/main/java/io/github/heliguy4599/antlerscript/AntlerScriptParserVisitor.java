@@ -327,6 +327,18 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunc_header(AntlerScriptParser.Func_headerContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#func_header_full}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunc_header_full(AntlerScriptParser.Func_header_fullContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#func_header_inferred}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunc_header_inferred(AntlerScriptParser.Func_header_inferredContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#func_params}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -344,6 +356,24 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCoroutine_header(AntlerScriptParser.Coroutine_headerContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#coroutine_header_full}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCoroutine_header_full(AntlerScriptParser.Coroutine_header_fullContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#coroutine_header_inferred}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCoroutine_header_inferred(AntlerScriptParser.Coroutine_header_inferredContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link AntlerScriptParser#coroutine_header_yield}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCoroutine_header_yield(AntlerScriptParser.Coroutine_header_yieldContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#composite}.
 	 * @param ctx the parse tree

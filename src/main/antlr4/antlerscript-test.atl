@@ -616,3 +616,30 @@ type Comparable = Class(
 let myfunc = Func<Comparable T>(T a, T b : Bool) {
 	return a.greater_than(b)
 }
+
+
+# Inferences
+
+let item = 10 # item is inferred to be Int
+
+List{10, 20} # inferred to be List<Int>
+
+type MyClass = Class<Any T>(
+    T item
+    constructor(item){}
+)
+let mc = MyClass{"hi"} # inferred to be MyClass<String>
+
+Func(: List<Int>) {
+    return List{} # inferred to be List<Int>, known from the func's return type
+}
+
+let List<Int> ls = List{} # inferred to be List<Int>, know from the target (variable ls)
+
+let Func(Int, Int : Int) add = Func(a, b) { a + b } # inferred to be Func(Int, Int : Int), known from the target (variable add)
+
+# in my opinion, the following should NOT be allowed:
+# let Func(Int, Int : Int) add = Func(a, Int b) { a + b }
+# let Func(Int, Int : Int) add = Func(a, b : Int) { a + b }
+# let Func(Int, Int : Int) add = Func(Int a, Int b) { a + b }
+# essentially, infer all or infer none, no mixing

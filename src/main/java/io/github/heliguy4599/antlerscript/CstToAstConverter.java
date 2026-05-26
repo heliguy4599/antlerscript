@@ -5,7 +5,6 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-
 public final class CstToAstConverter extends AbstractParseTreeVisitor<Object> implements
 AntlerScriptParserVisitor<Object> {
 	private static List<Token> getTokens(ParserRuleContext ctx) {
@@ -130,6 +129,15 @@ AntlerScriptParserVisitor<Object> {
 	// Invalid, should be handled by the caller
 	@Override
 	public Ast.ClassType visitClass_header_inside(AntlerScriptParser.Class_header_insideContext ctx) {
+		assert ctx != null;
+
+		assert false;
+		return null;
+	}
+
+	// Invalid, should be handled by the caller
+	@Override
+	public Object visitCoroutine_header_yield(AntlerScriptParser.Coroutine_header_yieldContext ctx) {
 		assert ctx != null;
 
 		assert false;
@@ -670,13 +678,34 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.ArrayType visitArray_header(AntlerScriptParser.Array_headerContext ctx) {
 		assert ctx != null;
 
-		Ast.Type type = visitType(ctx.type());
-		Ast.Expression size = visitExpression(ctx.expression());
+		Ast.Type type = null;
+		Ast.Expression size = null;
+
+		if (ctx.type() != null) {
+			assert ctx.expression() != null;
+			type = visitType(ctx.type());
+			size = visitExpression(ctx.expression());
+		}
+
 		return new Ast.ArrayType(getTokens(ctx), type, size);
 	}
 
 	@Override
 	public Ast.FunctionType visitFunc_header(AntlerScriptParser.Func_headerContext ctx) {
+		assert ctx != null;
+
+		if (ctx.full != null) {
+			return visitFunc_header_full(ctx.full);
+		} else if (ctx.inferred != null) {
+			return visitFunc_header_inferred(ctx.inferred);
+		}
+
+		assert(false);
+		return null;
+	}
+
+	@Override
+	public Ast.FullFunctionType visitFunc_header_full(AntlerScriptParser.Func_header_fullContext ctx) {
 		assert ctx != null;
 
 		List<Ast.GenericParameter> genericParams = null;
@@ -694,7 +723,18 @@ AntlerScriptParserVisitor<Object> {
 			? null
 			: visitType(ctx.errorType);
 
-		return new Ast.FunctionType(getTokens(ctx), params, genericParams, returnType, errorType);
+		return new Ast.FullFunctionType(getTokens(ctx), params, genericParams, returnType, errorType);
+	}
+
+	@Override
+	public Ast.InferredFunctionType visitFunc_header_inferred(AntlerScriptParser.Func_header_inferredContext ctx) {
+		assert ctx != null;
+
+		List<String> parameters = ctx.symbol().stream().map(RuleContext::getText).toList();
+		String varArgs = ctx.varargs.getText();
+		boolean canThrow = ctx.EXCLAIM() != null;
+
+		return new Ast.InferredFunctionType(getTokens(ctx), parameters, varArgs, canThrow);
 	}
 
 	@Override
@@ -724,6 +764,20 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.CoroutineType visitCoroutine_header(AntlerScriptParser.Coroutine_headerContext ctx) {
 		assert ctx != null;
 
+		if (ctx.full != null) {
+			return visitCoroutine_header_full(ctx.full);
+		} else if (ctx.inferred != null) {
+			return visitCoroutine_header_inferred(ctx.inferred);
+		}
+
+		assert(false);
+		return null;
+	}
+
+	@Override
+	public Ast.FullCoroutineType visitCoroutine_header_full (AntlerScriptParser.Coroutine_header_fullContext ctx) {
+		assert ctx != null;
+
 		List<Ast.GenericParameter> genericParams = null;
 		if (ctx.generic_parameters() != null) {
 			genericParams = visitGeneric_parameters(ctx.generic_parameters());
@@ -731,10 +785,27 @@ AntlerScriptParserVisitor<Object> {
 
 		List<Ast.FunctionParameter> params = ctx.func_params() == null ? null : visitFunc_params(ctx.func_params());
 		Ast.Type returnType = ctx.returnType == null ? null : visitType(ctx.returnType);
-		Ast.Type yieldIn = ctx.yieldIn == null ? null : visitType(ctx.yieldIn);
-		Ast.Type yieldOut = ctx.yieldOut == null ? null : visitType(ctx.yieldOut);
 
-		return new Ast.CoroutineType(getTokens(ctx), genericParams, params, returnType, yieldIn, yieldOut);
+		Ast.Type yieldIn = null;
+		Ast.Type yieldOut = null;
+		if (ctx.coroutine_header_yield() != null) {
+			AntlerScriptParser.Coroutine_header_yieldContext yieldCtx = ctx.coroutine_header_yield();
+			yieldIn = yieldCtx.yieldIn == null ? null : visitType(yieldCtx.yieldIn);
+			yieldOut = yieldCtx.yieldOut == null ? null : visitType(yieldCtx.yieldOut);
+		}
+
+		return new Ast.FullCoroutineType(getTokens(ctx), genericParams, params, returnType, yieldIn, yieldOut);
+	}
+
+	@Override
+	public Ast.InferredCoroutineType visitCoroutine_header_inferred(AntlerScriptParser.Coroutine_header_inferredContext ctx) {
+		assert ctx != null;
+
+		List<String> parameters = ctx.symbol().stream().map(RuleContext::getText).toList();
+		String varArgs = ctx.varargs.getText();
+		boolean canYield = ctx.YIELD() != null;
+
+		return new Ast.InferredCoroutineType(getTokens(ctx), parameters, varArgs, canYield);
 	}
 
 	@Override
@@ -851,7 +922,10 @@ AntlerScriptParserVisitor<Object> {
 		}
 
 		return new Ast.BinaryExpression(
-			getTokens(ctx), visitExpression_assignment_right(right), visitExpression_logical_or(left), visitExpression_assignment(right.expression_assignment())
+			getTokens(ctx),
+			visitExpression_assignment_right(right),
+			visitExpression_logical_or(left),
+			visitExpression_assignment(right.expression_assignment())
 		);
 	}
 

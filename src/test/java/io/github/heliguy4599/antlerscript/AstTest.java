@@ -215,7 +215,7 @@ class AstTest {
 			testInput(
 				"Func(: Int)",
 				"type_atomic",
-				new Ast.FunctionType(
+				new Ast.FullFunctionType(
 					genTokens("Func", "(", ":", "Int", ")"),
 					null,
 					null,
