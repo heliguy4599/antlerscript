@@ -1091,6 +1091,7 @@ AntlerScriptParserVisitor<Object> {
 			case AntlerScriptParser.NOT_EQUAL -> Ast.BinaryExpression.Kind.NOT_EQUAL;
 			case AntlerScriptParser.IN -> Ast.BinaryExpression.Kind.IN;
 			case AntlerScriptParser.IS -> Ast.BinaryExpression.Kind.IS;
+			case AntlerScriptParser.AS -> Ast.BinaryExpression.Kind.AS;
 			default -> null;
 		};
 

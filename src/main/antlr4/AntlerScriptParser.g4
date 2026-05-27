@@ -360,6 +360,7 @@ expression_cmp_right
 	| operator='!=' expression_func_pipe
 	| operator=IN expression_func_pipe
 	| operator=IS expression_func_pipe
+	| operator=AS expression_func_pipe
 	;
 
 expression_func_pipe

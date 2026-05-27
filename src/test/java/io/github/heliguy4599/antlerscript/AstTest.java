@@ -218,6 +218,7 @@ class AstTest {
 		case "==": kind = Ast.BinaryExpression.Kind.EQUAL; break;
 		case "!=": kind = Ast.BinaryExpression.Kind.NOT_EQUAL; break;
 		case "is": kind = Ast.BinaryExpression.Kind.IS; break;
+		case "as": kind = Ast.BinaryExpression.Kind.AS; break;
 		case "in": kind = Ast.BinaryExpression.Kind.IN; break;
 		case "|>": kind = Ast.BinaryExpression.Kind.FUNC_PIPE; break;
 		case "|": kind = Ast.BinaryExpression.Kind.BIT_OR; break;
