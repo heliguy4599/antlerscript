@@ -63,6 +63,8 @@ class CstTest {
 			Method rule = parser.getClass().getMethod(ruleName);
 			ParserRuleContext context = (ParserRuleContext) rule.invoke(parser);
 			assertNull(context.exception);
+			var converter = new CstToAstConverter();
+			converter.visit(context);
 		});
 		assertEquals(0, parser.getNumberOfSyntaxErrors());
 		assertInputMatchesParsed(input, parser);
@@ -165,6 +167,7 @@ class CstTest {
 
 		@ParameterizedTest
 		@ValueSource(strings = {
+			"",
 			";;:: thing \"value\";;",
 			":: thing \"value\"",
 			"type Thing = Class()",
@@ -235,13 +238,14 @@ class CstTest {
 
 		@ParameterizedTest
 		@ValueSource(strings = {
-			"extends One, Two, thing = 3, let item = false",
-			"const a = 5, alias(Two).three -> item",
-			"extends Two",
-			"extends SomeClass, AnotherClass let Int i = 5 constructor(){} cast(FuckAssType){1} operator+(RightType r : ReturnType){} alias(SomeClass).origin -> target symbol = expression",
+			"Class(extends One, Two, thing = 3, let item = false)",
+			"Class(const a = 5, alias(Two).three -> item)",
+			"Class(extends Two)",
+			"Class(extends SomeClass, AnotherClass let Int i = 5 constructor(){} cast(FuckAssType){1} operator+(RightType r : ReturnType){} alias(SomeClass).origin -> target symbol = expression)",
+			"Class()",
 		})
-		void class_header_inside(String input) {
-			testInput(input, "class_header_inside");
+		void class_header(String input) {
+			testInput(input, "class_header");
 		}
 
 		@Test
@@ -260,8 +264,7 @@ class CstTest {
 		@ParameterizedTest
 		@ValueSource(strings = {
 			"constructor(Int i, j, Int ... args) { 2 + 2 }",
-			"constructor(Int i, j, Int ... args)",
-			"constructor()",
+			"constructor(){}",
 		})
 		void class_constructor(String input) {
 			testInput(input, "constructor");

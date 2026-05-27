@@ -71,6 +71,7 @@ namespace_program
 implicit_namespace_program
 	: semicolon* ( repeatable_directive semicolon+ )* namespace_member ( semicolon+ namespace_member )* semicolon* EOF
 	| semicolon* repeatable_directive ( semicolon+ repeatable_directive )* ( namespace_member ( semicolon+ namespace_member )* )? semicolon* EOF
+	| semicolon* EOF
 	;
 
 namespace_member
@@ -101,7 +102,7 @@ symbol_chain
 	;
 
 constructor
-	: CONSTRUCTOR constructor_params statement_block?
+	: CONSTRUCTOR constructor_params statement_block
 	;
 
 constructor_params
@@ -515,7 +516,7 @@ object_instantiation_args
 	;
 
 new_map_instance
-	: MAP '[' key=type ',' value=type ']'
+	: MAP ( '[' key=type ',' value=type ']' )?
 	'{'
 	{
 		AntlerScriptLexer lexer = (AntlerScriptLexer)_input.getTokenSource();

@@ -299,7 +299,9 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.ClassProgram visitClass_program(AntlerScriptParser.Class_programContext ctx) {
 		assert ctx != null;
 
-		String namespace = visitNamespace_directive(ctx.namespace_directive());
+		String namespace = ctx.namespace_directive() == null
+			? null
+			: visitNamespace_directive(ctx.namespace_directive());
 		String classname = visitClassname_directive(ctx.classname_directive());
 		Ast.ClassType topLevel = ctx.class_top_level() == null
 			? new Ast.ClassType(getTokens(ctx), null, null, null)
@@ -319,8 +321,9 @@ AntlerScriptParserVisitor<Object> {
 
 		String namespace = visitNamespace_directive(ctx.namespace_directive());
 		List<Ast.NamespaceMember> members = ctx.namespace_member().stream().map(this::visitNamespace_member).toList();
-
-		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
+		List<Object> directives = ctx.repeatable_directive() == null
+			? null
+			: ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();
 		List<Ast.SymbolChain> using = new ArrayList<>();
 		List<Ast.FileDirective> other = new ArrayList<>();
 		segregateDirectives(directives, using, other);
@@ -366,7 +369,9 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.ClassType visitClass_top_level(AntlerScriptParser.Class_top_levelContext ctx) {
 		assert ctx != null;
 
-		List<Ast.SymbolChain> extendsAccess = visitClass_extends(ctx.class_extends());
+		List<Ast.SymbolChain> extendsAccess = ctx.class_extends() == null
+			? null
+			: visitClass_extends(ctx.class_extends());
 		List<Ast.ClassMember> members = ctx.class_member().stream().map(this::visitClassMember).toList();
 
 		return new Ast.ClassType(getTokens(ctx), null, extendsAccess, members);
@@ -534,7 +539,7 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		Ast.SymbolChain extendsAccess = ctx.symbol_chain() == null ? null : visitSymbol_chain(ctx.symbol_chain());
-		List<String> memberSymbols = ctx.symbol().isEmpty() ? null : ctx.symbol().stream().map(AntlerScriptParser.SymbolContext::getText).toList();
+		List<String> memberSymbols = ctx.symbol().stream().map(AntlerScriptParser.SymbolContext::getText).toList();
 
 		return new Ast.EnumType(getTokens(ctx), extendsAccess, memberSymbols);
 	}
@@ -730,8 +735,11 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.InferredFunctionType visitFunc_header_inferred(AntlerScriptParser.Func_header_inferredContext ctx) {
 		assert ctx != null;
 
+        List<AntlerScriptParser.SymbolContext> symbols = ctx.symbol();
 		List<String> parameters = ctx.symbol().stream().map(RuleContext::getText).toList();
-		String varArgs = ctx.varargs.getText();
+		String varArgs = ctx.varargs == null
+			? null
+			: ctx.varargs.getText();
 		boolean canThrow = ctx.EXCLAIM() != null;
 
 		return new Ast.InferredFunctionType(getTokens(ctx), parameters, varArgs, canThrow);
@@ -802,7 +810,9 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		List<String> parameters = ctx.symbol().stream().map(RuleContext::getText).toList();
-		String varArgs = ctx.varargs.getText();
+		String varArgs = ctx.varargs == null
+			? null
+			: ctx.varargs.getText();
 		boolean canYield = ctx.YIELD() != null;
 
 		return new Ast.InferredCoroutineType(getTokens(ctx), parameters, varArgs, canYield);
@@ -857,7 +867,9 @@ AntlerScriptParserVisitor<Object> {
 		}
 
 		AntlerScriptParser.Class_header_insideContext ctx2 = ctx.class_header_inside();
-		List<Ast.SymbolChain> extendsAccess = visitClass_extends(ctx2.class_extends());
+		List<Ast.SymbolChain> extendsAccess = ctx2.class_extends() == null
+			? null
+			: visitClass_extends(ctx2.class_extends());
 		List<Ast.ClassMember> members = ctx2.class_member().stream().map(this::visitClassMember).toList();
 
 		return new Ast.ClassType(getTokens(ctx), params, extendsAccess, members);
@@ -1701,6 +1713,10 @@ AntlerScriptParserVisitor<Object> {
 	public List<Ast.Argument> visitObject_instantiation_args(AntlerScriptParser.Object_instantiation_argsContext ctx) {
 		assert ctx != null;
 
+		if (ctx.arguments() == null) {
+			return new ArrayList<>();
+		}
+
 		return visitArguments(ctx.arguments());
 	}
 
@@ -1708,9 +1724,20 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.NewMapExpression visitNew_map_instance(AntlerScriptParser.New_map_instanceContext ctx) {
 		assert ctx != null;
 
-		Ast.Type keyType = visitType(ctx.key);
-		Ast.Type valueType = visitType(ctx.value);
-		List<Ast.KeyValuePair> pairs = visitKeypair_list_map(ctx.keypair_list_map());
+		Ast.Type keyType = null;
+		Ast.Type valueType = null;
+		List<Ast.KeyValuePair> pairs = null;
+
+		if (ctx.key != null || ctx.value != null) {
+			assert ctx.key != null && ctx.value != null;
+			keyType = visitType(ctx.key);
+			valueType = visitType(ctx.value);
+		}
+
+		if (ctx.keypair_list_map() != null) {
+			pairs = visitKeypair_list_map(ctx.keypair_list_map());
+		}
+
 		return new Ast.NewMapExpression(getTokens(ctx), keyType, valueType, pairs);
 	}
 
@@ -1718,7 +1745,12 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.SelectExpression visitSelect(AntlerScriptParser.SelectContext ctx) {
 		assert ctx != null;
 
-		return new Ast.SelectExpression(getTokens(ctx), visitExpression(ctx.expression()), visitKeypair_list_select(ctx.keypair_list_select()));
+		Ast.Expression expr = null;
+		if (ctx.value != null) {
+			expr = visitExpression(ctx.value);
+		}
+
+		return new Ast.SelectExpression(getTokens(ctx), expr, visitKeypair_list_select(ctx.keypair_list_select()));
 	}
 
 	@Override
@@ -1761,13 +1793,7 @@ AntlerScriptParserVisitor<Object> {
 	public List<Ast.KeyValuePair> visitKeypair_list_select(AntlerScriptParser.Keypair_list_selectContext ctx) {
 		assert ctx != null;
 
-		List<Ast.KeyValuePair> keypairList = null;
-
-		if (ctx.keypair_clause() != null) {
-			keypairList = new ArrayList<>(ctx.keypair_clause().stream().map(this::visitKeypair_clause).toList());
-		} else {
-			keypairList = new ArrayList<>();
-		}
+		List<Ast.KeyValuePair> keypairList = new ArrayList<>(ctx.keypair_clause().stream().map(this::visitKeypair_clause).toList());
 
 		if (ctx.elseClause != null) {
 			assert ctx.elseToken != null;
@@ -1827,7 +1853,9 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.ReturnStatement visitReturnStatement(AntlerScriptParser.ReturnStatementContext ctx) {
 		assert ctx != null;
 
-		Ast.Expression expression = visitExpression(ctx.expression());
+		Ast.Expression expression = ctx.expression() == null
+			? null
+			: visitExpression(ctx.expression());
 		return new Ast.ReturnStatement(getTokens(ctx), expression);
 	}
 
@@ -2081,7 +2109,9 @@ AntlerScriptParserVisitor<Object> {
 
 		Ast.Expression test = visitExpression(ctx.test);
 		Ast.StatementBlock thenBranch = visitStatement_block(ctx.block);
-		Ast.StatementBlock elseBranch = visitElse(ctx.else_());
+		Ast.StatementBlock elseBranch = ctx.else_() == null
+			? null
+			: visitElse(ctx.else_());
 
 		List<Ast.ElifBranch> elifBranches = new ArrayList<>();
 		for (AntlerScriptParser.ElifContext elif : ctx.elif()) {
@@ -2118,7 +2148,9 @@ AntlerScriptParserVisitor<Object> {
 			cases.add(visitCase(case_));
 		}
 
-		Ast.StatementBlock defaultCase = visitElse(ctx.catchAll);
+		Ast.StatementBlock defaultCase = ctx.catchAll == null
+			? null
+			: visitElse(ctx.catchAll);
 
 		return new Ast.SwitchStatement(getTokens(ctx), test, cases, defaultCase);
 	}

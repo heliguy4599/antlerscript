@@ -93,15 +93,6 @@ public class Ast {
 		) {
 			super(tokens, using, directives);
 
-			if (directives == null || directives.isEmpty()) {
-				assert statements != null
-					&& !statements.isEmpty();
-			}
-			if (statements == null || statements.isEmpty()) {
-				assert directives != null
-					&& !directives.isEmpty();
-			}
-
 			this.statements = statements != null
 				? statements
 				: new ArrayList<>();
@@ -178,19 +169,7 @@ public class Ast {
 		) {
 			super(tokens, using, directives);
 
-			if (name != null) {
-				assert !name.isEmpty();
-			} else {
-				assert (
-					directives != null
-					&& !directives.isEmpty()
-				) || (
-					members != null
-					&& !members.isEmpty()
-				);
-			}
-
-			this.name = name;
+			this.name = name == null ? "" : name;
 			this.members = members != null
 				? members
 				: new ArrayList<>();
@@ -531,7 +510,7 @@ public class Ast {
 		) {
 			super(tokens);
 
-			if (extendsAccess != null) {
+			if (extendsAccess == null) {
 				assert memberSymbols != null && !memberSymbols.isEmpty();
 			} else if (memberSymbols == null) {
 				memberSymbols = new ArrayList<>();
@@ -727,6 +706,8 @@ public class Ast {
 
 		public ConstructorClassMember(List<Token> tokens, List<ConstructorParameter> parameters, StatementBlock statementBlock) {
 			super(tokens);
+
+			assert statementBlock != null;
 
 			this.parameters = parameters != null ? parameters : new ArrayList<>();
 			this.statementBlock = statementBlock;
@@ -1970,8 +1951,9 @@ public class Ast {
 		public NewMapExpression(List<Token> tokens, Type keyType, Type valueType, List<KeyValuePair> keyValuePairs) {
 			super(tokens);
 
-			assert keyType != null;
-			assert valueType != null;
+			if (keyType != null || valueType != null) {
+				assert keyType != null && valueType != null;
+			}
 
 			this.keyType = keyType;
 			this.valueType = valueType;
