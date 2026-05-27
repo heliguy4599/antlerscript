@@ -1476,7 +1476,11 @@ public class Ast {
 		public final Kind operation;
 		public final Expression operand;
 
-		public UnaryExpression(List<Token> tokens, Kind operation, Expression operand) {
+		public UnaryExpression(
+			List<Token> tokens,
+			Kind operation,
+			Expression operand
+		) {
 			super(tokens);
 
 			assert operation != null;
@@ -2315,7 +2319,11 @@ public class Ast {
 		boolean isBlank
 	) {
 		public Argument {
-			assert (value != null && !isBlank) || (value == null && keyword == null && isBlank);
+			assert (
+				value != null && !isBlank
+			) || (
+				value == null && keyword == null && isBlank
+			);
 		}
 	}
 
@@ -2353,8 +2361,8 @@ public class Ast {
 
 	sealed interface ListArgsOrKeyValuePairs permits ListArgs, ListKeyValuePairs {}
 
-	record ListArgs(List<Argument> args) implements ListArgsOrKeyValuePairs {}
-	record ListKeyValuePairs(List<KeyValuePair> pairs) implements ListArgsOrKeyValuePairs {}
+	public record ListArgs(List<Argument> args) implements ListArgsOrKeyValuePairs {}
+	public record ListKeyValuePairs(List<KeyValuePair> pairs) implements ListArgsOrKeyValuePairs {}
 
 	// ====================
 	// VISITOR PATTERN
