@@ -567,12 +567,6 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression_unary(AntlerScriptParser.Expression_unaryContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#expression_unary_op}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExpression_unary_op(AntlerScriptParser.Expression_unary_opContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#expression_exp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -709,13 +703,6 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSelfInstanceExpression(AntlerScriptParser.SelfInstanceExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code newObjectExpression}
-	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNewObjectExpression(AntlerScriptParser.NewObjectExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code newArrayExpression}
 	 * labeled alternative in {@link AntlerScriptParser#expression_atom}.
 	 * @param ctx the parse tree
@@ -791,12 +778,6 @@ public interface AntlerScriptParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGeneric_args(AntlerScriptParser.Generic_argsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link AntlerScriptParser#new_object_instance}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNew_object_instance(AntlerScriptParser.New_object_instanceContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link AntlerScriptParser#new_array_instance}.
 	 * @param ctx the parse tree

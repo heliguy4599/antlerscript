@@ -324,15 +324,15 @@ public class Ast {
 	}
 
 	public static class FullFunctionType extends FunctionType {
-		public final List<FunctionParameter> parameters;
 		public final List<GenericParameter> genericParameters;
+		public final List<FunctionParameter> parameters;
 		public final Type returnType;
 		public final Type errorType;
 
 		public FullFunctionType(
 			List<Token> tokens,
-			List<FunctionParameter> parameters,
 			List<GenericParameter> genericParameters,
+			List<FunctionParameter> parameters,
 			Type returnType,
 			Type errorType
 		) {
@@ -2061,14 +2061,19 @@ public class Ast {
 	}
 
 	public static class CompositeExpression extends Expression {
+		public final List<Type> genericCast;
 		public final ListArgsOrKeyValuePairs list;
 
 		public CompositeExpression(
 			List<Token> tokens,
+			List<Type> genericCast,
 			ListArgsOrKeyValuePairs list
 		){
 			super(tokens);
 
+			this.genericCast = genericCast != null
+				? genericCast
+				: new ArrayList<>();
 			this.list = list;
 		}
 
@@ -2085,49 +2090,8 @@ public class Ast {
 
 			var other = (CompositeExpression) object;
 
-			return Objects.equals(list, other.list);
-		}
-	}
-
-	public static class NewObjectExpression extends Expression {
-		public final String symbol;
-		public final List<Type> genericCast;
-		public final List<Argument> arguments;
-
-		public NewObjectExpression(
-			List<Token> tokens,
-			String symbol,
-			List<Type> genericCast,
-			List<Argument> arguments
-		) {
-			super(tokens);
-
-			assert symbol != null;
-			assert !symbol.isEmpty();
-
-			this.symbol = symbol;
-			this.genericCast = genericCast != null
-				? genericCast
-				: new ArrayList<>();
-			this.arguments = arguments != null ? arguments : new ArrayList<>();
-		}
-
-		@Override
-		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitNewObjectExpression(this);
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (!super.equals(object)) {
-				return false;
-			}
-
-			var other = (NewObjectExpression) object;
-
-			return Objects.equals(symbol, other.symbol)
-				&& Objects.equals(genericCast, other.genericCast)
-				&& Objects.equals(arguments, other.arguments);
+			return Objects.equals(genericCast, other.genericCast)
+				&& Objects.equals(list, other.list);
 		}
 	}
 
@@ -2486,8 +2450,6 @@ public class Ast {
 		T visitNewArrayExpression(NewArrayExpression node);
 
 		T visitCompositeExpression(CompositeExpression node);
-
-		T visitNewObjectExpression(NewObjectExpression node);
 
 		T visitNewClassInstance(NewClassInstance node);
 

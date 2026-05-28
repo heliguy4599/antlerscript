@@ -999,11 +999,11 @@ class CstTest {
 
 		@ParameterizedTest
 		@ValueSource(strings = {
-				"{}",
-				"{1, 2, 3, 4, 5}",
-				"{1}",
-				"{\"a\": 10}",
-				"{\"a\": 10, c: 10.10}",
+			"c{}",
+			"c{1, 2, 3, 4, 5}",
+			"c{1}",
+			"c{\"a\": 10}",
+			"c{\"a\": 10, c: 10.10}",
 		})
 		void composite(String composite) {
 			testInput(composite, "composite");

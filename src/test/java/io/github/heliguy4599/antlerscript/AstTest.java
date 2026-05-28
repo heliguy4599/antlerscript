@@ -113,7 +113,7 @@ class AstTest {
 		return result;
 	}
 
-	static Ast.SymbolType symType(String name) {
+	static Ast.SymbolType type(String name) {
 		assert name != null && !name.isEmpty();
 		return new Ast.SymbolType(genTokens(name), name, null);
 	}
@@ -382,17 +382,17 @@ class AstTest {
 			testInput(
 				"let Int i",
 				"statement",
-				decl(false, symType("Int"), "i", false, false, null)
+				decl(false, type("Int"), "i", false, false, null)
 			);
 			testInput(
 				"let mut Int i",
 				"statement",
-				decl(false, symType("Int"), "i", true, false, null)
+				decl(false, type("Int"), "i", true, false, null)
 			);
 			testInput(
 				"let sealed Int i",
 				"statement",
-				decl(false, symType("Int"), "i", false, true, null)
+				decl(false, type("Int"), "i", false, true, null)
 			);
 		}
 
@@ -401,17 +401,17 @@ class AstTest {
 			testInput(
 				"let Int i = 10",
 				"statement",
-				decl(false, symType("Int"), "i", false, false, num(10))
+				decl(false, type("Int"), "i", false, false, num(10))
 			);
 			testInput(
 				"let mut Int i = 10",
 				"statement",
-				decl(false, symType("Int"), "i", true, false, num(10))
+				decl(false, type("Int"), "i", true, false, num(10))
 			);
 			testInput(
 				"let sealed Int i = 10",
 				"statement",
-				decl(false, symType("Int"), "i", false, true, num(10))
+				decl(false, type("Int"), "i", false, true, num(10))
 			);
 		}
 
@@ -425,7 +425,7 @@ class AstTest {
 			testInput(
 				"const Int i = 10",
 				"statement",
-				decl(true, symType("Int"), "i", false, false, num(10))
+				decl(true, type("Int"), "i", false, false, num(10))
 			);
 		}
 
@@ -437,7 +437,7 @@ class AstTest {
 				new Ast.Typedef(
 					genTokens("type", "MyInt", "=", "Int"),
 					"MyInt",
-					symType("Int")
+					type("Int")
 				)
 			);
 		}
@@ -446,19 +446,18 @@ class AstTest {
 
 		// TODO: Test switchStatement
 
-		// TODO: Fix statement_block in language
-		// @Test
-		// void statementBlock() {
-		// 	testInput(
-		// 		"{ }",
-		// 		"statement",
-		// 		new Ast.StatementBlock(
-		// 			genTokens("{", "}"),
-		// 			null,
-		// 			false
-		// 		)
-		// 	);
-		// }
+		@Test
+		void statementBlock() {
+			testInput(
+				"{ }",
+				"statement",
+				new Ast.StatementBlock(
+					genTokens("{", "}"),
+					null,
+					false
+				)
+			);
+		}
 
 		@Test
 		void throwStatement() {
@@ -480,13 +479,12 @@ class AstTest {
 
 		@ParameterizedTest
 		@ValueSource(strings = {
-			// "not", TODO: using 'not' makes this become an SymbolExpression
+			"not",
 			"~",
 			"+",
 			"-"
 		})
 		void unaryExpression(String operator) {
-			// TODO: Unary expressions only get the operator token, we need to either fix unary() or the AST
 			Ast.UnaryExpression.Kind kind = switch (operator) {
 			case "not" -> Ast.UnaryExpression.Kind.NOT;
 			case "~" -> Ast.UnaryExpression.Kind.BIT_NOT;
@@ -496,26 +494,28 @@ class AstTest {
 			};
 			assert kind != null;
 			testInput(
-				operator + "10",
+				operator + " 10",
 				"expression",
-				// unary(operator, num(10)) THIS THROWS
-				new Ast.UnaryExpression(
-					genTokens(operator), // See, no operand tokens
-					kind,
-					num(10)
-				)
+				unary(operator, num(10))
+			);
+		}
+
+		@Test
+		void logicalNot() {
+			testInput(
+				"not 10",
+				"expression_logical_not",
+				unary("not", num(10))
 			);
 		}
 
 		@Test
 		void indexExpression() {
-			// TODO: Test with generics
 			testInput(
 				"list[10]",
 				"expression",
 				new Ast.IndexExpression(
-					// TODO: Is it ok that 'list' token is required to not be here?
-					genTokens("[", "10", "]"),
+					genTokens("list", "[", "10", "]"),
 					sym("list"),
 					num(10),
 					null
@@ -530,7 +530,7 @@ class AstTest {
 				"obj.hello",
 				"expression",
 				new Ast.AccessExpression(
-					genTokens(".", "hello"),
+					genTokens("obj", ".", "hello"),
 					sym("obj"),
 					"hello",
 					false,
@@ -541,7 +541,7 @@ class AstTest {
 				"obj?.hello",
 				"expression",
 				new Ast.AccessExpression(
-					genTokens("?.", "hello"),
+					genTokens("obj", "?.", "hello"),
 					sym("obj"),
 					"hello",
 					true,
@@ -556,7 +556,7 @@ class AstTest {
 				"some_func()",
 				"expression",
 				new Ast.CallExpression(
-					genTokens("(", ")"),
+					genTokens("some_func", "(", ")"),
 					sym("some_func"),
 					null
 				)
@@ -575,7 +575,7 @@ class AstTest {
 				"some_func(10)",
 				"expression",
 				new Ast.CallExpression(
-					genTokens("(", "10", ")"),
+					genTokens("some_func", "(", "10", ")"),
 					sym("some_func"),
 					exprs
 				)
@@ -615,8 +615,8 @@ class AstTest {
 				new Ast.UnionType(
 					genTokens("a", "&", "b"),
 					Ast.UnionType.Kind.AND,
-					symType("a"),
-					symType("b")
+					type("a"),
+					type("b")
 				)
 			);
 		}
@@ -629,8 +629,8 @@ class AstTest {
 				new Ast.UnionType(
 					genTokens("a", "|", "b"),
 					Ast.UnionType.Kind.OR,
-					symType("a"),
-					symType("b")
+					type("a"),
+					type("b")
 				)
 			);
 		}
@@ -643,7 +643,7 @@ class AstTest {
 				new Ast.UnionType(
 					genTokens("lmao", "?"),
 					Ast.UnionType.Kind.OR,
-					symType("lmao"),
+					type("lmao"),
 					new Ast.SymbolType(
 						genTokens("?"),
 						"Null",
@@ -658,15 +658,15 @@ class AstTest {
 			testInput(
 				"lmao",
 				"type",
-				symType("lmao")
+				type("lmao")
 			);
 		}
 
 		@Test
 		void symbolGeneric() {
 			List<Ast.Type> generics = List.of(
-				symType("T1"),
-				symType("T2")
+				type("T1"),
+				type("T2")
 			);
 
 			testInput(
@@ -687,7 +687,7 @@ class AstTest {
 				"type",
 				new Ast.ArrayType(
 					genTokens("Array", "[", "Int", ",", "7", "]"),
-					symType("Int"),
+					type("Int"),
 					num(7)
 				)
 			);
@@ -721,28 +721,70 @@ class AstTest {
 			);
 		}
 
-		// @Test
-		// void fullFunctionArgs() {
-		// 	testInput(
-		// 		"Func(Int a, Int b, Int ...rest:)",
-		// 		"type",
-		// 		new Ast.FullFunctionType(
-		// 			genTokens("Func", "(", "Int", "a", ",", "Int", "b", ",", "Int", "...", "rest", ":", ")"),
-		// 			null,
-		// 			null,
-		// 			null,
-		// 			null
-		// 		)
-		// 	);
-		// }
+		@Test
+		void fullFunctionArgs() {
+			List<Ast.FunctionParameter> params = List.of(
+				new Ast.FunctionParameter(
+					type("Int"),
+					"a",
+					null,
+					false
+				),
+				new Ast.FunctionParameter(
+					type("Int"),
+					"b",
+					null,
+					false
+				),
+				new Ast.FunctionParameter(
+					type("Int"),
+					"rest",
+					null,
+					true
+				)
+			);
 
-		// @Test
-		// void fullFunctionGenerics() {
-		// 	testInput(
-		// 		"Func<Any T>(:)",
-		// 		getTokens("Func", "<", "Any", "T", ">", "(", ":", ")"),
-		// 	);
-		// }
+			List<Ast.GenericParameter> genParams = List.of(
+				new Ast.GenericParameter(type("Int"), "T1"),
+				new Ast.GenericParameter(type("Int"), "T2")
+			);
+
+			testInput(
+				"Func[Int T1, Int T2](Int a, Int b, Int ...rest : Something)! SomethingElse",
+				"type",
+				new Ast.FullFunctionType(
+					genTokens(
+						"Func",
+						"[",
+						"Int",
+						"T1",
+						",",
+						"Int",
+						"T2",
+						"]",
+						"(",
+						"Int",
+						"a",
+						",",
+						"Int",
+						"b",
+						",",
+						"Int",
+						"...",
+						"rest",
+						":",
+						"Something",
+						")",
+						"!",
+						"SomethingElse"
+					),
+					genParams,
+					params,
+					type("Something"),
+					type("SomethingElse")
+				)
+			);
+		}
 	}
 }
 

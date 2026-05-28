@@ -258,8 +258,7 @@ coroutine_header_yield
 	;
 
 composite
-	:
-	'{'
+	: symbol generic_args? '{'
 	{
 		AntlerScriptLexer lexer = (AntlerScriptLexer)_input.getTokenSource();
 		lexer.ignoreSemicolons.pollFirst();
@@ -344,7 +343,8 @@ expression_logical_and_right
 	;
 
 expression_logical_not
-	: operators=NOT* operand=expression_cmp
+	: operand=expression_cmp
+	| NOT recursiveOperand=expression_logical_not
 	;
 
 expression_cmp
@@ -427,13 +427,10 @@ expression_mult_right
 	;
 
 expression_unary
-	: expression_unary_op* expression_exp
-	;
-
-expression_unary_op
-	: operator='+'
-	| operator='-'
-	| operator='~'
+	: operand=expression_exp
+	| operator='+' recursiveOperand=expression_unary
+	| operator='-' recursiveOperand=expression_unary
+	| operator='~' recursiveOperand=expression_unary
 	;
 
 expression_exp
@@ -475,7 +472,6 @@ expression_atom
 	| NULL                  # nullExpression
 	| SUPER                 # superExpression
 	| SELF_INSTANCE         # selfInstanceExpression
-	| new_object_instance   # newObjectExpression
 	| new_array_instance    # newArrayExpression
 	| new_map_instance      # newMapExpression
 	| new_class_instance    # newClassInstance
@@ -490,10 +486,6 @@ expression_atom
 
 generic_args
 	: '[' type ( ',' type )* ']'
-	;
-
-new_object_instance
-	: symbol generic_args? object_instantiation_args
 	;
 
 new_array_instance

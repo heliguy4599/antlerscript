@@ -728,14 +728,13 @@ AntlerScriptParserVisitor<Object> {
 			? null
 			: visitType(ctx.errorType);
 
-		return new Ast.FullFunctionType(getTokens(ctx), params, genericParams, returnType, errorType);
+		return new Ast.FullFunctionType(getTokens(ctx), genericParams, params, returnType, errorType);
 	}
 
 	@Override
 	public Ast.InferredFunctionType visitFunc_header_inferred(AntlerScriptParser.Func_header_inferredContext ctx) {
 		assert ctx != null;
 
-        List<AntlerScriptParser.SymbolContext> symbols = ctx.symbol();
 		List<String> parameters = ctx.symbol().stream().map(RuleContext::getText).toList();
 		String varArgs = ctx.varargs == null
 			? null
@@ -822,6 +821,11 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.CompositeExpression visitComposite(AntlerScriptParser.CompositeContext ctx) {
 		assert ctx != null;
 
+		List<Ast.Type> genericArgs = null;
+		if (ctx.generic_args() != null) {
+			genericArgs = visitGeneric_args(ctx.generic_args());
+		}
+
 		Ast.ListArgsOrKeyValuePairs list = null;
 
 		if (ctx.keypair_list_map() != null) {
@@ -830,7 +834,7 @@ AntlerScriptParserVisitor<Object> {
 			list = new Ast.ListArgs(visitArguments(ctx.arguments()));
 		}
 
-		return new Ast.CompositeExpression(getTokens(ctx), list);
+		return new Ast.CompositeExpression(getTokens(ctx), genericArgs, list);
 	}
 
 	@Override
@@ -1041,22 +1045,19 @@ AntlerScriptParserVisitor<Object> {
 		return kind;
 	}
 
-	// BUG: Token collection strategy is likely wrong, switch the grammar
-	// rule to being recursive instead to fix or see the yield target
 	@Override
 	public Ast.Expression visitExpression_logical_not(AntlerScriptParser.Expression_logical_notContext ctx) {
 		assert ctx != null;
 
-		Ast.Expression latest = visitExpression_cmp(ctx.expression_cmp());
-
-		var ops = ctx.NOT();
-		var iter = ops.listIterator(ops.size());
-		while (iter.hasPrevious()) {
-			iter.previous();
-			latest = new Ast.UnaryExpression(getTokens(ctx), Ast.UnaryExpression.Kind.NOT, latest);
+		if (ctx.operand != null) {
+			return visitExpression_cmp(ctx.operand);
 		}
 
-		return latest;
+		return new Ast.UnaryExpression(
+			getTokens(ctx),
+			Ast.UnaryExpression.Kind.NOT,
+			visitExpression_logical_not(ctx.recursiveOperand)
+		);
 	}
 
 	@Override
@@ -1344,34 +1345,24 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.Expression visitExpression_unary(AntlerScriptParser.Expression_unaryContext ctx) {
 		assert ctx != null;
 
-		Ast.Expression latest = visitExpression_exp(ctx.expression_exp());
-
-		var ops = ctx.expression_unary_op();
-		var iter = ops.listIterator(ops.size());
-		while (iter.hasPrevious()) {
-			var previous = iter.previous();
-			latest = new Ast.UnaryExpression(getTokens(previous), visitExpression_unary_op(previous), latest);
+		if (ctx.operand != null) {
+			return visitExpression_exp(ctx.operand);
 		}
 
-		return latest;
-	}
-
-	@Override
-	public Ast.UnaryExpression.Kind visitExpression_unary_op(AntlerScriptParser.Expression_unary_opContext ctx) {
-		assert ctx != null;
-
-		Token op = ctx.operator;
-
-		Ast.UnaryExpression.Kind kind = switch (op.getType()) {
-			case AntlerScriptParser.PLUS -> Ast.UnaryExpression.Kind.PLUS;
-			case AntlerScriptParser.MINUS -> Ast.UnaryExpression.Kind.MINUS;
-			case AntlerScriptParser.TILDE -> Ast.UnaryExpression.Kind.BIT_NOT;
-			default -> null;
+		Ast.UnaryExpression.Kind kind = switch (ctx.operator.getType()) {
+		case AntlerScriptParser.PLUS -> Ast.UnaryExpression.Kind.PLUS;
+		case AntlerScriptParser.MINUS -> Ast.UnaryExpression.Kind.MINUS;
+		case AntlerScriptParser.TILDE -> Ast.UnaryExpression.Kind.BIT_NOT;
+		default -> null;
 		};
 
 		assert kind != null;
 
-		return kind;
+		return new Ast.UnaryExpression(
+			getTokens(ctx),
+			kind,
+			visitExpression_unary(ctx.recursiveOperand)
+		);
 	}
 
 	@Override
@@ -1413,11 +1404,11 @@ AntlerScriptParserVisitor<Object> {
 				if (idxCtx.generic_args() != null) {
 					genericArgs = visitGeneric_args(idxCtx.generic_args());
 				}
-				latest = new Ast.IndexExpression(getTokens(idxCtx), latest, visitExpression(idxCtx.expression()), genericArgs);
+				latest = new Ast.IndexExpression(getTokens(ctx), latest, visitExpression(idxCtx.expression()), genericArgs);
 				break;
 			}
 			case AntlerScriptParser.FunctionCallContext funcallCtx: {
-				latest = new Ast.CallExpression(getTokens(funcallCtx), latest, funcallCtx.arguments() == null ? null : visitArguments(funcallCtx.arguments()));
+				latest = new Ast.CallExpression(getTokens(ctx), latest, funcallCtx.arguments() == null ? null : visitArguments(funcallCtx.arguments()));
 				break;
 			}
 			case AntlerScriptParser.MemberAccessContext memCtx: {
@@ -1425,7 +1416,7 @@ AntlerScriptParserVisitor<Object> {
 				if (memCtx.generic_args() != null) {
 					genericArgs = visitGeneric_args(memCtx.generic_args());
 				}
-				latest = new Ast.AccessExpression(getTokens(memCtx), latest, memCtx.symbol().getText(), false, genericArgs);
+				latest = new Ast.AccessExpression(getTokens(ctx), latest, memCtx.symbol().getText(), false, genericArgs);
 				break;
 			}
 			case AntlerScriptParser.NullishAccessContext nullCtx: {
@@ -1433,7 +1424,7 @@ AntlerScriptParserVisitor<Object> {
 				if (nullCtx.generic_args() != null) {
 					genericArgs = visitGeneric_args(nullCtx.generic_args());
 				}
-				latest = new Ast.AccessExpression(getTokens(nullCtx), latest, nullCtx.symbol().getText(), true, genericArgs);
+				latest = new Ast.AccessExpression(getTokens(ctx), latest, nullCtx.symbol().getText(), true, genericArgs);
 				break;
 			}
 			default:
@@ -1620,13 +1611,6 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
-	public Ast.NewObjectExpression visitNewObjectExpression(AntlerScriptParser.NewObjectExpressionContext ctx) {
-		assert ctx != null;
-
-		return visitNew_object_instance(ctx.new_object_instance());
-	}
-
-	@Override
 	public Ast.NewArrayExpression visitNewArrayExpression(AntlerScriptParser.NewArrayExpressionContext ctx) {
 		assert ctx != null;
 
@@ -1673,18 +1657,6 @@ AntlerScriptParserVisitor<Object> {
 		assert ctx != null;
 
 		return visitExpression(ctx.expression());
-	}
-
-	@Override
-	public Ast.NewObjectExpression visitNew_object_instance(AntlerScriptParser.New_object_instanceContext ctx) {
-		assert ctx != null;
-
-		List<Ast.Type> genericArgs = null;
-		if (ctx.generic_args() != null) {
-			genericArgs = visitGeneric_args(ctx.generic_args());
-		}
-		List<Ast.Argument> args = visitObject_instantiation_args(ctx.object_instantiation_args());
-		return new Ast.NewObjectExpression(getTokens(ctx), ctx.symbol().getText(), genericArgs, args);
 	}
 
 	@Override
