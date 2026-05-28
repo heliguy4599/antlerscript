@@ -281,12 +281,6 @@ class AstTest {
 	}
 
 	@Nested
-	@DisplayName("Enums")
-	class EnumTests {
-
-	}
-
-	@Nested
 	@DisplayName("Statements")
 	class StatementTests {
 	}
@@ -299,7 +293,65 @@ class AstTest {
 	@Nested
 	@DisplayName("Types")
 	class TypeTests {
+		@Test
+		void unionAnd() {
+			testInput(
+				"a & b",
+				"type",
+				new Ast.UnionType(
+					genTokens("a", "&", "b"),
+					Ast.UnionType.Kind.AND,
+					symType("a"),
+					symType("b")
+				)
+			);
+		}
 
+		@Test
+		void unionOr() {
+			testInput(
+				"a | b",
+				"type",
+				new Ast.UnionType(
+					genTokens("a", "|", "b"),
+					Ast.UnionType.Kind.OR,
+					symType("a"),
+					symType("b")
+				)
+			);
+		}
+
+		@Test
+		void nullable() {
+			testInput(
+				"lmao?",
+				"type",
+				new Ast.UnionType(
+					genTokens("lmao", "?"),
+					Ast.UnionType.Kind.OR,
+					symType("lmao"),
+					new Ast.SymbolType(
+						genTokens("?"),
+						"Null",
+						null
+					)
+				)
+			);
+		}
+
+		@Test
+		void symbol() {
+			testInput(
+				"lmao",
+				"type",
+				symType("lmao")
+			);
+		}
+
+		@Test
+		void symbolGeneric() {
+			
+		}
 	}
 }
 
