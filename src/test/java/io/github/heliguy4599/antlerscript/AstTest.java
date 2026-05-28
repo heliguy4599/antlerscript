@@ -6,6 +6,9 @@ import java.util.*;
 import org.antlr.v4.runtime.*;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -473,6 +476,132 @@ class AstTest {
 	@Nested
 	@DisplayName("Expressions")
 	class ExpressionTests {
+		// TODO: Binary expression
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			// "not", TODO: using 'not' makes this become an SymbolExpression
+			"~",
+			"+",
+			"-"
+		})
+		void unaryExpression(String operator) {
+			// TODO: Unary expressions only get the operator token, we need to either fix unary() or the AST
+			Ast.UnaryExpression.Kind kind = switch (operator) {
+			case "not" -> Ast.UnaryExpression.Kind.NOT;
+			case "~" -> Ast.UnaryExpression.Kind.BIT_NOT;
+			case "+" -> Ast.UnaryExpression.Kind.PLUS;
+			case "-" -> Ast.UnaryExpression.Kind.MINUS;
+			default -> null;
+			};
+			assert kind != null;
+			testInput(
+				operator + "10",
+				"expression",
+				// unary(operator, num(10)) THIS THROWS
+				new Ast.UnaryExpression(
+					genTokens(operator), // See, no operand tokens
+					kind,
+					num(10)
+				)
+			);
+		}
+
+		@Test
+		void indexExpression() {
+			// TODO: Test with generics
+			testInput(
+				"list[10]",
+				"expression",
+				new Ast.IndexExpression(
+					// TODO: Is it ok that 'list' token is required to not be here?
+					genTokens("[", "10", "]"),
+					sym("list"),
+					num(10),
+					null
+				)
+			);
+		}
+
+		@Test
+		void accessExpression() {
+			// TODO: Test with generics
+			testInput(
+				"obj.hello",
+				"expression",
+				new Ast.AccessExpression(
+					genTokens(".", "hello"),
+					sym("obj"),
+					"hello",
+					false,
+					null
+				)
+			);
+			testInput(
+				"obj?.hello",
+				"expression",
+				new Ast.AccessExpression(
+					genTokens("?.", "hello"),
+					sym("obj"),
+					"hello",
+					true,
+					null
+				)
+			);
+		}
+
+		@Test
+		void callExpression() {
+			testInput(
+				"some_func()",
+				"expression",
+				new Ast.CallExpression(
+					genTokens("(", ")"),
+					sym("some_func"),
+					null
+				)
+			);
+		}
+
+		@Test
+		void callExpressionWithArgs() {
+			var exprs = new ArrayList<Ast.Argument>();
+			exprs.add(new Ast.Argument(
+				num(10),
+				null,
+				false
+			));
+			testInput(
+				"some_func(10)",
+				"expression",
+				new Ast.CallExpression(
+					genTokens("(", "10", ")"),
+					sym("some_func"),
+					exprs
+				)
+			);
+		}
+
+		@Test
+		void symbolExpression() {
+			testInput(
+				"item",
+				"expression",
+				sym("item")
+			);
+		}
+
+		@Test
+		void yieldExpression() {
+			testInput(
+				"yield 10",
+				"expression",
+				new Ast.YieldExpression(
+					genTokens("yield", "10"),
+					num(10)
+				)
+			);
+		}
 	}
 
 	@Nested
