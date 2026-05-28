@@ -154,26 +154,34 @@ class AstTest {
 	}
 
 	static Ast.VariableDeclaration decl(
+		boolean isConst,
 		Ast.Type type,
 		String name,
+		boolean mutable,
+		boolean sealed,
 		Ast.Expression value
 	) {
-		assert type != null;
 		assert name != null && !name.isEmpty();
-		assert value != null;
-
-		List<Token> tokens = new ArrayList<>();
-		tokens.addAll(genTokens("let"));
-		tokens.addAll(type.tokens);
+		List<Token> tokens = new ArrayList<>(genTokens(isConst ? "const" : "let"));
+		if (mutable) {
+			tokens.addAll(genTokens("mut"));
+		}
+		if (sealed) {
+			tokens.addAll(genTokens("sealed"));
+		}
+		if (type != null) {
+			tokens.addAll(type.tokens);
+		}
 		tokens.addAll(genTokens(name));
-		tokens.addAll(genTokens("="));
-		tokens.addAll(value.tokens);
-
+		if (value != null) {
+			tokens.addAll(genTokens("="));
+			tokens.addAll(value.tokens);
+		}
 		return new Ast.VariableDeclaration(
 			tokens,
-			false,
-			false,
-			false,
+			isConst,
+			mutable,
+			sealed,
 			type,
 			name,
 			value,
@@ -283,6 +291,183 @@ class AstTest {
 	@Nested
 	@DisplayName("Statements")
 	class StatementTests {
+		@Test
+		void expressionStatement() {
+			testInput(
+				"10",
+				"statement",
+				new Ast.ExpressionStatement(
+					genTokens("10"),
+					num(10),
+					false
+				)
+			);
+		}
+
+		@Test
+		void expressionStatementDeferred() {
+			testInput(
+				"defer 10",
+				"statement",
+				new Ast.ExpressionStatement(
+					genTokens("defer", "10"),
+					num(10),
+					true
+				)
+			);
+		}
+
+		@Test
+		void breakStatement() {
+			testInput(
+				"break",
+				"statement",
+				new Ast.BreakStatement(genTokens("break"))
+			);
+		}
+
+		@Test
+		void continueStatement() {
+			testInput(
+				"continue",
+				"statement",
+				new Ast.ContinueStatement(genTokens("continue"))
+			);
+		}
+
+		@Test
+		void returnStatement() {
+			testInput(
+				"return",
+				"statement",
+				new Ast.ReturnStatement(genTokens("return"), null)
+			);
+		}
+
+		@Test
+		void returnStatementWithExpression() {
+			testInput(
+				"return 10",
+				"statement",
+				new Ast.ReturnStatement(genTokens("return", "10"), num(10))
+			);
+		}
+
+		// TODO: Test loop statements
+
+		@Test
+		void declarationStatementLetNoType() {
+			testInput(
+				"let i = 10",
+				"statement",
+				decl(false, null, "i", false, false, num(10))
+			);
+			testInput(
+				"let mut i = 10",
+				"statement",
+				decl(false, null, "i", true, false, num(10))
+			);
+			testInput(
+				"let sealed i = 10",
+				"statement",
+				decl(false, null, "i", false, true, num(10))
+			);
+		}
+
+		@Test
+		void declarationStatementLetWithTypeNoInit() {
+			testInput(
+				"let Int i",
+				"statement",
+				decl(false, symType("Int"), "i", false, false, null)
+			);
+			testInput(
+				"let mut Int i",
+				"statement",
+				decl(false, symType("Int"), "i", true, false, null)
+			);
+			testInput(
+				"let sealed Int i",
+				"statement",
+				decl(false, symType("Int"), "i", false, true, null)
+			);
+		}
+
+		@Test
+		void declarationStatementLetWithTypeWithInit() {
+			testInput(
+				"let Int i = 10",
+				"statement",
+				decl(false, symType("Int"), "i", false, false, num(10))
+			);
+			testInput(
+				"let mut Int i = 10",
+				"statement",
+				decl(false, symType("Int"), "i", true, false, num(10))
+			);
+			testInput(
+				"let sealed Int i = 10",
+				"statement",
+				decl(false, symType("Int"), "i", false, true, num(10))
+			);
+		}
+
+		@Test
+		void declarationStatementConst() {
+			testInput(
+				"const i = 10",
+				"statement",
+				decl(true, null, "i", false, false, num(10))
+			);
+			testInput(
+				"const Int i = 10",
+				"statement",
+				decl(true, symType("Int"), "i", false, false, num(10))
+			);
+		}
+
+		@Test
+		void typedef() {
+			testInput(
+				"type MyInt = Int",
+				"statement",
+				new Ast.Typedef(
+					genTokens("type", "MyInt", "=", "Int"),
+					"MyInt",
+					symType("Int")
+				)
+			);
+		}
+
+		// TODO: Test ifStatement
+
+		// TODO: Test switchStatement
+
+		// TODO: Fix statement_block in language
+		// @Test
+		// void statementBlock() {
+		// 	testInput(
+		// 		"{ }",
+		// 		"statement",
+		// 		new Ast.StatementBlock(
+		// 			genTokens("{", "}"),
+		// 			null,
+		// 			false
+		// 		)
+		// 	);
+		// }
+
+		@Test
+		void throwStatement() {
+			testInput(
+				"throw 10",
+				"statement",
+				new Ast.ThrowStatement(
+					genTokens("throw", "10"),
+					num(10)
+				)
+			);
+		}
 	}
 
 	@Nested
@@ -350,7 +535,7 @@ class AstTest {
 
 		@Test
 		void symbolGeneric() {
-			
+
 		}
 	}
 }
