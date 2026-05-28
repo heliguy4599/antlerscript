@@ -895,6 +895,9 @@ public class Ast {
 
 			assert type != null || initializer != null;
 			assert !(isMutable && isSealed);
+			assert name != null && !name.isEmpty();
+			assert !isConst || initializer != null;
+			assert !isConst || (!isMutable && !isSealed);
 
 			this.isConst = isConst;
 			this.isMutable = isMutable;
