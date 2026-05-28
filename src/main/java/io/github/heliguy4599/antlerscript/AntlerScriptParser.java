@@ -4251,8 +4251,8 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Coroutine_header_yieldContext extends ParserRuleContext {
-		public TypeContext yieldIn;
 		public TypeContext yieldOut;
+		public TypeContext yieldIn;
 		public TerminalNode YIELD() { return getToken(AntlerScriptParser.YIELD, 0); }
 		public TerminalNode COLON() { return getToken(AntlerScriptParser.COLON, 0); }
 		public List<TypeContext> type() {
@@ -4287,7 +4287,7 @@ public class AntlerScriptParser extends Parser {
 				setState(876);
 				match(COLON);
 				setState(877);
-				((Coroutine_header_yieldContext)_localctx).yieldIn = type();
+				((Coroutine_header_yieldContext)_localctx).yieldOut = type();
 				}
 				break;
 			case 2:
@@ -4296,7 +4296,7 @@ public class AntlerScriptParser extends Parser {
 				setState(878);
 				match(YIELD);
 				setState(879);
-				((Coroutine_header_yieldContext)_localctx).yieldOut = type();
+				((Coroutine_header_yieldContext)_localctx).yieldIn = type();
 				setState(880);
 				match(COLON);
 				}
@@ -4307,11 +4307,11 @@ public class AntlerScriptParser extends Parser {
 				setState(882);
 				match(YIELD);
 				setState(883);
-				((Coroutine_header_yieldContext)_localctx).yieldOut = type();
+				((Coroutine_header_yieldContext)_localctx).yieldIn = type();
 				setState(884);
 				match(COLON);
 				setState(885);
-				((Coroutine_header_yieldContext)_localctx).yieldIn = type();
+				((Coroutine_header_yieldContext)_localctx).yieldOut = type();
 				}
 				break;
 			}

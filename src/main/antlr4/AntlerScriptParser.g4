@@ -252,9 +252,9 @@ coroutine_header_inferred
 	;
 
 coroutine_header_yield
-	: YIELD ':' yieldIn=type
-	| YIELD yieldOut=type ':'
-	| YIELD yieldOut=type ':' yieldIn=type
+	: YIELD ':' yieldOut=type
+	| YIELD yieldIn=type ':'
+	| YIELD yieldIn=type ':' yieldOut=type
 	;
 
 composite

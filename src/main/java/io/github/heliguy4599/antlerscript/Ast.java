@@ -376,6 +376,8 @@ public class Ast {
 		public InferredFunctionType(
 			List<Token> tokens,
 			List<String> parameters,
+			// Note: the varArgs arg appears both here and in
+			// parameters
 			String varArgs,
 			boolean canThrow
 		) {

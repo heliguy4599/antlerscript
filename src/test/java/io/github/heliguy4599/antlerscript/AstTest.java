@@ -785,6 +785,172 @@ class AstTest {
 				)
 			);
 		}
+
+		@Test
+		void inferredFunction() {
+			testInput(
+				"Func()",
+				"type",
+				new Ast.InferredFunctionType(
+					genTokens("Func", "(", ")"),
+					null,
+					null,
+					false
+				)
+			);
+		}
+
+		@Test
+		void inferredFunctionArgs() {
+			testInput(
+				"Func(a, b, c, ...d)!",
+				"type",
+				new Ast.InferredFunctionType(
+					genTokens(
+						"Func",
+						"(",
+						"a",
+						",",
+						"b",
+						",",
+						"c",
+						",",
+						"...",
+						"d",
+						")",
+						"!"
+					),
+					List.of("a", "b", "c", "d"),
+					"d",
+					true
+				)
+			);
+		}
+
+		@Test
+		void fullCoroutine() {
+			testInput(
+				"Coroutine(:)",
+				"type",
+				new Ast.FullCoroutineType(
+					genTokens("Coroutine", "(", ":", ")"),
+					null,
+					null,
+					null,
+					null,
+					null
+				)
+			);
+		}
+
+		@Test
+		void fullCoroutineArgs() {
+			List<Ast.FunctionParameter> params = List.of(
+				new Ast.FunctionParameter(
+					type("Int"),
+					"a",
+					null,
+					false
+				),
+				new Ast.FunctionParameter(
+					type("Int"),
+					"b",
+					null,
+					false
+				),
+				new Ast.FunctionParameter(
+					type("Int"),
+					"rest",
+					null,
+					true
+				)
+			);
+
+			List<Ast.GenericParameter> genParams = List.of(
+				new Ast.GenericParameter(type("Int"), "T1"),
+				new Ast.GenericParameter(type("Int"), "T2")
+			);
+
+			testInput(
+				"Coroutine[Int T1, Int T2](Int a, Int b, Int ...rest : Something) yield yIn : yOut",
+				"type",
+				new Ast.FullCoroutineType(
+					genTokens(
+						"Coroutine",
+						"[",
+						"Int",
+						"T1",
+						",",
+						"Int",
+						"T2",
+						"]",
+						"(",
+						"Int",
+						"a",
+						",",
+						"Int",
+						"b",
+						",",
+						"Int",
+						"...",
+						"rest",
+						":",
+						"Something",
+						")",
+						"yield",
+						"yIn",
+						":",
+						"yOut"
+					),
+					genParams,
+					params,
+					type("Something"),
+					type("yIn"),
+					type("yOut")
+				)
+			);
+		}
+
+		@Test
+		void inferredCoroutine() {
+			testInput(
+				"Coroutine()",
+				"type",
+				new Ast.InferredCoroutineType(
+					genTokens("Coroutine", "(", ")"),
+					null,
+					null,
+					false
+				)
+			);
+		}
+
+		@Test
+		void inferredCoroutineArgs() {
+			testInput(
+				"Coroutine(a, b, c, ...d) yield",
+				"type",
+				new Ast.InferredCoroutineType(
+					genTokens(
+						"Coroutine",
+						"(",
+						"a",
+						",",
+						"b",
+						",",
+						"c",
+						",",
+						"...",
+						"d",
+						")",
+						"yield"
+					),
+					List.of("a", "b", "c", "d"),
+					"d",
+					true
+				)
+			);
+		}
 	}
 }
 
