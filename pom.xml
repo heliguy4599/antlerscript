@@ -58,6 +58,7 @@
 	<version>3.5.4</version>
         <configuration>
           <argLine>-ea</argLine>
+	  <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
 

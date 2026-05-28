@@ -643,3 +643,15 @@ let Func(Int, Int : Int) add = Func(a, b) { a + b } # inferred to be Func(Int, I
 # let Func(Int, Int : Int) add = Func(a, b : Int) { a + b }
 # let Func(Int, Int : Int) add = Func(Int a, Int b) { a + b }
 # essentially, infer all or infer none, no mixing
+
+# IMPORTANT NEW RULE
+# Class constructors get REMOVED in the new type of a generic or type union and intersections
+
+type MyClass = Class(
+	let String i
+	constructor(i){}
+)
+
+let make_new = Func<MyClass T>(: T) {
+    return T{"some string"} # this can't be allowed, we don't know T's constructor type
+}

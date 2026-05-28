@@ -664,8 +664,85 @@ class AstTest {
 
 		@Test
 		void symbolGeneric() {
+			List<Ast.Type> generics = List.of(
+				symType("T1"),
+				symType("T2")
+			);
 
+			testInput(
+				"lmao[T1, T2]",
+				"type",
+				new Ast.SymbolType(
+					genTokens("lmao", "[", "T1", ",", "T2", "]"),
+					"lmao",
+					generics
+				)
+			);
 		}
+
+		@Test
+		void array() {
+			testInput(
+				"Array[Int, 7]",
+				"type",
+				new Ast.ArrayType(
+					genTokens("Array", "[", "Int", ",", "7", "]"),
+					symType("Int"),
+					num(7)
+				)
+			);
+		}
+
+		@Test
+		void arrayInferred() {
+			testInput(
+				"Array",
+				"type",
+				new Ast.ArrayType(
+					genTokens("Array"),
+					null,
+					null
+				)
+			);
+		}
+
+		@Test
+		void fullFunction() {
+			testInput(
+				"Func(:)",
+				"type",
+				new Ast.FullFunctionType(
+					genTokens("Func", "(", ":", ")"),
+					null,
+					null,
+					null,
+					null
+				)
+			);
+		}
+
+		// @Test
+		// void fullFunctionArgs() {
+		// 	testInput(
+		// 		"Func(Int a, Int b, Int ...rest:)",
+		// 		"type",
+		// 		new Ast.FullFunctionType(
+		// 			genTokens("Func", "(", "Int", "a", ",", "Int", "b", ",", "Int", "...", "rest", ":", ")"),
+		// 			null,
+		// 			null,
+		// 			null,
+		// 			null
+		// 		)
+		// 	);
+		// }
+
+		// @Test
+		// void fullFunctionGenerics() {
+		// 	testInput(
+		// 		"Func<Any T>(:)",
+		// 		getTokens("Func", "<", "Any", "T", ">", "(", ":", ")"),
+		// 	);
+		// }
 	}
 }
 
