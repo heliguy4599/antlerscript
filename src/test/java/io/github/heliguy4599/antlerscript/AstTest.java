@@ -572,14 +572,21 @@ class AstTest {
 		@Test
 		void accessExpression() {
 			testInput(
-				"obj.hello",
+				"obj.hello[T]",
 				"expression",
 				new Ast.AccessExpression(
-					genTokens("obj", ".", "hello"),
+					genTokens(
+						"obj",
+						".",
+						"hello",
+						"[",
+						"T",
+						"]"
+					),
 					sym("obj"),
 					"hello",
 					false,
-					null
+					List.of(type("T"))
 				)
 			);
 		}
@@ -587,14 +594,21 @@ class AstTest {
 		@Test
 		void accessNullExpression() {
 			testInput(
-				"obj?.hello",
+				"obj?.hello[T]",
 				"expression",
 				new Ast.AccessExpression(
-					genTokens("obj", "?.", "hello"),
+					genTokens(
+						"obj",
+						"?.",
+						"hello",
+						"[",
+						"T",
+						"]"
+					),
 					sym("obj"),
 					"hello",
 					true,
-					null
+					List.of(type("T"))
 				)
 			);
 		}
