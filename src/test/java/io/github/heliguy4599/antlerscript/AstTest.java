@@ -475,7 +475,61 @@ class AstTest {
 	@Nested
 	@DisplayName("Expressions")
 	class ExpressionTests {
-		// TODO: Binary expression
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"+=",
+			"-=",
+			"*=",
+			"**=",
+			"/=",
+			"//=",
+			"%%=",
+			"%=",
+			"|=",
+			"&=",
+			"~=",
+			"^=",
+			"<<=",
+			">>=",
+			"++=",
+			"??=",
+			".=",
+			"=",
+			"or",
+			"??",
+			"and",
+			"<",
+			">",
+			"<=",
+			">=",
+			"==",
+			"!=",
+			"is",
+			"as",
+			"in",
+			"|>",
+			"|",
+			"^",
+			"&",
+			"<<",
+			">>",
+			"+",
+			"-",
+			"++",
+			"*",
+			"/",
+			"//",
+			"%%",
+			"%",
+			"**",
+		})
+		void binaryExpression(String op) {
+			testInput(
+				"1 " + op + " 1",
+				"expression",
+				bin(num(1), op, num(1))
+			);
+		}
 
 		@ParameterizedTest
 		@ValueSource(strings = {
@@ -484,19 +538,11 @@ class AstTest {
 			"+",
 			"-"
 		})
-		void unaryExpression(String operator) {
-			Ast.UnaryExpression.Kind kind = switch (operator) {
-			case "not" -> Ast.UnaryExpression.Kind.NOT;
-			case "~" -> Ast.UnaryExpression.Kind.BIT_NOT;
-			case "+" -> Ast.UnaryExpression.Kind.PLUS;
-			case "-" -> Ast.UnaryExpression.Kind.MINUS;
-			default -> null;
-			};
-			assert kind != null;
+		void unaryExpression(String op) {
 			testInput(
-				operator + " 10",
+				op + " 10",
 				"expression",
-				unary(operator, num(10))
+				unary(op, num(10))
 			);
 		}
 
@@ -525,7 +571,6 @@ class AstTest {
 
 		@Test
 		void accessExpression() {
-			// TODO: Test with generics
 			testInput(
 				"obj.hello",
 				"expression",
@@ -537,6 +582,10 @@ class AstTest {
 					null
 				)
 			);
+		}
+
+		@Test
+		void accessNullExpression() {
 			testInput(
 				"obj?.hello",
 				"expression",

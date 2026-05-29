@@ -960,8 +960,8 @@ AntlerScriptParserVisitor<Object> {
 			case AntlerScriptParser.DOUBLE_STAR_EQ -> Ast.BinaryExpression.Kind.EXPONENT_ASSIGN;
 			case AntlerScriptParser.SLASH_EQ -> Ast.BinaryExpression.Kind.DIVIDE_ASSIGN;
 			case AntlerScriptParser.DOUBLE_SLASH_EQ -> Ast.BinaryExpression.Kind.FLOOR_DIVIDE_ASSIGN;
-			case AntlerScriptParser.PERCENT_EQ -> Ast.BinaryExpression.Kind.MODULO_ASSIGN;
-			case AntlerScriptParser.DOUBLE_PERCENT_EQ -> Ast.BinaryExpression.Kind.REMAINDER_ASSIGN;
+			case AntlerScriptParser.PERCENT_EQ -> Ast.BinaryExpression.Kind.REMAINDER_ASSIGN;
+			case AntlerScriptParser.DOUBLE_PERCENT_EQ -> Ast.BinaryExpression.Kind.MODULO_ASSIGN;
 			case AntlerScriptParser.PIPE_EQ -> Ast.BinaryExpression.Kind.BIT_OR_ASSIGN;
 			case AntlerScriptParser.AMP_EQ -> Ast.BinaryExpression.Kind.BIT_AND_ASSIGN;
 			case AntlerScriptParser.TILDE_EQ -> Ast.BinaryExpression.Kind.BIT_NOT_ASSIGN;
@@ -1331,8 +1331,8 @@ AntlerScriptParserVisitor<Object> {
 			case AntlerScriptParser.STAR -> Ast.BinaryExpression.Kind.MULTIPLY;
 			case AntlerScriptParser.SLASH -> Ast.BinaryExpression.Kind.DIVIDE;
 			case AntlerScriptParser.DOUBLE_SLASH -> Ast.BinaryExpression.Kind.FLOOR_DIVIDE;
-			case AntlerScriptParser.PERCENT -> Ast.BinaryExpression.Kind.MODULO;
-			case AntlerScriptParser.DOUBLE_PERCENT -> Ast.BinaryExpression.Kind.REMAINDER;
+			case AntlerScriptParser.PERCENT -> Ast.BinaryExpression.Kind.REMAINDER;
+			case AntlerScriptParser.DOUBLE_PERCENT -> Ast.BinaryExpression.Kind.MODULO;
 			default -> null;
 		};
 
