@@ -998,6 +998,47 @@ class AstTest {
 				)
 			);
 		}
+
+		@Test
+		void nullExpression() {
+			testInput(
+				"null",
+				"expression",
+				new Ast.NullExpression(genTokens("null"))
+			);
+		}
+
+		@Test
+		void selfExpression() {
+			testInput(
+				"self",
+				"expression",
+				new Ast.SelfExpression(genTokens("self"))
+			);
+		}
+
+		@Test
+		void superExpression() {
+			testInput(
+				"super",
+				"expression",
+				new Ast.SuperExpression(genTokens("super"))
+			);
+		}
+
+		@Test
+		void booleanExpression() {
+			testInput(
+				"false",
+				"expression",
+				new Ast.BooleanExpression(genTokens("false"), false)
+			);
+			testInput(
+				"true",
+				"expression",
+				new Ast.BooleanExpression(genTokens("true"), true)
+			);
+		}
 	}
 
 	@Nested
