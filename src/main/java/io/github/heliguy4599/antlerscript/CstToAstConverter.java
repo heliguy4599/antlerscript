@@ -164,6 +164,15 @@ AntlerScriptParserVisitor<Object> {
 
 	// Invalid, should be handled by the caller
 	@Override
+	public Ast.EnumType visitEnum_header_inside(AntlerScriptParser.Enum_header_insideContext ctx) {
+		assert ctx != null;
+
+		assert false;
+		return null;
+	}
+
+	// Invalid, should be handled by the caller
+	@Override
 	public Object visitLoop_range(AntlerScriptParser.Loop_rangeContext ctx) {
 		assert ctx != null;
 
@@ -532,18 +541,6 @@ AntlerScriptParserVisitor<Object> {
 		return new Ast.ExtendsAssignClassMember(getTokens(ctx), ctx.symbol().getText(), visitExpression(ctx.expression()));
 	}
 
-	// === ENUMS ===
-
-	@Override
-	public Ast.EnumType visitEnum_header_inside(AntlerScriptParser.Enum_header_insideContext ctx) {
-		assert ctx != null;
-
-		Ast.SymbolChain extendsAccess = ctx.symbol_chain() == null ? null : visitSymbol_chain(ctx.symbol_chain());
-		List<String> memberSymbols = ctx.symbol().stream().map(AntlerScriptParser.SymbolContext::getText).toList();
-
-		return new Ast.EnumType(getTokens(ctx), extendsAccess, memberSymbols);
-	}
-
 	// === TYPES ===
 
 	@Override
@@ -883,7 +880,12 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.EnumType visitEnum_header(AntlerScriptParser.Enum_headerContext ctx) {
 		assert ctx != null;
 
-		return visitEnum_header_inside(ctx.enum_header_inside());
+		var ctx2 = ctx.enum_header_inside();
+
+		Ast.SymbolChain extendsAccess = ctx2.symbol_chain() == null ? null : visitSymbol_chain(ctx2.symbol_chain());
+		List<String> memberSymbols = ctx2.symbol().stream().map(AntlerScriptParser.SymbolContext::getText).toList();
+
+		return new Ast.EnumType(getTokens(ctx), extendsAccess, memberSymbols);
 	}
 
 	// === EXPRESSIONS ===

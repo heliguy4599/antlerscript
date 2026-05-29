@@ -351,30 +351,22 @@ class CstTest {
 	class Enums {
 		@ParameterizedTest
 		@ValueSource(strings = {
-			"ONE, TWO, THREE",
-			"extends One",
-			"extends One, TWO, THREE",
-			"extends One.Two, THREE",
+			"Enum(ONE, TWO, THREE)",
+			"Enum(extends One)",
+			"Enum(extends One, TWO, THREE)",
+			"Enum(extends One.Two, THREE)",
 		})
 		void enum_header_inside(String input) {
-			testInput(input, "enum_header_inside");
+			testInput(input, "enum_header");
 		}
 
 		@ParameterizedTest
 		@ValueSource(strings = {
-			"",
-			"extends, Two",
+			"Enum()",
+			"Enum(extends, Two)",
 		})
 		void fail_enum_header_inside_no_rule(String input) {
-			testInputNoRule(input, "enum_header_inside");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"ONE, extends Two",
-		})
-		void fail_enum_header_inside_partial_match(String input) {
-			testInputPartialMatch(input, "enum_header_inside");
+			testInputNoRule(input, "enum_header");
 		}
 	}
 

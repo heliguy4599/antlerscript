@@ -951,6 +951,58 @@ class AstTest {
 				)
 			);
 		}
+
+		@Test
+		void enumExtends() {
+			var chain = new Ast.SymbolChain(
+				List.of("Lmao1", "lmao2", "lmao3")
+			);
+			testInput(
+				"Enum(extends Lmao1.lmao2.lmao3)",
+				"type",
+				new Ast.EnumType(
+					genTokens(
+						"Enum",
+						"(",
+						"extends",
+						"Lmao1",
+						".",
+						"lmao2",
+						".",
+						"lmao3",
+						")"
+					),
+					chain,
+					null
+				)
+			);
+		}
+
+		@Test
+		void enumMembers() {
+			testInput(
+				"Enum(ONE, TWO, THREE)",
+				"type",
+				new Ast.EnumType(
+					genTokens(
+						"Enum",
+						"(",
+						"ONE",
+						",",
+						"TWO",
+						",",
+						"THREE",
+						")"
+					),
+					null,
+					List.of(
+						"ONE",
+						"TWO",
+						"THREE"
+					)
+				)
+			);
+		}
 	}
 }
 
