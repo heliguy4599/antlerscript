@@ -278,15 +278,13 @@ class AstTest {
 		return new Ast.UnaryExpression(tokens, kind, operand);
 	}
 
-	static Ast.StatementBlock block(Ast.Statement ... statements)  {
-		var tokens = genTokens("{");
-		for (var statement : statements) {
-			tokens.addAll(statement.tokens);
-		}
+	static Ast.StatementBlock block(Ast.Statement statement)  {
+		List<Token> tokens = genTokens("{");
+		tokens.addAll(statement.tokens);
 		tokens.addAll(genTokens("}"));
 		return new Ast.StatementBlock(
 			tokens,
-			List.of(statements),
+			List.of(statement),
 			false
 		);
 	}
@@ -375,7 +373,8 @@ class AstTest {
 				"statement",
 				new Ast.LoopInfiniteStatement(
 					genTokens("loop", "{", "10", "}"),
-					block(exprStatement(num(10)))
+					block(exprStatement(num(10))),
+					null
 				)
 			);
 		}
@@ -388,12 +387,170 @@ class AstTest {
 				new Ast.LoopWhileStatement(
 					genTokens("loop", "while", "true", "{", "10", "}"),
 					block(exprStatement(num(10))),
-					bool(true)
+					bool(true),
+					null
+				)
+			);
+			testInput(
+				"loop while true -> i { i }",
+				"statement",
+				new Ast.LoopWhileStatement(
+					genTokens("loop", "while", "true", "->", "i", "{", "i", "}"),
+					block(exprStatement(sym("i"))),
+					bool(true),
+					"i"
 				)
 			);
 		}
 
-		// TODO: Rest of loop statements
+		@Test
+		void loopRange() {
+			testInput(
+				"loop from 0 to 10 by 2 { stuff }",
+				"statement",
+				new Ast.LoopRangeStatement(
+					genTokens("loop", "from", "0", "to", "10", "by", "2", "{", "stuff", "}"),
+					block(exprStatement(sym("stuff"))),
+					null,
+					num(0),
+					num(10),
+					num(2),
+					null,
+					null
+				)
+			);
+			testInput(
+				"loop from 0 to 10 by 2 -> i { i }",
+				"statement",
+				new Ast.LoopRangeStatement(
+					genTokens("loop", "from", "0", "to", "10", "by", "2", "->", "i", "{", "i", "}"),
+					block(exprStatement(sym("i"))),
+					"i",
+					num(0),
+					num(10),
+					num(2),
+					null,
+					null
+				)
+			);
+		}
+
+		@Test
+		void loopRangeWhile() {
+			testInput(
+				"loop from 0 while true { stuff }",
+				"statement",
+				new Ast.LoopRangeStatement(
+					genTokens("loop", "from", "0", "while", "true", "{", "stuff", "}"),
+					block(exprStatement(sym("stuff"))),
+					null,
+					num(0),
+					null,
+					null,
+					bool(true),
+					Ast.LoopStatement.TestPosition.RIGHT
+				)
+			);
+		}
+
+		@Test
+		void loopWhileRange() {
+			testInput(
+				"loop while true from 0 { stuff }",
+				"statement",
+				new Ast.LoopRangeStatement(
+					genTokens("loop", "while", "true", "from", "0", "{", "stuff", "}"),
+					block(exprStatement(sym("stuff"))),
+					null,
+					num(0),
+					null,
+					null,
+					bool(true),
+					Ast.LoopStatement.TestPosition.LEFT
+				)
+			);
+		}
+
+		@Test
+		void loopOver() {
+			testInput(
+				"loop over my_list { stuff }",
+				"statement",
+				new Ast.LoopIterationStatement(
+					genTokens("loop", "over", "my_list", "{", "stuff", "}"),
+					block(exprStatement(sym("stuff"))),
+					sym("my_list"),
+					null,
+					null,
+					null,
+					null
+				)
+			);
+			testInput(
+				"loop over my_list -> elm { elm }",
+				"statement",
+				new Ast.LoopIterationStatement(
+					genTokens("loop", "over", "my_list", "->", "elm", "{", "elm", "}"),
+					block(exprStatement(sym("elm"))),
+					sym("my_list"),
+					null,
+					"elm",
+					null,
+					null
+				)
+			);
+			testInput(
+				"loop over my_list -> idx, elm { 10; 20 }",
+				"statement",
+				new Ast.LoopIterationStatement(
+					genTokens("loop", "over", "my_list", "->", "idx", ",", "elm", "{", "10", ";", "20", "}"),
+					new Ast.StatementBlock(
+						genTokens("{", "10", ";", "20", "}"),
+						Arrays.asList(exprStatement(num(10)), exprStatement(num(20))),
+						false
+					),
+					sym("my_list"),
+					"idx",
+					"elm",
+					null,
+					null
+				)
+			);
+		}
+
+		@Test
+		void loopOverWhile() {
+			testInput(
+				"loop over my_list while true { stuff }",
+				"statement",
+				new Ast.LoopIterationStatement(
+					genTokens("loop", "over", "my_list", "while", "true", "{", "stuff", "}"),
+					block(exprStatement(sym("stuff"))),
+					sym("my_list"),
+					null,
+					null,
+					bool(true),
+					Ast.LoopStatement.TestPosition.RIGHT
+				)
+			);
+		}
+
+		@Test
+		void loopWhileOver() {
+			testInput(
+				"loop while true over my_list { stuff }",
+				"statement",
+				new Ast.LoopIterationStatement(
+					genTokens("loop", "while", "true", "over", "my_list", "{", "stuff", "}"),
+					block(exprStatement(sym("stuff"))),
+					sym("my_list"),
+					null,
+					null,
+					bool(true),
+					Ast.LoopStatement.TestPosition.LEFT
+				)
+			);
+		}
 
 		@Test
 		void declarationStatementLetNoType() {
@@ -630,6 +787,15 @@ class AstTest {
 				new Ast.StatementBlock(
 					genTokens("{", "}"),
 					null,
+					false
+				)
+			);
+			testInput(
+				"{ 10; 20 }",
+				"statement",
+				new Ast.StatementBlock(
+					genTokens("{", "10", ";", "20", "}"),
+					Arrays.asList(exprStatement(num(10)), exprStatement(num(20))),
 					false
 				)
 			);
