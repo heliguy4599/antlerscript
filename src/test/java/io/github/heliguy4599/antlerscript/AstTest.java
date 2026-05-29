@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.*;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -279,6 +278,23 @@ class AstTest {
 		return new Ast.UnaryExpression(tokens, kind, operand);
 	}
 
+	static Ast.StatementBlock block(Ast.Statement ... statements)  {
+		var tokens = genTokens("{");
+		for (var statement : statements) {
+			tokens.addAll(statement.tokens);
+		}
+		tokens.addAll(genTokens("}"));
+		return new Ast.StatementBlock(
+			tokens,
+			List.of(statements),
+			false
+		);
+	}
+
+	static Ast.ExpressionStatement exprStatement(Ast.Expression expr) {
+		return new Ast.ExpressionStatement(expr.tokens, expr, false);
+	}
+
 	@Nested
 	@DisplayName("Program")
 	class ProgamTests {
@@ -299,11 +315,7 @@ class AstTest {
 			testInput(
 				"10",
 				"statement",
-				new Ast.ExpressionStatement(
-					genTokens("10"),
-					num(10),
-					false
-				)
+				exprStatement(num(10))
 			);
 		}
 
@@ -356,7 +368,32 @@ class AstTest {
 			);
 		}
 
-		// TODO: Test loop statements
+		@Test
+		void loopInfinite() {
+			testInput(
+				"loop { 10 }",
+				"statement",
+				new Ast.LoopInfiniteStatement(
+					genTokens("loop", "{", "10", "}"),
+					block(exprStatement(num(10)))
+				)
+			);
+		}
+
+		@Test
+		void loopWhile() {
+			testInput(
+				"loop while true { 10 }",
+				"statement",
+				new Ast.LoopWhileStatement(
+					genTokens("loop", "while", "true", "{", "10", "}"),
+					block(exprStatement(num(10))),
+					bool(true)
+				)
+			);
+		}
+
+		// TODO: Rest of loop statements
 
 		@Test
 		void declarationStatementLetNoType() {
@@ -442,9 +479,148 @@ class AstTest {
 			);
 		}
 
-		// TODO: Test ifStatement
+		@Test
+		void ifStatement() {
+			testInput(
+				"if item { 10 }",
+				"statement",
+				new Ast.IfStatement(
+					genTokens("if", "item", "{", "10", "}"),
+					sym("item"),
+					block(exprStatement(num(10))),
+					null,
+					null
+				)
+			);
+		}
 
-		// TODO: Test switchStatement
+		@Test
+		void ifStatementWithElse() {
+			testInput(
+				"if item { 10 } else { 10 }",
+				"statement",
+				new Ast.IfStatement(
+					genTokens("if", "item", "{", "10", "}", "else", "{", "10", "}"),
+					sym("item"),
+					block(exprStatement(num(10))),
+					null,
+					block(exprStatement(num(10)))
+				)
+			);
+		}
+
+		@Test
+		void elifBranch() {
+			testInput(
+				"elif item { 10 }",
+				"elif",
+				new Ast.ElifBranch(
+					genTokens("elif", "item", "{", "10", "}"),
+					sym("item"),
+					block(exprStatement(num(10)))
+				)
+			);
+		}
+
+		@Test
+		void ifStatementWithElif() {
+			testInput(
+				"if item { 10 } elif item { 10 }",
+				"statement",
+				new Ast.IfStatement(
+					genTokens("if", "item", "{", "10", "}", "elif", "item", "{", "10", "}"),
+					sym("item"),
+					block(exprStatement(num(10))),
+					List.of(new Ast.ElifBranch(
+						genTokens("elif", "item", "{", "10", "}"),
+						sym("item"),
+						block(exprStatement(num(10)))
+					)),
+					null
+				)
+			);
+		}
+
+		@Test
+		void ifStatementWithElifWithElse() {
+			testInput(
+				"if item { 10 } elif item { 10 } else { 10 }",
+				"statement",
+				new Ast.IfStatement(
+					genTokens("if", "item", "{", "10", "}", "elif", "item", "{", "10", "}", "else", "{", "10", "}"),
+					sym("item"),
+					block(exprStatement(num(10))),
+					List.of(new Ast.ElifBranch(
+						genTokens("elif", "item", "{", "10", "}"),
+						sym("item"),
+						block(exprStatement(num(10)))
+					)),
+					block(exprStatement(num(10)))
+				)
+			);
+		}
+
+		@Test
+		void caseBranch() {
+			testInput(
+				"case 10 { stuff }",
+				"case_",
+				new Ast.CaseBranch(
+					genTokens("case", "10", "{", "stuff", "}"),
+					List.of(num(10)),
+					block(exprStatement(sym("stuff")))
+				)
+			);
+		}
+
+		@Test
+		void caseBranchMulti() {
+			testInput(
+				"case 10, 20 { stuff }",
+				"case_",
+				new Ast.CaseBranch(
+					genTokens("case", "10", ",", "20", "{", "stuff", "}"),
+					Arrays.asList(num(10), num(20)),
+					block(exprStatement(sym("stuff")))
+				)
+			);
+		}
+
+		@Test
+		void switchStatement() {
+			testInput(
+				"switch item case 10 { stuff }",
+				"statement",
+				new Ast.SwitchStatement(
+					genTokens("switch", "item", "case", "10", "{", "stuff", "}"),
+					sym("item"),
+					List.of(new Ast.CaseBranch(
+						genTokens("case", "10", "{", "stuff",  "}"),
+						List.of(num(10)),
+						block(exprStatement(sym("stuff")))
+					)),
+					null
+				)
+			);
+		}
+
+		@Test
+		void switchStatementWithElse() {
+			testInput(
+				"switch item case 10 { stuff } else { stuff }",
+				"statement",
+				new Ast.SwitchStatement(
+					genTokens("switch", "item", "case", "10", "{", "stuff", "}", "else", "{", "stuff", "}"),
+					sym("item"),
+					List.of(new Ast.CaseBranch(
+						genTokens("case", "10", "{", "stuff",  "}"),
+						List.of(num(10)),
+						block(exprStatement(sym("stuff")))
+					)),
+					block(exprStatement(sym("stuff")))
+				)
+			);
+		}
 
 		@Test
 		void statementBlock() {

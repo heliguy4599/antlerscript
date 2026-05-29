@@ -1905,12 +1905,11 @@ AntlerScriptParserVisitor<Object> {
 		Ast.StatementBlock block = visitStatement_block(ctx.block);
 
 		if (ctx.loop_header_inside() == null) {
-			Ast.Expression test = null;
-
-			if (ctx.loop_while() != null) {
-				test = visitLoop_while(ctx.loop_while());
+			if (ctx.loop_while() == null) {
+				return new Ast.LoopInfiniteStatement(tokens, block);
 			}
 
+			Ast.Expression test = visitLoop_while(ctx.loop_while());
 			return new Ast.LoopWhileStatement(tokens, block, test);
 		}
 

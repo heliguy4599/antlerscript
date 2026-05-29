@@ -1170,7 +1170,7 @@ public class Ast {
 	public static abstract class LoopStatement extends Statement {
 		public final StatementBlock body;
 
-		enum TestPosition {
+		public enum TestPosition {
 			LEFT, RIGHT
 		}
 
@@ -1197,6 +1197,20 @@ public class Ast {
 		}
 	}
 
+	public static class LoopInfiniteStatement extends LoopStatement {
+		public LoopInfiniteStatement(
+			List<Token> tokens,
+			StatementBlock body
+		) {
+			super(tokens, body);
+		}
+
+		@Override
+		public <T> T accept(Visitor<T> visitor) {
+			return visitor.visitLoopInfiniteStatement(this);
+		}
+	}
+
 	public static class LoopWhileStatement extends LoopStatement {
 		public final Expression test;
 
@@ -1206,6 +1220,8 @@ public class Ast {
 			Expression test
 		) {
 			super(tokens, body);
+
+			assert test != null;
 
 			this.test = test;
 		}
@@ -2408,6 +2424,8 @@ public class Ast {
 		T visitSwitchStatement(SwitchStatement node);
 
 		T visitCaseBranch(CaseBranch node);
+
+		T visitLoopInfiniteStatement(LoopInfiniteStatement node);
 
 		T visitLoopWhileStatement(LoopWhileStatement node);
 
