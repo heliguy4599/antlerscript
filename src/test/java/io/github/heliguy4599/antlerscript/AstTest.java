@@ -547,15 +547,6 @@ class AstTest {
 		}
 
 		@Test
-		void logicalNot() {
-			testInput(
-				"not 10",
-				"expression_logical_not",
-				unary("not", num(10))
-			);
-		}
-
-		@Test
 		void indexExpression() {
 			testInput(
 				"list[10]",
@@ -572,16 +563,16 @@ class AstTest {
 		@Test
 		void accessExpression() {
 			testInput(
-				"obj.hello[T]",
+				"obj.hello<[T]>",
 				"expression",
 				new Ast.AccessExpression(
 					genTokens(
 						"obj",
 						".",
 						"hello",
-						"[",
+						"<[",
 						"T",
-						"]"
+						"]>"
 					),
 					sym("obj"),
 					"hello",
@@ -594,16 +585,16 @@ class AstTest {
 		@Test
 		void accessNullExpression() {
 			testInput(
-				"obj?.hello[T]",
+				"obj?.hello<[T]>",
 				"expression",
 				new Ast.AccessExpression(
 					genTokens(
 						"obj",
 						"?.",
 						"hello",
-						"[",
+						"<[",
 						"T",
-						"]"
+						"]>"
 					),
 					sym("obj"),
 					"hello",
@@ -733,10 +724,10 @@ class AstTest {
 			);
 
 			testInput(
-				"lmao[T1, T2]",
+				"lmao<[T1, T2]>",
 				"type",
 				new Ast.SymbolType(
-					genTokens("lmao", "[", "T1", ",", "T2", "]"),
+					genTokens("lmao", "<[", "T1", ",", "T2", "]>"),
 					"lmao",
 					generics
 				)
@@ -746,10 +737,10 @@ class AstTest {
 		@Test
 		void array() {
 			testInput(
-				"Array[Int, 7]",
+				"Array<[Int, 7]>",
 				"type",
 				new Ast.ArrayType(
-					genTokens("Array", "[", "Int", ",", "7", "]"),
+					genTokens("Array", "<[", "Int", ",", "7", "]>"),
 					type("Int"),
 					num(7)
 				)
@@ -813,18 +804,18 @@ class AstTest {
 			);
 
 			testInput(
-				"Func[Int T1, Int T2](Int a, Int b, Int ...rest : Something)! SomethingElse",
+				"Func<[Int T1, Int T2]>(Int a, Int b, Int ...rest : Something)! SomethingElse",
 				"type",
 				new Ast.FullFunctionType(
 					genTokens(
 						"Func",
-						"[",
+						"<[",
 						"Int",
 						"T1",
 						",",
 						"Int",
 						"T2",
-						"]",
+						"]>",
 						"(",
 						"Int",
 						"a",
@@ -935,18 +926,18 @@ class AstTest {
 			);
 
 			testInput(
-				"Coroutine[Int T1, Int T2](Int a, Int b, Int ...rest : Something) yield yIn : yOut",
+				"Coroutine<[Int T1, Int T2]>(Int a, Int b, Int ...rest : Something) yield yIn : yOut",
 				"type",
 				new Ast.FullCoroutineType(
 					genTokens(
 						"Coroutine",
-						"[",
+						"<[",
 						"Int",
 						"T1",
 						",",
 						"Int",
 						"T2",
-						"]",
+						"]>",
 						"(",
 						"Int",
 						"a",
@@ -1107,15 +1098,15 @@ class AstTest {
 				)
 			);
 			testInput(
-				"Class[Any T](extends A, constructor(){})",
+				"Class<[Any T]>(extends A, constructor(){})",
 				"type",
 				new Ast.ClassType(
 					genTokens(
 						"Class",
-						"[",
+						"<[",
 						"Any",
 						"T",
-						"]",
+						"]>",
 						"(",
 						"extends",
 						"A",

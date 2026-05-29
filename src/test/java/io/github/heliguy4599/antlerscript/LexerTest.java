@@ -496,12 +496,12 @@ class LexerTest {
 
 	@Test
 	void lgeneric() {
-		testInput("<<<", L.LGENERIC);
+		testInput("<[", L.LGENERIC);
 	}
 
 	@Test
 	void rgeneric() {
-		testInput(">>>", L.RGENERIC);
+		testInput("]>", L.RGENERIC);
 	}
 
 	@Test

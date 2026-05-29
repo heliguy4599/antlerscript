@@ -210,7 +210,7 @@ type_atomic
 	;
 
 array_header
-	: ARRAY ( '[' type ',' expression ']' )?
+	: ARRAY ( '<[' type ',' expression ']>' )?
 	;
 
 func_header
@@ -285,7 +285,7 @@ enum_header
 	;
 
 generic_parameters
-	: '[' type symbol ( ',' type symbol )* ']'
+	: '<[' type symbol ( ',' type symbol )* ']>'
 	;
 
 //-----------------------
@@ -485,7 +485,7 @@ expression_atom
 	;
 
 generic_args
-	: '[' type ( ',' type )* ']'
+	: '<[' type ( ',' type )* ']>'
 	;
 
 new_array_instance

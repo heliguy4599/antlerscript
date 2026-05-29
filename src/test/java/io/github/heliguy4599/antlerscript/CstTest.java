@@ -126,1109 +126,1109 @@ class CstTest {
 		}
 	}
 
-	@Nested
-	@DisplayName("Files")
-	class Files {
-		@ParameterizedTest
-		@ValueSource(strings = {
-			":: main",
-			":: main;",
-			":: main; :: using Math.FourRedSevenGreen",
-			";;::main;;",
-			":: main; :: thing \"other\"; print(10)",
-		})
-		void file_main_program(String input) {
-			testInput(input, "main_program");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			":: classname Test",
-			":: classname Test; :: using Math.touchEuler",
-			":: classname Test; :: thing",
-			":: classname Test; extends One.Two; let Int i = 10",
-			":: namespace Hi; :: classname YourMom; constructor() {}",
-		})
-		void file_class_program(String input) {
-			testInput(input, "class_program");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			":: namespace YourMom",
-			":: namespace YourMom; :: using Math",
-			":: namespace YourMom; :: thing \"value\"",
-			":: namespace YourMom; type Thing = Class()",
-			":: namespace YourMom; :: thing \"value\"; let Int i = 24",
-		})
-		void file_namespace_program(String input) {
-			testInput(input, "namespace_program");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"",
-			";;:: thing \"value\";;",
-			":: thing \"value\"",
-			"type Thing = Class()",
-			";;type Thing = Class();;",
-			";;;:: thing \"value\"; :: thing; type Thing = Class(); let Int i = potato;;",
-			":: using Potato",
-			":: using Lmao, Language.AST.Statements.ForLoop",
-			":: using Potato;:: using Lmao, Language.AST.Statements.ForLoop",
-			":: using Potato;:: thing \"lmao\"",
-			":: thing \"lmao\";:: using Potato",
-			":: using Lmao, Language.AST.Statements.ForLoop",
-			":: using Potato;:: using Lmao, Language.AST.Statements.ForLoop",
-		})
-		void file_implicit_namespace_program(String input) {
-			testInput(input, "implicit_namespace_program");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"::;",
-			":: thing value; print()",
-			"print(); :: main",
-			":: classname Hello; :: main; constructor()",
-			"print()",
-			"let Int i = 10",
-			"",
-		})
-		void fail_file_main_program_no_rule(String input) {
-			testInputNoRule(input, "main_program");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			":: classname Hello; print()",
-			":: print()",
-			":: classname Hello; :: classname Hello; let Int i = 10",
-			":: classname Hello; :: namespace Hello",
-			":: thing; :: classname Hello; let Int i = 20",
-		})
-		void fail_file_class_program_no_rule(String input) {
-			testInputNoRule(input, "class_program");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			":: namespace Hello; :: classname Hello; let Int i = 10",
-			":: namespace; let Int i = 10",
-			":: namespace Hello; :: namespace Hello; let Int i = 10",
-			":: namespace Hello; :: main; let Int i = 10",
-		})
-		void fail_file_namespace_program_no_rule(String input) {
-			testInputNoRule(input, "namespace_program");
-		}
-	}
-
-	@Nested
-	@DisplayName("Classes")
-	class Classes {
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"extends One;;const i = 10",
-			"let Int j = 23",
-			"alias(Two).i -> j",
-		})
-		void class_top_level(String input) {
-			testInput(input, "class_top_level");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"Class(extends One, Two, thing = 3, let item = false)",
-			"Class(const a = 5, alias(Two).three -> item)",
-			"Class(extends Two)",
-			"Class(extends SomeClass, AnotherClass let Int i = 5 constructor(){} cast(FuckAssType){1} operator+(RightType r : ReturnType){} alias(SomeClass).origin -> target symbol = expression)",
-			"Class()",
-		})
-		void class_header(String input) {
-			testInput(input, "class_header");
-		}
-
-		@Test
-		void class_extends() {
-			testInput("extends Obj", "class_extends");
-			testInput("extends Obj.Obj, Obj.Obj", "class_extends");
-		}
-
-		@Test
-		void class_extends_access() {
-			testInput("myObj", "symbol_chain");
-			testInput("myObj.myVar", "symbol_chain");
-			testInput("myObj.myVar0.myVar1.myVar2.myVar3.myVar4.myVar5.myVar6.myVar7.myVar8.myVar9.myVar10.myVar11.myVar12.myVar13.myVar14.myVar15.myVar16.myVar17.myVar18.myVar19.myVar20.myVar21.myVar22.myVar23.myVar24.myVar25.myVar26.myVar27.myVar28.myVar29.myVar30.myVar31.myVar32.myVar33.myVar34.myVar35.myVar36.myVar37.myVar38.myVar39.myVar40.myVar41.myVar42.myVar43.myVar44.myVar45.myVar46.myVar47.myVar48.myVar49.myVar50.myVar51.myVar52.myVar53.myVar54.myVar55", "symbol_chain");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"constructor(Int i, j, Int ... args) { 2 + 2 }",
-			"constructor(){}",
-		})
-		void class_constructor(String input) {
-			testInput(input, "constructor");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"(Int i)",
-			"(i)",
-			"(Int ... i)",
-			"(j, Int _i, Float ... a_float)",
-			"()",
-			"(String ... text)",
-		})
-		void class_constructor_params(String input) {
-			testInput(input, "constructor_params");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"a_symbol",
-			"Int something",
-			"Int thingie = 2 + 2",
-		})
-		void class_constructor_params_elm(String input) {
-			testInput(input, "constructor_params_elm");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"cast(Int) { 2 + 2 }",
-			"cast(Int)",
-		})
-		void class_cast(String input) {
-			testInput(input, "cast");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"operator+ (Int thing: Int) { 2 + 2 }",
-			"operator+ (Int thing: Int)",
-		})
-		void class_operator_overload(String input) {
-			testInput(input, "operator_overload");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"+",
-			"-",
-			"*",
-			"/",
-			"%",
-			"<",
-			">",
-			"++",
-			"**",
-			"//",
-			"%%",
-			"==",
-			"[]",
-		})
-		void class_overridable(String input) {
-			testInput(input, "overridable");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"alias (Thing.A).B -> C",
-			"alias (Other).item -> whatever = 2 + 2",
-		})
-		void class_alias(String input) {
-			testInput(input, "alias");
-		}
-
-		@Test
-		void class_extends_assign() {
-			testInput("four = 2 + 2", "extends_assign");
-		}
-	}
-
-	@Nested
-	@DisplayName("Enums")
-	class Enums {
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"Enum(ONE, TWO, THREE)",
-			"Enum(extends One)",
-			"Enum(extends One, TWO, THREE)",
-			"Enum(extends One.Two, THREE)",
-		})
-		void enum_header_inside(String input) {
-			testInput(input, "enum_header");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"Enum()",
-			"Enum(extends, Two)",
-		})
-		void fail_enum_header_inside_no_rule(String input) {
-			testInputNoRule(input, "enum_header");
-		}
-	}
-
-	@Nested
-	@DisplayName("Statements")
-	class Statements {
-		@Test
-		void statement_expression() {
-			testInput("2 + 2", "statement");
-		}
-
-		@Test
-		void statement_defer_expression() {
-			testInput("defer 1 + 1", "statement");
-		}
-
-		@Test
-		void statement_break() {
-			testInput("break", "statement");
-		}
-
-		@Test
-		void statement_continue() {
-			testInput("continue", "statement");
-		}
-
-		@Test
-		void statement_return() {
-			testInput("return", "statement");
-		}
-
-		@Test
-		void statement_return_expression() {
-			testInput("return 2 + 2", "statement");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"loop {}",
-			"loop while true {}",
-			"loop -> i {}",
-			"loop while true -> i {}",
-			"loop -> i while true {}",
-			"loop over my_list {}",
-			"loop over my_list while true {}",
-			"loop while true over my_list {}",
-			"loop over my_list -> e {}",
-			"loop over my_list -> e while true {}",
-			"loop while true over my_list -> e {}",
-			"loop over my_list -> i, e {}",
-			"loop over my_list -> i, e while true {}",
-			"loop while true over my_list -> i, e {}",
-			"loop from 1 {}",
-			"loop from 1 to 1 {}",
-			"loop from 1 by 1 {}",
-			"loop from 1 to 1 by 1 {}",
-			"loop from 1 by 1 to 1 {}",
-			"loop to 1 {}",
-			"loop to 1 by 1 {}",
-			"loop to 1 from 1 {}",
-			"loop to 1 by 1 from 1 {}",
-			"loop to 1 from 1 by 1 {}",
-			"loop by 1 {}",
-			"loop by 1 to 1 {}",
-			"loop by 1 from 1 {}",
-			"loop by 1 to 1 from 1 {}",
-			"loop by 1 from 1 to 1 {}",
-			"loop from 1 -> i {}",
-			"loop from 1 to 1 -> i {}",
-			"loop from 1 by 1 -> i {}",
-			"loop from 1 to 1 by 1 -> i {}",
-			"loop from 1 by 1 to 1 -> i {}",
-			"loop to 1 -> i {}",
-			"loop to 1 by 1 -> i {}",
-			"loop to 1 from 1 -> i {}",
-			"loop to 1 by 1 from 1 -> i {}",
-			"loop to 1 from 1 by 1 -> i {}",
-			"loop by 1 -> i {}",
-			"loop by 1 to 1 -> i {}",
-			"loop by 1 from 1 -> i {}",
-			"loop by 1 to 1 from 1 -> i {}",
-			"loop by 1 from 1 to 1 -> i {}",
-			"loop while true from 1 {}",
-			"loop while true from 1 to 1 {}",
-			"loop while true from 1 by 1 {}",
-			"loop while true from 1 to 1 by 1 {}",
-			"loop while true from 1 by 1 to 1 {}",
-			"loop while true to 1 {}",
-			"loop while true to 1 by 1 {}",
-			"loop while true to 1 from 1 {}",
-			"loop while true to 1 by 1 from 1 {}",
-			"loop while true to 1 from 1 by 1 {}",
-			"loop while true by 1 {}",
-			"loop while true by 1 to 1 {}",
-			"loop while true by 1 from 1 {}",
-			"loop while true by 1 to 1 from 1 {}",
-			"loop while true by 1 from 1 to 1 {}",
-			"loop while true from 1 -> i {}",
-			"loop while true from 1 to 1 -> i {}",
-			"loop while true from 1 by 1 -> i {}",
-			"loop while true from 1 to 1 by 1 -> i {}",
-			"loop while true from 1 by 1 to 1 -> i {}",
-			"loop while true to 1 -> i {}",
-			"loop while true to 1 by 1 -> i {}",
-			"loop while true to 1 from 1 -> i {}",
-			"loop while true to 1 by 1 from 1 -> i {}",
-			"loop while true to 1 from 1 by 1 -> i {}",
-			"loop while true by 1 -> i {}",
-			"loop while true by 1 to 1 -> i {}",
-			"loop while true by 1 from 1 -> i {}",
-			"loop while true by 1 to 1 from 1 -> i {}",
-			"loop while true by 1 from 1 to 1 -> i {}",
-			"loop from 1 while true {}",
-			"loop from 1 to 1 while true {}",
-			"loop from 1 by 1 while true {}",
-			"loop from 1 to 1 by 1 while true {}",
-			"loop from 1 by 1 to 1 while true {}",
-			"loop to 1 while true {}",
-			"loop to 1 by 1 while true {}",
-			"loop to 1 from 1 while true {}",
-			"loop to 1 by 1 from 1 while true {}",
-			"loop to 1 from 1 by 1 while true {}",
-			"loop by 1 while true {}",
-			"loop by 1 to 1 while true {}",
-			"loop by 1 from 1 while true {}",
-			"loop by 1 to 1 from 1 while true {}",
-			"loop by 1 from 1 to 1 while true {}",
-			"loop from 1 -> i while true {}",
-			"loop from 1 to 1 -> i while true {}",
-			"loop from 1 by 1 -> i while true {}",
-			"loop from 1 to 1 by 1 -> i while true {}",
-			"loop from 1 by 1 to 1 -> i while true {}",
-			"loop to 1 -> i while true {}",
-			"loop to 1 by 1 -> i while true {}",
-			"loop to 1 from 1 -> i while true {}",
-			"loop to 1 by 1 from 1 -> i while true {}",
-			"loop to 1 from 1 by 1 -> i while true {}",
-			"loop by 1 -> i while true {}",
-			"loop by 1 to 1 -> i while true {}",
-			"loop by 1 from 1 -> i while true {}",
-			"loop by 1 to 1 from 1 -> i while true {}",
-			"loop by 1 from 1 to 1 -> i while true {}",
-		})
-		void statement_loop(String input) {
-			testInput(input, "loop");
-		}
-
-		@Test
-		void statement_declaration_const_assign() {
-			testInput("const name = 2 + 2", "declaration");
-		}
-
-		@Test
-		void statement_declaration_let_assign() {
-			testInput("let name = 2 + 2", "declaration");
-		}
-
-		@Test
-		void statement_declaration_let_mut_assign() {
-			testInput("let mut name = 2 + 2", "declaration");
-		}
-
-		@Test
-		void statement_declaration_let_sealed_assign() {
-			testInput("let sealed name = 2 + 2", "declaration");
-		}
-
-		@Test
-		void statement_declaration_const_type_assign() {
-			testInput("const Int name = 2 + 2", "declaration");
-		}
-
-		@Test
-		void statement_declaration_let_type_assign() {
-			testInput("let Int name = 2 + 2", "declaration");
-		}
-
-		@Test
-		void statement_declaration_let_mut_type_assign() {
-			testInput("let mut Int name = 2 + 2", "declaration");
-		}
-
-		@Test
-		void statement_declaration_let_sealed_type_assign() {
-			testInput("let sealed Int name = 2 + 2", "declaration");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"@Lmao\n",
-			"@Lmao()\n",
-			"@Lmao(1)\n",
-			"@Lmao(pineapple=1)\n",
-			"@Lmao(pineapple=1, pizza)\n",
-			"@Lmao\n@Lmao;@Lmao\n",
-		})
-		void statement_declaration_decorators(String input) {
-			testInput(input, "decorator_chain");
-		}
-
-		@Test
-		void statement_typedef() {
-			testInput("type MyType = Int", "typedef");
-		}
-
-		@Test
-		void statement_if() {
-			testInput("if 2 + 2 { 2 + 2 }", "if_");
-		}
-
-		@Test
-		void statement_elif() {
-			testInput("elif 2 + 2 { 2 + 2 }", "elif");
-		}
-
-		@Test
-		void statement_else() {
-			testInput("else { 2 + 2 }", "else_");
-		}
-
-		@Test
-		void statement_if_elif() {
-			testInput("if 2 + 2 { 2 + 2 } elif 2 + 2 { 2 + 2 }", "if_");
-		}
-
-		@Test
-		void statement_if_else() {
-			testInput("if 2 + 2 { 2 + 2 } else { 2 + 2 }", "if_");
-		}
-
-		@Test
-		void statement_if_elif_else() {
-			testInput("if 2 + 2 { 2 + 2 } elif 2 + 2 { 2 + 2 } else { 2 + 2 }", "if_");
-		}
-
-		@Test
-		void statement_if_elif_elif_else() {
-			testInput("if 2 + 2 { 2 + 2 } elif 2 + 2 { 2 + 2 } elif 2 + 2 { 2 + 2 } else { 2 + 2 }", "if_");
-		}
-
-		@Test
-		void statement_case() {
-			testInput("case 2 + 2 { 2 + 2 }", "case_");
-		}
-
-		@Test
-		void statement_case_multi() {
-			testInput("case 2 + 2, 2 + 2 { 2 + 2 }", "case_");
-		}
-
-		@Test
-		void statement_switch_case() {
-			testInput("switch 2 + 2 case 2 + 2 { 2 + 2 }", "switch_");
-		}
-
-		@Test
-		void statement_switch_case_else() {
-			testInput("switch 2 + 2 case 2 + 2 { 2 + 2 } else { 2 + 2 }", "switch_");
-		}
-
-		@Test
-		void statement_switch_case_case_multi() {
-			testInput("switch 2 + 2 case 2 + 2, 2 + 2 { 2 + 2 } case 2 + 2 { 2 + 2 }", "switch_");
-		}
-
-		@Test
-		void statement_switch_case_case_multi_else() {
-			testInput("switch 2 + 2 case 2 + 2, 2 + 2 { 2 + 2 } case 2 + 2 { 2 + 2 } else { 2 + 2 }", "switch_");
-		}
-
-		@Test
-		void statement_block() {
-			testInput("{ 2 + 2 }", "statement");
-		}
-
-		@Test
-		void defer_statement_block() {
-			testInput("defer { 2 + 2 }", "statement");
-		}
-
-		@Test
-		void statement_throw() {
-			testInput("throw (1 + 2) * 5", "throw_");
-		}
-
-		@Test
-		void fail_statement_break() {
-			testInputPartialMatch("break 5", "statement");
-		}
-
-		@Test
-		void fail_statement_continue() {
-			testInputPartialMatch("continue 6", "statement");
-		}
-
-		@Test
-		void fail_statement_declaration_const() {
-			testInputNoRule("const name", "declaration");
-		}
-
-		@Test
-		void fail_statement_declaration_let() {
-			testInputNoRule("let name", "declaration");
-		}
-
-		@Test
-		void fail_statement_declaration_let_mut() {
-			testInputNoRule("let mut name", "declaration");
-		}
-
-		@Test
-		void fail_statement_declaration_let_mut_sealed() {
-			testInputNoRule("let mut sealed name", "declaration");
-		}
-
-		@Test
-		void fail_statement_declaration_let_sealed_mut() {
-			testInputNoRule("let sealed mut name", "declaration");
-		}
-
-		@Test
-		void fail_statement_switch_else() {
-			testInputNoRule("switch 2 + 2 else { 2 + 2 }", "switch_");
-		}
-
-		@Test
-		void fail_statement_if_else_elif() {
-			testInputPartialMatch("if 2 + 2 {} else {} elif 2 + 2", "if_");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			// Range keyword appears more than once
-			// "from" twice
-			"loop from 1 from 2 {}",
-			// "to" twice
-			"loop to 1 to 2 {}",
-			// "by" twice
-			"loop by 1 by 2 {}",
-			// "from" twice with other range parts
-			"loop from 1 from 2 to 3 {}",
-			"loop from 1 to 2 from 3 {}",
-			// "to" twice with other range parts
-			"loop from 1 to 2 to 3 {}",
-			"loop to 1 from 2 to 3 {}",
-			// "by" twice with other range parts
-			"loop from 1 to 2 by 1 by 2 {}",
-			"loop by 1 from 2 to 3 by 4 {}",
-			// with arrow capture
-			"loop from 1 from 2 -> i {}",
-			"loop to 1 to 2 -> i {}",
-			"loop by 1 by 2 -> i {}",
-			// with while
-			"loop while true from 1 from 2 {}",
-			"loop while true to 1 to 2 {}",
-			"loop while true by 1 by 2 {}",
-
-			// Two "while" sections — one at beginning and one at end
-			"loop while true over my_list while true {}",
-			"loop while true from 1 to 2 while true {}",
-			"loop while true -> i while true {}",
-			"loop while true while true {}",
-			"loop while true over my_list -> e while true {}",
-			"loop while true from 1 to 2 by 1 -> i while true {}",
-			"loop while true by 1 from 1 to 1 while true {}",
-
-			// More than one arrow capture (non-"over" loops)
-			"loop -> i, e {}",
-			"loop -> i, e while true {}",
-			"loop while true -> i, e {}",
-			"loop from 1 -> i, e {}",
-			"loop from 1 to 2 -> i, e {}",
-			"loop from 1 to 2 by 1 -> i, e {}",
-			"loop to 1 -> i, e {}",
-			"loop by 1 -> i, e {}",
-			"loop from 1 -> i, e while true {}",
-			"loop while true from 1 to 2 -> i, e {}",
-
-			// Range AND "over" in the same loop header
-			"loop over my_list from 1 {}",
-			"loop over my_list to 1 {}",
-			"loop over my_list by 1 {}",
-			"loop from 1 over my_list {}",
-			"loop to 1 over my_list {}",
-			"loop by 1 over my_list {}",
-			"loop over my_list from 1 to 2 {}",
-			"loop from 1 to 2 over my_list {}",
-			"loop over my_list from 1 to 2 by 1 {}",
-			"loop from 1 to 2 by 1 over my_list {}",
-			// with while
-			"loop while true over my_list from 1 {}",
-			"loop while true from 1 over my_list {}",
-			// with arrow capture
-			"loop over my_list from 1 -> i {}",
-			"loop from 1 over my_list -> i {}",
-			"loop over my_list from 1 to 2 -> i, e {}",
-
-			// More than one "over"
-			"loop over my_list over my_other_list {}",
-			"loop over my_list over my_other_list -> e {}",
-			"loop over my_list over my_other_list -> i, e {}",
-			"loop while true over my_list over my_other_list {}",
-			"loop over my_list over my_other_list while true {}",
-			"loop while true over my_list over my_other_list -> i, e {}",
-			"loop while true over my_list over my_other_list -> e while true {}",
-		})
-		void fail_statement_loop(String input) {
-			testInputNoRule(input, "loop");
-		}
-	}
-
-	@Nested
-	@DisplayName("Expressions")
-	class Expression {
-		@ParameterizedTest
-		@CsvSource({
-			".=,  expression_assignment",
-			"+=,  expression_assignment",
-			"-=,  expression_assignment",
-			"*=,  expression_assignment",
-			"**=, expression_assignment",
-			"/=,  expression_assignment",
-			"//=, expression_assignment",
-			"%=,  expression_assignment",
-			"%%=, expression_assignment",
-			"|=,  expression_assignment",
-			"&=,  expression_assignment",
-			"~=,  expression_assignment",
-			"^=,  expression_assignment",
-			"<<=, expression_assignment",
-			">>=, expression_assignment",
-			"+=+, expression_assignment",
-			"??=, expression_assignment",
-			"=,   expression_assignment",
-			"or,  expression_logical_or",
-			"??,  expression_logical_or",
-			"and,  expression_logical_and",
-			"<,  expression_cmp",
-			">,  expression_cmp",
-			"<=,  expression_cmp",
-			">=,  expression_cmp",
-			"==,  expression_cmp",
-			"!=,  expression_cmp",
-			"is,  expression_cmp",
-			"in,  expression_cmp",
-			"|>, expression_func_pipe",
-			"|,  expression_bit_or",
-			"^,  expression_bit_xor",
-			"&,  expression_bit_and",
-			"<<,  expression_bit_shift",
-			">>,  expression_bit_shift",
-			"+,  expression_add",
-			"++,  expression_add",
-			"-,  expression_add",
-			"*,  expression_mult",
-			"**,  expression_mult",
-			"/,  expression_mult",
-			"//,  expression_mult",
-			"%,  expression_mult",
-			"%%,  expression_mult",
-			"**,  expression_exp",
-		})
-		void binary(String op, String rule) {
-			testInput("i" + op + "i", rule);
-			testInput("i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i", rule);
-		}
-
-		@Test
-		void assignment() {
-			testInput("a = b = c = d = e = f = g = 10", "expression_assignment");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"((x + y)\n * (a\n - b)) / (c ** 2)",
-		})
-		void expression(String expr) {
-			testInput(expr, "expression");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"yield a = 10 * -2",
-			"yield yield yield yield 5",
-		})
-		void yield(String expr) {
-			testInput(expr, "expression_yield");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"+",
-			"-",
-			"~",
-			"+ + + + + + +",
-			"- - - - - - -",
-			"~ ~ ~ ~ ~ ~ ~",
-		})
-		void unary(String op) {
-			testInput(op + "0", "expression_unary");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"not",
-			"not not not not not not ",
-		})
-		void not(String op) {
-			testInput(op + "0", "expression_logical_not");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"\"this is a string\"",
-			"`this is a raw string`",
-			"10",
-			"10.20",
-			"true",
-			"false",
-			"null",
-			"super",
-			"self",
-			"to",
-			"from",
-			"by",
-			"over",
-			"while",
-			"myVariable",
-			"myGenericFunc[Int]",
-			"MyObject{}",
-			"MyGenericObject[Int]{}",
-			"Array[Int, 5]{}",
-			"List[Int]{}",
-			"Class(){}",
-			"Class[Any A, Any B]()[Int, Float]{}",
-			"Map[Keys, Values]{}",
-			"🪐",
-			"(1 + -1 * ~1 ** 1)",
-			"Func(:){}",
-			"Func(){}",
-			"Func[Any T](:){}",
-			"Coroutine(:){}",
-			"Coroutine(){}",
-			"Coroutine[Any A, Any B](:){}",
-			"select(true: true)",
-			"object{}"
-		})
-		void atom(String word) {
-			testInput(word, "expression_atom");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"select(true: true)",
-			"select 0 (0: \"is zero\", true: \"is not zero\")",
-			"select 0(0: \"is zero\", true: \"is not zero\",)",
-			"select 0(0: \"is zero\",\ntrue: \"is not zero\",\n)",
-			"select 0(0: \"is zero\",\ntrue: \"is not zero\",else: 0\n)",
-			"select 0(0: \"is zero\",\ntrue: \"is not zero\",else: 0,\n)",
-			"select 0(else: 0\n)",
-			"select 0(else: 0,\n)",
-		})
-		void select(String expr) {
-			testInput(expr, "expression_postfix");
-		}
-
-		@Test
-		void indexing() {
-			testInput("x[10]", "expression_postfix");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"x()",
-			"x(_)",
-			"x(_, _,\n_)",
-			"x(1+1,\ntrue, false)",
-			"x(first=\"first\", false, _)",
-		})
-		void function_call(String expr) {
-			testInput(expr, "expression_postfix");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"MyOjbect{}",
-			"MyOjbect{_}",
-			"MyOjbect{_, _,\n_}",
-			"MyOjbect{1+1,\ntrue, false}",
-			"MyOjbect{first=\"first\", false, _}",
-		})
-		void new_object_instance(String expr) {
-			testInput(expr, "expression_atom");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"Array[Int, 5]{}",
-			"Array[Int, 5]{_}",
-			"Array[Int, 5]{_, _,\n_}",
-			"Array[Int, 5]{1+1,\ntrue, false}",
-			"Array[Int, 5]{first=\"first\", false, _}",
-			"Array[Int, 5]{}",
-			"Array[Int, 5]{_}",
-			"Array[Int, 5]{_, _,\n_}",
-			"Array[Int, 5]{1+1,\ntrue, false}",
-			"Array[Int, 5]{first=\"first\", false, _}",
-			"Array[Int, 5]{}",
-			"Array[Int, 5]{_}",
-			"Array[Int, 5]{_, _,\n_}",
-			"Array[Int, 5]{1+1,\ntrue, false}",
-			"Array[Int, 5]{first=\"first\", false, _}",
-			"Array[Int, 5]{}",
-			"Array[Int, 5]{_}",
-			"Array[Int, 5]{_, _,\n_}",
-			"Array[Int, 5]{1+1,\ntrue, false}",
-			"Array[Int, 5]{first=\"first\", false, _}",
-		})
-		void new_array_instance(String expr) {
-			testInput(expr, "expression_atom");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"c{}",
-			"c{1, 2, 3, 4, 5}",
-			"c{1}",
-			"c{\"a\": 10}",
-			"c{\"a\": 10, c: 10.10}",
-		})
-		void composite(String composite) {
-			testInput(composite, "composite");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"Class(){}",
-			"Class(){_}",
-			"Class(){_, _,\n_}",
-			"Class(){1+1,\ntrue, false}",
-			"Class(){first=\"first\", false, _}",
-		})
-		void new_class_instancing(String expr) {
-			testInput(expr, "expression_atom");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"Map[Bool, Bool]{}",
-			"Map[Bool, Bool]{true: false}",
-			"Map[Bool, Bool]{true: false,\nfalse: true}",
-		})
-		void new_map_instance(String expr) {
-			testInput(expr, "expression_atom");
-		}
-
-		@Test
-		void member_access() {
-			testInput("x.y.z", "expression_postfix");
-		}
-
-		@Test
-		void null_dereferencing() {
-			testInput("x?.y?.z", "expression_postfix");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"((a + b) * (c - d)) / (e ** 2)",
-			"(x * y + z) ** (a - b * c)",
-			"((a / b) ** c) * ((d + e) - f)",
-			"obj.method().field[0].nested?.value",
-			"data[i][j].transform().result?.output",
-			"api.get(\"users\")[0]?.name.toLowerCase()",
-			"compute((x + y) * 2, transform(a, b, c), result ?? default)",
-			"filter(data, Func(Int item: bool){item.value > threshold and item.active})",
-			"((flags & MASK) | NEW_BIT) ^ (old_flags << 2)",
-			"(bits >> 4) & 0xFF | ((high & 0xF0) << 8)",
-			"~(a & b) | (c ^ d) & (e | f)",
-			"x > 0 and x < 100 or x == -1",
-			"a >= b and b >= c and c >= d",
-			"(value in range) and (myType is ValidType) and (status != Error)",
-			"user?.name ?? profile?.displayName ?? \"Anonymous\"",
-			"config?.settings?.theme ?? defaults.theme ?? \"dark\"",
-			"data[key] ?? cache[key] ?? fetch(key) ?? null",
-			"result += compute(x) * factor ?? default_value",
-			"matrix[i][j] *= scale_factor + offset",
-			"accumulator.= transform(value, Func(Int v: Int){v ** 2})",
-			"not not not not not true",
-			"-(+x) * ~(flags & mask)",
-			"not (enabled and not disabled)",
-			"-velocity.y + ~~Math.floor(delta * 60)",
-			"prefix ++ middle ++ suffix ++ extension",
-			"path ++ \"/\" ++ filename ++ \".txt\"",
-			"select condition (true: positive_result, false: negative_result)",
-			"select condition (else: 0)",
-			"select x > 0 (true: x ** 2, false: -x, else: \"potato\") + offset",
-			"items.filter(Func(Int x: bool){x.valid and not x.expired})",
-			"Class(x = value, y = other){compute(), transform(), validate()}",
-			"Config{host=\"localhost\", port=8080, secure=true}",
-			"Math.sqrt(x ** 2 + y ** 2) / magnitude",
-			"(sin(angle) * radius) + (cos(angle) * radius)",
-			"((((a))))",
-			"list[0][1][2].value",
-			"func()()(arg1, arg2)",
-			"~flags[i] & (mask << shift) | (data >> bits) ^ constant",
-			"(base + offset * scale) ** exponent / divisor % modulo",
-			"player.position.x += velocity.x * deltaTime * speed_multiplier",
-			"isValid = (age >= 18) and (email != \"\") and (terms_accepted)",
-			"(x +\ny -\nz)",
-			"a[\n0\n][\n1\n]",
-			"(enabled or force_run) and not (disabled or error_state)",
-			"((a and b) or (c and d)) and not (e or f)",
-			"x += y *= z **= 2",
-			"flags |= mask &= ~disabled_bits",
-			"builder.withName(name).withAge(age).withEmail(email).build()",
-			"query.match(\"*\").from(\"users\").where(condition).limit(10)",
-			"a + b * c ** d / e - f % g",
-			"x << 2 + y >> 3 & mask | flags",
-			"not a and b or c and not d",
-			"data |> Func(Int x: Int){x * 2}",
-			"lmao <= data |> Func(Int x: Int){x * 2} | false",
-			"lmao | data |> Func(Int x: Int){x * 2} == false",
-		})
-		void complexExpression(String expr) {
-			testInput(expr, "expression");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p",
-			"x[0][1][2][3][4][5]",
-			"f()()()()()",
-			"a + b + c + d + e + f + g + h + i + j",
-			"x * y * z * w * v * u * t * s",
-			"a and b and c and d and e and f",
-			"x or y or z or w or v or u",
-			"obj.deep.nested[i].method(a, b, c)[j]?.field.value",
-		})
-		void deeplyNestedExpression(String expr) {
-			testInput(expr, "expression");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"((x += 1) *= 2) **= 3",
-			"a = b = c = d = e = 0",
-			"x += y -= z *= w /= v %= 2",
-			"a ?? b ?? c ?? d ?? e ?? f ?? null",
-			"x?.y?.z ?? w?.v?.u ?? fallback",
-			"total += items[i].price * (1.0 + tax_rate) ?? 0",
-			"accumulator.= transform(Func(Int x: Int){x + offset})",
-		})
-		void assignmentExpression(String expr) {
-			testInput(expr, "expression");
-		}
-
-		@Test
-		void keypair_clause() {
-			testInput("\"key\" : value", "keypair_clause");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"object{}",
-			"object { }",
-			"object{\n\n\n;;;}",
-			"object{;\n;\nlet Int i = 10;\n;\n}",
-			"object{;\n;\nlet Int i = 10;\nlet f = Func(:){}}"
-		})
-		void objectLiteralExpression(String expr) {
-			testInput(expr, "object_literal");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"try func()",
-			"try thing.my_func()",
-			"try lmao[10].banana(1, 2, 3)",
-			"try pineapple() else err {}",
-			"try pineapple() else err {print(\"sadness\")}",
-		})
-		void tryElseExpression(String expr) {
-			testInput(expr, "try_else");
-		}
-	}
-
-	@Nested
-	@DisplayName("Types")
-	class Type {
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"Symbol",
-			"Int",
-			"I",
-			"Array[Int, 5]",
-			"Array[Int?, 5]",
-			"Array[( Int | Float ) & Pineapple?, 2]",
-			"Array[( Int | Float ) & Pineapple, 10 * 2 + 3 * hello()]",
-			"Func(:)",
-			"Func(: Int)",
-			"Func(Int a: Int?)",
-			"Func(Int? a, Int b = 0: Int)",
-			"Func(( Int? | Float ) & Pineapple a = 0, ( Int | Float )? & Pineapple b = 0: ( Int | Float? ) & Pineapple)",
-			"Func(a, b, c, ...d)!",
-			"(Func(:)! Error)",
-			"(Func(: Int) !SoHunry)",
-			"(Func(Int a: Int?)! Yummerinos)",
-			"(Func(Int? a, Int b = 0: Int)! Int | Float & Null)",
-			"(Func(( Int? | Float ) & Pineapple a = 0, ( Int | Float )? & Pineapple b = 0: ( Int | Float? ) & Pineapple) ! Int)",
-			"Coroutine(:)",
-			"Coroutine(Int a: Int?)",
-			"Coroutine(a, b, c, ...d) yield",
-			"(Coroutine(:) yield : Int)",
-			"(Coroutine(:) yield String :)",
-			"(Coroutine(:) yield String : Int)",
-			"Class()",
-			"Class(let Int a)",
-			"Class(let ( Int | Float ) & Pineapple a = 0,)",
-			"Enum(ONE, TWO)",
-			"Enum(extends Other)",
-			"Enum(extends Other, ONE, TWO)",
-		})
-		void atomic(String type) {
-			testInput(type + "?", "type_nullable");
-			testInput(type, "type_atomic");
-		}
-
-		@ParameterizedTest
-		@ValueSource(strings = {
-			"_",
-			"(Int &)",
-			"(Int & & Int)",
-			"(Int |)",
-			"(Int | | Int)",
-			"Array[Int, 5",
-			"Array[Int?, 5",
-			"Array[( Int | Float ) & Pineapple?, 2",
-			"Array[( Int | Float ) & Pineapple, 10 * 2 + 3 * hello()",
-			"Func(:",
-			"Func(: Int",
-			"Func(Int a: Int",
-			"Func(Int a, Int b = 0: Int",
-			"Func(( Int | Float  & Pineapple a = 0, ( Int | Float  & Pineapple b = 0: ( Int | Float  & Pineapple",
-			"Class(",
-			"Class(let Int a",
-			"Class(let ( Int | Float  & Pineapple a = 0,",
-			"Enum(",
-			"Enum()",
-			"Enum(extends Other",
-			"Enum(One Two)",
-			"Enum(One",
-			"Enum(One, Two",
-		})
-		void fail_atomic(String type) {
-			testInputNoRule(type + "??", "type_nullable");
-			testInputNoRule(type, "type_atomic");
-		}
-	}
-
-	@Test
-	void var_args() {
-		testInput("Int ... argument", "var_args");
-	}
+	// @Nested
+	// @DisplayName("Files")
+	// class Files {
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		":: main",
+	// 		":: main;",
+	// 		":: main; :: using Math.FourRedSevenGreen",
+	// 		";;::main;;",
+	// 		":: main; :: thing \"other\"; print(10)",
+	// 	})
+	// 	void file_main_program(String input) {
+	// 		testInput(input, "main_program");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		":: classname Test",
+	// 		":: classname Test; :: using Math.touchEuler",
+	// 		":: classname Test; :: thing",
+	// 		":: classname Test; extends One.Two; let Int i = 10",
+	// 		":: namespace Hi; :: classname YourMom; constructor() {}",
+	// 	})
+	// 	void file_class_program(String input) {
+	// 		testInput(input, "class_program");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		":: namespace YourMom",
+	// 		":: namespace YourMom; :: using Math",
+	// 		":: namespace YourMom; :: thing \"value\"",
+	// 		":: namespace YourMom; type Thing = Class()",
+	// 		":: namespace YourMom; :: thing \"value\"; let Int i = 24",
+	// 	})
+	// 	void file_namespace_program(String input) {
+	// 		testInput(input, "namespace_program");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"",
+	// 		";;:: thing \"value\";;",
+	// 		":: thing \"value\"",
+	// 		"type Thing = Class()",
+	// 		";;type Thing = Class();;",
+	// 		";;;:: thing \"value\"; :: thing; type Thing = Class(); let Int i = potato;;",
+	// 		":: using Potato",
+	// 		":: using Lmao, Language.AST.Statements.ForLoop",
+	// 		":: using Potato;:: using Lmao, Language.AST.Statements.ForLoop",
+	// 		":: using Potato;:: thing \"lmao\"",
+	// 		":: thing \"lmao\";:: using Potato",
+	// 		":: using Lmao, Language.AST.Statements.ForLoop",
+	// 		":: using Potato;:: using Lmao, Language.AST.Statements.ForLoop",
+	// 	})
+	// 	void file_implicit_namespace_program(String input) {
+	// 		testInput(input, "implicit_namespace_program");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"::;",
+	// 		":: thing value; print()",
+	// 		"print(); :: main",
+	// 		":: classname Hello; :: main; constructor()",
+	// 		"print()",
+	// 		"let Int i = 10",
+	// 		"",
+	// 	})
+	// 	void fail_file_main_program_no_rule(String input) {
+	// 		testInputNoRule(input, "main_program");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		":: classname Hello; print()",
+	// 		":: print()",
+	// 		":: classname Hello; :: classname Hello; let Int i = 10",
+	// 		":: classname Hello; :: namespace Hello",
+	// 		":: thing; :: classname Hello; let Int i = 20",
+	// 	})
+	// 	void fail_file_class_program_no_rule(String input) {
+	// 		testInputNoRule(input, "class_program");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		":: namespace Hello; :: classname Hello; let Int i = 10",
+	// 		":: namespace; let Int i = 10",
+	// 		":: namespace Hello; :: namespace Hello; let Int i = 10",
+	// 		":: namespace Hello; :: main; let Int i = 10",
+	// 	})
+	// 	void fail_file_namespace_program_no_rule(String input) {
+	// 		testInputNoRule(input, "namespace_program");
+	// 	}
+	// }
+
+	// @Nested
+	// @DisplayName("Classes")
+	// class Classes {
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"extends One;;const i = 10",
+	// 		"let Int j = 23",
+	// 		"alias(Two).i -> j",
+	// 	})
+	// 	void class_top_level(String input) {
+	// 		testInput(input, "class_top_level");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"Class(extends One, Two, thing = 3, let item = false)",
+	// 		"Class(const a = 5, alias(Two).three -> item)",
+	// 		"Class(extends Two)",
+	// 		"Class(extends SomeClass, AnotherClass let Int i = 5 constructor(){} cast(FuckAssType){1} operator+(RightType r : ReturnType){} alias(SomeClass).origin -> target symbol = expression)",
+	// 		"Class()",
+	// 	})
+	// 	void class_header(String input) {
+	// 		testInput(input, "class_header");
+	// 	}
+
+	// 	@Test
+	// 	void class_extends() {
+	// 		testInput("extends Obj", "class_extends");
+	// 		testInput("extends Obj.Obj, Obj.Obj", "class_extends");
+	// 	}
+
+	// 	@Test
+	// 	void class_extends_access() {
+	// 		testInput("myObj", "symbol_chain");
+	// 		testInput("myObj.myVar", "symbol_chain");
+	// 		testInput("myObj.myVar0.myVar1.myVar2.myVar3.myVar4.myVar5.myVar6.myVar7.myVar8.myVar9.myVar10.myVar11.myVar12.myVar13.myVar14.myVar15.myVar16.myVar17.myVar18.myVar19.myVar20.myVar21.myVar22.myVar23.myVar24.myVar25.myVar26.myVar27.myVar28.myVar29.myVar30.myVar31.myVar32.myVar33.myVar34.myVar35.myVar36.myVar37.myVar38.myVar39.myVar40.myVar41.myVar42.myVar43.myVar44.myVar45.myVar46.myVar47.myVar48.myVar49.myVar50.myVar51.myVar52.myVar53.myVar54.myVar55", "symbol_chain");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"constructor(Int i, j, Int ... args) { 2 + 2 }",
+	// 		"constructor(){}",
+	// 	})
+	// 	void class_constructor(String input) {
+	// 		testInput(input, "constructor");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"(Int i)",
+	// 		"(i)",
+	// 		"(Int ... i)",
+	// 		"(j, Int _i, Float ... a_float)",
+	// 		"()",
+	// 		"(String ... text)",
+	// 	})
+	// 	void class_constructor_params(String input) {
+	// 		testInput(input, "constructor_params");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"a_symbol",
+	// 		"Int something",
+	// 		"Int thingie = 2 + 2",
+	// 	})
+	// 	void class_constructor_params_elm(String input) {
+	// 		testInput(input, "constructor_params_elm");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"cast(Int) { 2 + 2 }",
+	// 		"cast(Int)",
+	// 	})
+	// 	void class_cast(String input) {
+	// 		testInput(input, "cast");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"operator+ (Int thing: Int) { 2 + 2 }",
+	// 		"operator+ (Int thing: Int)",
+	// 	})
+	// 	void class_operator_overload(String input) {
+	// 		testInput(input, "operator_overload");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"+",
+	// 		"-",
+	// 		"*",
+	// 		"/",
+	// 		"%",
+	// 		"<",
+	// 		">",
+	// 		"++",
+	// 		"**",
+	// 		"//",
+	// 		"%%",
+	// 		"==",
+	// 		"[]",
+	// 	})
+	// 	void class_overridable(String input) {
+	// 		testInput(input, "overridable");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"alias (Thing.A).B -> C",
+	// 		"alias (Other).item -> whatever = 2 + 2",
+	// 	})
+	// 	void class_alias(String input) {
+	// 		testInput(input, "alias");
+	// 	}
+
+	// 	@Test
+	// 	void class_extends_assign() {
+	// 		testInput("four = 2 + 2", "extends_assign");
+	// 	}
+	// }
+
+	// @Nested
+	// @DisplayName("Enums")
+	// class Enums {
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"Enum(ONE, TWO, THREE)",
+	// 		"Enum(extends One)",
+	// 		"Enum(extends One, TWO, THREE)",
+	// 		"Enum(extends One.Two, THREE)",
+	// 	})
+	// 	void enum_header_inside(String input) {
+	// 		testInput(input, "enum_header");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"Enum()",
+	// 		"Enum(extends, Two)",
+	// 	})
+	// 	void fail_enum_header_inside_no_rule(String input) {
+	// 		testInputNoRule(input, "enum_header");
+	// 	}
+	// }
+
+	// @Nested
+	// @DisplayName("Statements")
+	// class Statements {
+	// 	@Test
+	// 	void statement_expression() {
+	// 		testInput("2 + 2", "statement");
+	// 	}
+
+	// 	@Test
+	// 	void statement_defer_expression() {
+	// 		testInput("defer 1 + 1", "statement");
+	// 	}
+
+	// 	@Test
+	// 	void statement_break() {
+	// 		testInput("break", "statement");
+	// 	}
+
+	// 	@Test
+	// 	void statement_continue() {
+	// 		testInput("continue", "statement");
+	// 	}
+
+	// 	@Test
+	// 	void statement_return() {
+	// 		testInput("return", "statement");
+	// 	}
+
+	// 	@Test
+	// 	void statement_return_expression() {
+	// 		testInput("return 2 + 2", "statement");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"loop {}",
+	// 		"loop while true {}",
+	// 		"loop -> i {}",
+	// 		"loop while true -> i {}",
+	// 		"loop -> i while true {}",
+	// 		"loop over my_list {}",
+	// 		"loop over my_list while true {}",
+	// 		"loop while true over my_list {}",
+	// 		"loop over my_list -> e {}",
+	// 		"loop over my_list -> e while true {}",
+	// 		"loop while true over my_list -> e {}",
+	// 		"loop over my_list -> i, e {}",
+	// 		"loop over my_list -> i, e while true {}",
+	// 		"loop while true over my_list -> i, e {}",
+	// 		"loop from 1 {}",
+	// 		"loop from 1 to 1 {}",
+	// 		"loop from 1 by 1 {}",
+	// 		"loop from 1 to 1 by 1 {}",
+	// 		"loop from 1 by 1 to 1 {}",
+	// 		"loop to 1 {}",
+	// 		"loop to 1 by 1 {}",
+	// 		"loop to 1 from 1 {}",
+	// 		"loop to 1 by 1 from 1 {}",
+	// 		"loop to 1 from 1 by 1 {}",
+	// 		"loop by 1 {}",
+	// 		"loop by 1 to 1 {}",
+	// 		"loop by 1 from 1 {}",
+	// 		"loop by 1 to 1 from 1 {}",
+	// 		"loop by 1 from 1 to 1 {}",
+	// 		"loop from 1 -> i {}",
+	// 		"loop from 1 to 1 -> i {}",
+	// 		"loop from 1 by 1 -> i {}",
+	// 		"loop from 1 to 1 by 1 -> i {}",
+	// 		"loop from 1 by 1 to 1 -> i {}",
+	// 		"loop to 1 -> i {}",
+	// 		"loop to 1 by 1 -> i {}",
+	// 		"loop to 1 from 1 -> i {}",
+	// 		"loop to 1 by 1 from 1 -> i {}",
+	// 		"loop to 1 from 1 by 1 -> i {}",
+	// 		"loop by 1 -> i {}",
+	// 		"loop by 1 to 1 -> i {}",
+	// 		"loop by 1 from 1 -> i {}",
+	// 		"loop by 1 to 1 from 1 -> i {}",
+	// 		"loop by 1 from 1 to 1 -> i {}",
+	// 		"loop while true from 1 {}",
+	// 		"loop while true from 1 to 1 {}",
+	// 		"loop while true from 1 by 1 {}",
+	// 		"loop while true from 1 to 1 by 1 {}",
+	// 		"loop while true from 1 by 1 to 1 {}",
+	// 		"loop while true to 1 {}",
+	// 		"loop while true to 1 by 1 {}",
+	// 		"loop while true to 1 from 1 {}",
+	// 		"loop while true to 1 by 1 from 1 {}",
+	// 		"loop while true to 1 from 1 by 1 {}",
+	// 		"loop while true by 1 {}",
+	// 		"loop while true by 1 to 1 {}",
+	// 		"loop while true by 1 from 1 {}",
+	// 		"loop while true by 1 to 1 from 1 {}",
+	// 		"loop while true by 1 from 1 to 1 {}",
+	// 		"loop while true from 1 -> i {}",
+	// 		"loop while true from 1 to 1 -> i {}",
+	// 		"loop while true from 1 by 1 -> i {}",
+	// 		"loop while true from 1 to 1 by 1 -> i {}",
+	// 		"loop while true from 1 by 1 to 1 -> i {}",
+	// 		"loop while true to 1 -> i {}",
+	// 		"loop while true to 1 by 1 -> i {}",
+	// 		"loop while true to 1 from 1 -> i {}",
+	// 		"loop while true to 1 by 1 from 1 -> i {}",
+	// 		"loop while true to 1 from 1 by 1 -> i {}",
+	// 		"loop while true by 1 -> i {}",
+	// 		"loop while true by 1 to 1 -> i {}",
+	// 		"loop while true by 1 from 1 -> i {}",
+	// 		"loop while true by 1 to 1 from 1 -> i {}",
+	// 		"loop while true by 1 from 1 to 1 -> i {}",
+	// 		"loop from 1 while true {}",
+	// 		"loop from 1 to 1 while true {}",
+	// 		"loop from 1 by 1 while true {}",
+	// 		"loop from 1 to 1 by 1 while true {}",
+	// 		"loop from 1 by 1 to 1 while true {}",
+	// 		"loop to 1 while true {}",
+	// 		"loop to 1 by 1 while true {}",
+	// 		"loop to 1 from 1 while true {}",
+	// 		"loop to 1 by 1 from 1 while true {}",
+	// 		"loop to 1 from 1 by 1 while true {}",
+	// 		"loop by 1 while true {}",
+	// 		"loop by 1 to 1 while true {}",
+	// 		"loop by 1 from 1 while true {}",
+	// 		"loop by 1 to 1 from 1 while true {}",
+	// 		"loop by 1 from 1 to 1 while true {}",
+	// 		"loop from 1 -> i while true {}",
+	// 		"loop from 1 to 1 -> i while true {}",
+	// 		"loop from 1 by 1 -> i while true {}",
+	// 		"loop from 1 to 1 by 1 -> i while true {}",
+	// 		"loop from 1 by 1 to 1 -> i while true {}",
+	// 		"loop to 1 -> i while true {}",
+	// 		"loop to 1 by 1 -> i while true {}",
+	// 		"loop to 1 from 1 -> i while true {}",
+	// 		"loop to 1 by 1 from 1 -> i while true {}",
+	// 		"loop to 1 from 1 by 1 -> i while true {}",
+	// 		"loop by 1 -> i while true {}",
+	// 		"loop by 1 to 1 -> i while true {}",
+	// 		"loop by 1 from 1 -> i while true {}",
+	// 		"loop by 1 to 1 from 1 -> i while true {}",
+	// 		"loop by 1 from 1 to 1 -> i while true {}",
+	// 	})
+	// 	void statement_loop(String input) {
+	// 		testInput(input, "loop");
+	// 	}
+
+	// 	@Test
+	// 	void statement_declaration_const_assign() {
+	// 		testInput("const name = 2 + 2", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void statement_declaration_let_assign() {
+	// 		testInput("let name = 2 + 2", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void statement_declaration_let_mut_assign() {
+	// 		testInput("let mut name = 2 + 2", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void statement_declaration_let_sealed_assign() {
+	// 		testInput("let sealed name = 2 + 2", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void statement_declaration_const_type_assign() {
+	// 		testInput("const Int name = 2 + 2", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void statement_declaration_let_type_assign() {
+	// 		testInput("let Int name = 2 + 2", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void statement_declaration_let_mut_type_assign() {
+	// 		testInput("let mut Int name = 2 + 2", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void statement_declaration_let_sealed_type_assign() {
+	// 		testInput("let sealed Int name = 2 + 2", "declaration");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"@Lmao\n",
+	// 		"@Lmao()\n",
+	// 		"@Lmao(1)\n",
+	// 		"@Lmao(pineapple=1)\n",
+	// 		"@Lmao(pineapple=1, pizza)\n",
+	// 		"@Lmao\n@Lmao;@Lmao\n",
+	// 	})
+	// 	void statement_declaration_decorators(String input) {
+	// 		testInput(input, "decorator_chain");
+	// 	}
+
+	// 	@Test
+	// 	void statement_typedef() {
+	// 		testInput("type MyType = Int", "typedef");
+	// 	}
+
+	// 	@Test
+	// 	void statement_if() {
+	// 		testInput("if 2 + 2 { 2 + 2 }", "if_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_elif() {
+	// 		testInput("elif 2 + 2 { 2 + 2 }", "elif");
+	// 	}
+
+	// 	@Test
+	// 	void statement_else() {
+	// 		testInput("else { 2 + 2 }", "else_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_if_elif() {
+	// 		testInput("if 2 + 2 { 2 + 2 } elif 2 + 2 { 2 + 2 }", "if_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_if_else() {
+	// 		testInput("if 2 + 2 { 2 + 2 } else { 2 + 2 }", "if_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_if_elif_else() {
+	// 		testInput("if 2 + 2 { 2 + 2 } elif 2 + 2 { 2 + 2 } else { 2 + 2 }", "if_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_if_elif_elif_else() {
+	// 		testInput("if 2 + 2 { 2 + 2 } elif 2 + 2 { 2 + 2 } elif 2 + 2 { 2 + 2 } else { 2 + 2 }", "if_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_case() {
+	// 		testInput("case 2 + 2 { 2 + 2 }", "case_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_case_multi() {
+	// 		testInput("case 2 + 2, 2 + 2 { 2 + 2 }", "case_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_switch_case() {
+	// 		testInput("switch 2 + 2 case 2 + 2 { 2 + 2 }", "switch_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_switch_case_else() {
+	// 		testInput("switch 2 + 2 case 2 + 2 { 2 + 2 } else { 2 + 2 }", "switch_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_switch_case_case_multi() {
+	// 		testInput("switch 2 + 2 case 2 + 2, 2 + 2 { 2 + 2 } case 2 + 2 { 2 + 2 }", "switch_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_switch_case_case_multi_else() {
+	// 		testInput("switch 2 + 2 case 2 + 2, 2 + 2 { 2 + 2 } case 2 + 2 { 2 + 2 } else { 2 + 2 }", "switch_");
+	// 	}
+
+	// 	@Test
+	// 	void statement_block() {
+	// 		testInput("{ 2 + 2 }", "statement");
+	// 	}
+
+	// 	@Test
+	// 	void defer_statement_block() {
+	// 		testInput("defer { 2 + 2 }", "statement");
+	// 	}
+
+	// 	@Test
+	// 	void statement_throw() {
+	// 		testInput("throw (1 + 2) * 5", "throw_");
+	// 	}
+
+	// 	@Test
+	// 	void fail_statement_break() {
+	// 		testInputPartialMatch("break 5", "statement");
+	// 	}
+
+	// 	@Test
+	// 	void fail_statement_continue() {
+	// 		testInputPartialMatch("continue 6", "statement");
+	// 	}
+
+	// 	@Test
+	// 	void fail_statement_declaration_const() {
+	// 		testInputNoRule("const name", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void fail_statement_declaration_let() {
+	// 		testInputNoRule("let name", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void fail_statement_declaration_let_mut() {
+	// 		testInputNoRule("let mut name", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void fail_statement_declaration_let_mut_sealed() {
+	// 		testInputNoRule("let mut sealed name", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void fail_statement_declaration_let_sealed_mut() {
+	// 		testInputNoRule("let sealed mut name", "declaration");
+	// 	}
+
+	// 	@Test
+	// 	void fail_statement_switch_else() {
+	// 		testInputNoRule("switch 2 + 2 else { 2 + 2 }", "switch_");
+	// 	}
+
+	// 	@Test
+	// 	void fail_statement_if_else_elif() {
+	// 		testInputPartialMatch("if 2 + 2 {} else {} elif 2 + 2", "if_");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		// Range keyword appears more than once
+	// 		// "from" twice
+	// 		"loop from 1 from 2 {}",
+	// 		// "to" twice
+	// 		"loop to 1 to 2 {}",
+	// 		// "by" twice
+	// 		"loop by 1 by 2 {}",
+	// 		// "from" twice with other range parts
+	// 		"loop from 1 from 2 to 3 {}",
+	// 		"loop from 1 to 2 from 3 {}",
+	// 		// "to" twice with other range parts
+	// 		"loop from 1 to 2 to 3 {}",
+	// 		"loop to 1 from 2 to 3 {}",
+	// 		// "by" twice with other range parts
+	// 		"loop from 1 to 2 by 1 by 2 {}",
+	// 		"loop by 1 from 2 to 3 by 4 {}",
+	// 		// with arrow capture
+	// 		"loop from 1 from 2 -> i {}",
+	// 		"loop to 1 to 2 -> i {}",
+	// 		"loop by 1 by 2 -> i {}",
+	// 		// with while
+	// 		"loop while true from 1 from 2 {}",
+	// 		"loop while true to 1 to 2 {}",
+	// 		"loop while true by 1 by 2 {}",
+
+	// 		// Two "while" sections — one at beginning and one at end
+	// 		"loop while true over my_list while true {}",
+	// 		"loop while true from 1 to 2 while true {}",
+	// 		"loop while true -> i while true {}",
+	// 		"loop while true while true {}",
+	// 		"loop while true over my_list -> e while true {}",
+	// 		"loop while true from 1 to 2 by 1 -> i while true {}",
+	// 		"loop while true by 1 from 1 to 1 while true {}",
+
+	// 		// More than one arrow capture (non-"over" loops)
+	// 		"loop -> i, e {}",
+	// 		"loop -> i, e while true {}",
+	// 		"loop while true -> i, e {}",
+	// 		"loop from 1 -> i, e {}",
+	// 		"loop from 1 to 2 -> i, e {}",
+	// 		"loop from 1 to 2 by 1 -> i, e {}",
+	// 		"loop to 1 -> i, e {}",
+	// 		"loop by 1 -> i, e {}",
+	// 		"loop from 1 -> i, e while true {}",
+	// 		"loop while true from 1 to 2 -> i, e {}",
+
+	// 		// Range AND "over" in the same loop header
+	// 		"loop over my_list from 1 {}",
+	// 		"loop over my_list to 1 {}",
+	// 		"loop over my_list by 1 {}",
+	// 		"loop from 1 over my_list {}",
+	// 		"loop to 1 over my_list {}",
+	// 		"loop by 1 over my_list {}",
+	// 		"loop over my_list from 1 to 2 {}",
+	// 		"loop from 1 to 2 over my_list {}",
+	// 		"loop over my_list from 1 to 2 by 1 {}",
+	// 		"loop from 1 to 2 by 1 over my_list {}",
+	// 		// with while
+	// 		"loop while true over my_list from 1 {}",
+	// 		"loop while true from 1 over my_list {}",
+	// 		// with arrow capture
+	// 		"loop over my_list from 1 -> i {}",
+	// 		"loop from 1 over my_list -> i {}",
+	// 		"loop over my_list from 1 to 2 -> i, e {}",
+
+	// 		// More than one "over"
+	// 		"loop over my_list over my_other_list {}",
+	// 		"loop over my_list over my_other_list -> e {}",
+	// 		"loop over my_list over my_other_list -> i, e {}",
+	// 		"loop while true over my_list over my_other_list {}",
+	// 		"loop over my_list over my_other_list while true {}",
+	// 		"loop while true over my_list over my_other_list -> i, e {}",
+	// 		"loop while true over my_list over my_other_list -> e while true {}",
+	// 	})
+	// 	void fail_statement_loop(String input) {
+	// 		testInputNoRule(input, "loop");
+	// 	}
+	// }
+
+	// @Nested
+	// @DisplayName("Expressions")
+	// class Expression {
+	// 	@ParameterizedTest
+	// 	@CsvSource({
+	// 		".=,  expression_assignment",
+	// 		"+=,  expression_assignment",
+	// 		"-=,  expression_assignment",
+	// 		"*=,  expression_assignment",
+	// 		"**=, expression_assignment",
+	// 		"/=,  expression_assignment",
+	// 		"//=, expression_assignment",
+	// 		"%=,  expression_assignment",
+	// 		"%%=, expression_assignment",
+	// 		"|=,  expression_assignment",
+	// 		"&=,  expression_assignment",
+	// 		"~=,  expression_assignment",
+	// 		"^=,  expression_assignment",
+	// 		"<<=, expression_assignment",
+	// 		">>=, expression_assignment",
+	// 		"+=+, expression_assignment",
+	// 		"??=, expression_assignment",
+	// 		"=,   expression_assignment",
+	// 		"or,  expression_logical_or",
+	// 		"??,  expression_logical_or",
+	// 		"and,  expression_logical_and",
+	// 		"<,  expression_cmp",
+	// 		">,  expression_cmp",
+	// 		"<=,  expression_cmp",
+	// 		">=,  expression_cmp",
+	// 		"==,  expression_cmp",
+	// 		"!=,  expression_cmp",
+	// 		"is,  expression_cmp",
+	// 		"in,  expression_cmp",
+	// 		"|>, expression_func_pipe",
+	// 		"|,  expression_bit_or",
+	// 		"^,  expression_bit_xor",
+	// 		"&,  expression_bit_and",
+	// 		"<<,  expression_bit_shift",
+	// 		">>,  expression_bit_shift",
+	// 		"+,  expression_add",
+	// 		"++,  expression_add",
+	// 		"-,  expression_add",
+	// 		"*,  expression_mult",
+	// 		"**,  expression_mult",
+	// 		"/,  expression_mult",
+	// 		"//,  expression_mult",
+	// 		"%,  expression_mult",
+	// 		"%%,  expression_mult",
+	// 		"**,  expression_exp",
+	// 	})
+	// 	void binary(String op, String rule) {
+	// 		testInput("i" + op + "i", rule);
+	// 		testInput("i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i" + op + "i", rule);
+	// 	}
+
+	// 	@Test
+	// 	void assignment() {
+	// 		testInput("a = b = c = d = e = f = g = 10", "expression_assignment");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"((x + y)\n * (a\n - b)) / (c ** 2)",
+	// 	})
+	// 	void expression(String expr) {
+	// 		testInput(expr, "expression");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"yield a = 10 * -2",
+	// 		"yield yield yield yield 5",
+	// 	})
+	// 	void yield(String expr) {
+	// 		testInput(expr, "expression_yield");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"+",
+	// 		"-",
+	// 		"~",
+	// 		"+ + + + + + +",
+	// 		"- - - - - - -",
+	// 		"~ ~ ~ ~ ~ ~ ~",
+	// 	})
+	// 	void unary(String op) {
+	// 		testInput(op + "0", "expression_unary");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"not",
+	// 		"not not not not not not ",
+	// 	})
+	// 	void not(String op) {
+	// 		testInput(op + "0", "expression_logical_not");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"\"this is a string\"",
+	// 		"`this is a raw string`",
+	// 		"10",
+	// 		"10.20",
+	// 		"true",
+	// 		"false",
+	// 		"null",
+	// 		"super",
+	// 		"self",
+	// 		"to",
+	// 		"from",
+	// 		"by",
+	// 		"over",
+	// 		"while",
+	// 		"myVariable",
+	// 		"myGenericFunc[Int]",
+	// 		"MyObject{}",
+	// 		"MyGenericObject[Int]{}",
+	// 		"Array[Int, 5]{}",
+	// 		"List[Int]{}",
+	// 		"Class(){}",
+	// 		"Class[Any A, Any B]()[Int, Float]{}",
+	// 		"Map[Keys, Values]{}",
+	// 		"🪐",
+	// 		"(1 + -1 * ~1 ** 1)",
+	// 		"Func(:){}",
+	// 		"Func(){}",
+	// 		"Func[Any T](:){}",
+	// 		"Coroutine(:){}",
+	// 		"Coroutine(){}",
+	// 		"Coroutine[Any A, Any B](:){}",
+	// 		"select(true: true)",
+	// 		"object{}"
+	// 	})
+	// 	void atom(String word) {
+	// 		testInput(word, "expression_atom");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"select(true: true)",
+	// 		"select 0 (0: \"is zero\", true: \"is not zero\")",
+	// 		"select 0(0: \"is zero\", true: \"is not zero\",)",
+	// 		"select 0(0: \"is zero\",\ntrue: \"is not zero\",\n)",
+	// 		"select 0(0: \"is zero\",\ntrue: \"is not zero\",else: 0\n)",
+	// 		"select 0(0: \"is zero\",\ntrue: \"is not zero\",else: 0,\n)",
+	// 		"select 0(else: 0\n)",
+	// 		"select 0(else: 0,\n)",
+	// 	})
+	// 	void select(String expr) {
+	// 		testInput(expr, "expression_postfix");
+	// 	}
+
+	// 	@Test
+	// 	void indexing() {
+	// 		testInput("x[10]", "expression_postfix");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"x()",
+	// 		"x(_)",
+	// 		"x(_, _,\n_)",
+	// 		"x(1+1,\ntrue, false)",
+	// 		"x(first=\"first\", false, _)",
+	// 	})
+	// 	void function_call(String expr) {
+	// 		testInput(expr, "expression_postfix");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"MyOjbect{}",
+	// 		"MyOjbect{_}",
+	// 		"MyOjbect{_, _,\n_}",
+	// 		"MyOjbect{1+1,\ntrue, false}",
+	// 		"MyOjbect{first=\"first\", false, _}",
+	// 	})
+	// 	void new_object_instance(String expr) {
+	// 		testInput(expr, "expression_atom");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"Array[Int, 5]{}",
+	// 		"Array[Int, 5]{_}",
+	// 		"Array[Int, 5]{_, _,\n_}",
+	// 		"Array[Int, 5]{1+1,\ntrue, false}",
+	// 		"Array[Int, 5]{first=\"first\", false, _}",
+	// 		"Array[Int, 5]{}",
+	// 		"Array[Int, 5]{_}",
+	// 		"Array[Int, 5]{_, _,\n_}",
+	// 		"Array[Int, 5]{1+1,\ntrue, false}",
+	// 		"Array[Int, 5]{first=\"first\", false, _}",
+	// 		"Array[Int, 5]{}",
+	// 		"Array[Int, 5]{_}",
+	// 		"Array[Int, 5]{_, _,\n_}",
+	// 		"Array[Int, 5]{1+1,\ntrue, false}",
+	// 		"Array[Int, 5]{first=\"first\", false, _}",
+	// 		"Array[Int, 5]{}",
+	// 		"Array[Int, 5]{_}",
+	// 		"Array[Int, 5]{_, _,\n_}",
+	// 		"Array[Int, 5]{1+1,\ntrue, false}",
+	// 		"Array[Int, 5]{first=\"first\", false, _}",
+	// 	})
+	// 	void new_array_instance(String expr) {
+	// 		testInput(expr, "expression_atom");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"c{}",
+	// 		"c{1, 2, 3, 4, 5}",
+	// 		"c{1}",
+	// 		"c{\"a\": 10}",
+	// 		"c{\"a\": 10, c: 10.10}",
+	// 	})
+	// 	void composite(String composite) {
+	// 		testInput(composite, "composite");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"Class(){}",
+	// 		"Class(){_}",
+	// 		"Class(){_, _,\n_}",
+	// 		"Class(){1+1,\ntrue, false}",
+	// 		"Class(){first=\"first\", false, _}",
+	// 	})
+	// 	void new_class_instancing(String expr) {
+	// 		testInput(expr, "expression_atom");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"Map[Bool, Bool]{}",
+	// 		"Map[Bool, Bool]{true: false}",
+	// 		"Map[Bool, Bool]{true: false,\nfalse: true}",
+	// 	})
+	// 	void new_map_instance(String expr) {
+	// 		testInput(expr, "expression_atom");
+	// 	}
+
+	// 	@Test
+	// 	void member_access() {
+	// 		testInput("x.y.z", "expression_postfix");
+	// 	}
+
+	// 	@Test
+	// 	void null_dereferencing() {
+	// 		testInput("x?.y?.z", "expression_postfix");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"((a + b) * (c - d)) / (e ** 2)",
+	// 		"(x * y + z) ** (a - b * c)",
+	// 		"((a / b) ** c) * ((d + e) - f)",
+	// 		"obj.method().field[0].nested?.value",
+	// 		"data[i][j].transform().result?.output",
+	// 		"api.get(\"users\")[0]?.name.toLowerCase()",
+	// 		"compute((x + y) * 2, transform(a, b, c), result ?? default)",
+	// 		"filter(data, Func(Int item: bool){item.value > threshold and item.active})",
+	// 		"((flags & MASK) | NEW_BIT) ^ (old_flags << 2)",
+	// 		"(bits >> 4) & 0xFF | ((high & 0xF0) << 8)",
+	// 		"~(a & b) | (c ^ d) & (e | f)",
+	// 		"x > 0 and x < 100 or x == -1",
+	// 		"a >= b and b >= c and c >= d",
+	// 		"(value in range) and (myType is ValidType) and (status != Error)",
+	// 		"user?.name ?? profile?.displayName ?? \"Anonymous\"",
+	// 		"config?.settings?.theme ?? defaults.theme ?? \"dark\"",
+	// 		"data[key] ?? cache[key] ?? fetch(key) ?? null",
+	// 		"result += compute(x) * factor ?? default_value",
+	// 		"matrix[i][j] *= scale_factor + offset",
+	// 		"accumulator.= transform(value, Func(Int v: Int){v ** 2})",
+	// 		"not not not not not true",
+	// 		"-(+x) * ~(flags & mask)",
+	// 		"not (enabled and not disabled)",
+	// 		"-velocity.y + ~~Math.floor(delta * 60)",
+	// 		"prefix ++ middle ++ suffix ++ extension",
+	// 		"path ++ \"/\" ++ filename ++ \".txt\"",
+	// 		"select condition (true: positive_result, false: negative_result)",
+	// 		"select condition (else: 0)",
+	// 		"select x > 0 (true: x ** 2, false: -x, else: \"potato\") + offset",
+	// 		"items.filter(Func(Int x: bool){x.valid and not x.expired})",
+	// 		"Class(x = value, y = other){compute(), transform(), validate()}",
+	// 		"Config{host=\"localhost\", port=8080, secure=true}",
+	// 		"Math.sqrt(x ** 2 + y ** 2) / magnitude",
+	// 		"(sin(angle) * radius) + (cos(angle) * radius)",
+	// 		"((((a))))",
+	// 		"list[0][1][2].value",
+	// 		"func()()(arg1, arg2)",
+	// 		"~flags[i] & (mask << shift) | (data >> bits) ^ constant",
+	// 		"(base + offset * scale) ** exponent / divisor % modulo",
+	// 		"player.position.x += velocity.x * deltaTime * speed_multiplier",
+	// 		"isValid = (age >= 18) and (email != \"\") and (terms_accepted)",
+	// 		"(x +\ny -\nz)",
+	// 		"a[\n0\n][\n1\n]",
+	// 		"(enabled or force_run) and not (disabled or error_state)",
+	// 		"((a and b) or (c and d)) and not (e or f)",
+	// 		"x += y *= z **= 2",
+	// 		"flags |= mask &= ~disabled_bits",
+	// 		"builder.withName(name).withAge(age).withEmail(email).build()",
+	// 		"query.match(\"*\").from(\"users\").where(condition).limit(10)",
+	// 		"a + b * c ** d / e - f % g",
+	// 		"x << 2 + y >> 3 & mask | flags",
+	// 		"not a and b or c and not d",
+	// 		"data |> Func(Int x: Int){x * 2}",
+	// 		"lmao <= data |> Func(Int x: Int){x * 2} | false",
+	// 		"lmao | data |> Func(Int x: Int){x * 2} == false",
+	// 	})
+	// 	void complexExpression(String expr) {
+	// 		testInput(expr, "expression");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p",
+	// 		"x[0][1][2][3][4][5]",
+	// 		"f()()()()()",
+	// 		"a + b + c + d + e + f + g + h + i + j",
+	// 		"x * y * z * w * v * u * t * s",
+	// 		"a and b and c and d and e and f",
+	// 		"x or y or z or w or v or u",
+	// 		"obj.deep.nested[i].method(a, b, c)[j]?.field.value",
+	// 	})
+	// 	void deeplyNestedExpression(String expr) {
+	// 		testInput(expr, "expression");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"((x += 1) *= 2) **= 3",
+	// 		"a = b = c = d = e = 0",
+	// 		"x += y -= z *= w /= v %= 2",
+	// 		"a ?? b ?? c ?? d ?? e ?? f ?? null",
+	// 		"x?.y?.z ?? w?.v?.u ?? fallback",
+	// 		"total += items[i].price * (1.0 + tax_rate) ?? 0",
+	// 		"accumulator.= transform(Func(Int x: Int){x + offset})",
+	// 	})
+	// 	void assignmentExpression(String expr) {
+	// 		testInput(expr, "expression");
+	// 	}
+
+	// 	@Test
+	// 	void keypair_clause() {
+	// 		testInput("\"key\" : value", "keypair_clause");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"object{}",
+	// 		"object { }",
+	// 		"object{\n\n\n;;;}",
+	// 		"object{;\n;\nlet Int i = 10;\n;\n}",
+	// 		"object{;\n;\nlet Int i = 10;\nlet f = Func(:){}}"
+	// 	})
+	// 	void objectLiteralExpression(String expr) {
+	// 		testInput(expr, "object_literal");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"try func()",
+	// 		"try thing.my_func()",
+	// 		"try lmao[10].banana(1, 2, 3)",
+	// 		"try pineapple() else err {}",
+	// 		"try pineapple() else err {print(\"sadness\")}",
+	// 	})
+	// 	void tryElseExpression(String expr) {
+	// 		testInput(expr, "try_else");
+	// 	}
+	// }
+
+	// @Nested
+	// @DisplayName("Types")
+	// class Type {
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"Symbol",
+	// 		"Int",
+	// 		"I",
+	// 		"Array[Int, 5]",
+	// 		"Array[Int?, 5]",
+	// 		"Array[( Int | Float ) & Pineapple?, 2]",
+	// 		"Array[( Int | Float ) & Pineapple, 10 * 2 + 3 * hello()]",
+	// 		"Func(:)",
+	// 		"Func(: Int)",
+	// 		"Func(Int a: Int?)",
+	// 		"Func(Int? a, Int b = 0: Int)",
+	// 		"Func(( Int? | Float ) & Pineapple a = 0, ( Int | Float )? & Pineapple b = 0: ( Int | Float? ) & Pineapple)",
+	// 		"Func(a, b, c, ...d)!",
+	// 		"(Func(:)! Error)",
+	// 		"(Func(: Int) !SoHunry)",
+	// 		"(Func(Int a: Int?)! Yummerinos)",
+	// 		"(Func(Int? a, Int b = 0: Int)! Int | Float & Null)",
+	// 		"(Func(( Int? | Float ) & Pineapple a = 0, ( Int | Float )? & Pineapple b = 0: ( Int | Float? ) & Pineapple) ! Int)",
+	// 		"Coroutine(:)",
+	// 		"Coroutine(Int a: Int?)",
+	// 		"Coroutine(a, b, c, ...d) yield",
+	// 		"(Coroutine(:) yield : Int)",
+	// 		"(Coroutine(:) yield String :)",
+	// 		"(Coroutine(:) yield String : Int)",
+	// 		"Class()",
+	// 		"Class(let Int a)",
+	// 		"Class(let ( Int | Float ) & Pineapple a = 0,)",
+	// 		"Enum(ONE, TWO)",
+	// 		"Enum(extends Other)",
+	// 		"Enum(extends Other, ONE, TWO)",
+	// 	})
+	// 	void atomic(String type) {
+	// 		testInput(type + "?", "type_nullable");
+	// 		testInput(type, "type_atomic");
+	// 	}
+
+	// 	@ParameterizedTest
+	// 	@ValueSource(strings = {
+	// 		"_",
+	// 		"(Int &)",
+	// 		"(Int & & Int)",
+	// 		"(Int |)",
+	// 		"(Int | | Int)",
+	// 		"Array[Int, 5",
+	// 		"Array[Int?, 5",
+	// 		"Array[( Int | Float ) & Pineapple?, 2",
+	// 		"Array[( Int | Float ) & Pineapple, 10 * 2 + 3 * hello()",
+	// 		"Func(:",
+	// 		"Func(: Int",
+	// 		"Func(Int a: Int",
+	// 		"Func(Int a, Int b = 0: Int",
+	// 		"Func(( Int | Float  & Pineapple a = 0, ( Int | Float  & Pineapple b = 0: ( Int | Float  & Pineapple",
+	// 		"Class(",
+	// 		"Class(let Int a",
+	// 		"Class(let ( Int | Float  & Pineapple a = 0,",
+	// 		"Enum(",
+	// 		"Enum()",
+	// 		"Enum(extends Other",
+	// 		"Enum(One Two)",
+	// 		"Enum(One",
+	// 		"Enum(One, Two",
+	// 	})
+	// 	void fail_atomic(String type) {
+	// 		testInputNoRule(type + "??", "type_nullable");
+	// 		testInputNoRule(type, "type_atomic");
+	// 	}
+	// }
+
+	// @Test
+	// void var_args() {
+	// 	testInput("Int ... argument", "var_args");
+	// }
 }

@@ -121,7 +121,7 @@ public class AntlerScriptParser extends Parser {
 			"'not'", "'null'", "'object'", "'operator'", "'or'", "'over'", "'return'", 
 			"'sealed'", "'Self'", "'self'", "'select'", "'super'", "'switch'", "'throw'", 
 			"'to'", "'true'", "'try'", "'type'", "'_'", "'while'", "'yield'", null, 
-			null, "';'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'<<<'", "'>>>'", 
+			null, "';'", "'('", "')'", "'['", "']'", "'{'", "'}'", "'<['", "']>'", 
 			"'?.'", "'@'", "'?'", "'->'", "':'", "'!'", "','", "'.'", "'='", "'+'", 
 			"'-'", "'*'", "'/'", "'%'", "'<'", "'>'", "'|'", "'&'", "'^'", "'~'", 
 			"'<<'", "'>>'", "'??'", "'++'", "'**'", "'//'", "'%%'", "'=='", "'.='", 
@@ -3300,7 +3300,7 @@ public class AntlerScriptParser extends Parser {
 				setState(708);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if (_la==LBRACK) {
+				if (_la==LGENERIC) {
 					{
 					setState(707);
 					generic_args();
@@ -3387,7 +3387,7 @@ public class AntlerScriptParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class Array_headerContext extends ParserRuleContext {
 		public TerminalNode ARRAY() { return getToken(AntlerScriptParser.ARRAY, 0); }
-		public TerminalNode LBRACK() { return getToken(AntlerScriptParser.LBRACK, 0); }
+		public TerminalNode LGENERIC() { return getToken(AntlerScriptParser.LGENERIC, 0); }
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
@@ -3395,7 +3395,7 @@ public class AntlerScriptParser extends Parser {
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode RBRACK() { return getToken(AntlerScriptParser.RBRACK, 0); }
+		public TerminalNode RGENERIC() { return getToken(AntlerScriptParser.RGENERIC, 0); }
 		public Array_headerContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3419,10 +3419,10 @@ public class AntlerScriptParser extends Parser {
 			setState(729);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==LBRACK) {
+			if (_la==LGENERIC) {
 				{
 				setState(723);
-				match(LBRACK);
+				match(LGENERIC);
 				setState(724);
 				type();
 				setState(725);
@@ -3430,7 +3430,7 @@ public class AntlerScriptParser extends Parser {
 				setState(726);
 				expression();
 				setState(727);
-				match(RBRACK);
+				match(RGENERIC);
 				}
 			}
 
@@ -3546,7 +3546,7 @@ public class AntlerScriptParser extends Parser {
 			setState(737);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==LBRACK) {
+			if (_la==LGENERIC) {
 				{
 				setState(736);
 				generic_parameters();
@@ -4021,7 +4021,7 @@ public class AntlerScriptParser extends Parser {
 			setState(820);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==LBRACK) {
+			if (_la==LGENERIC) {
 				{
 				setState(819);
 				generic_parameters();
@@ -4366,7 +4366,7 @@ public class AntlerScriptParser extends Parser {
 			setState(891);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==LBRACK) {
+			if (_la==LGENERIC) {
 				{
 				setState(890);
 				generic_args();
@@ -4529,7 +4529,7 @@ public class AntlerScriptParser extends Parser {
 			setState(909);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==LBRACK) {
+			if (_la==LGENERIC) {
 				{
 				setState(908);
 				generic_parameters();
@@ -4611,7 +4611,7 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Generic_parametersContext extends ParserRuleContext {
-		public TerminalNode LBRACK() { return getToken(AntlerScriptParser.LBRACK, 0); }
+		public TerminalNode LGENERIC() { return getToken(AntlerScriptParser.LGENERIC, 0); }
 		public List<TypeContext> type() {
 			return getRuleContexts(TypeContext.class);
 		}
@@ -4624,7 +4624,7 @@ public class AntlerScriptParser extends Parser {
 		public SymbolContext symbol(int i) {
 			return getRuleContext(SymbolContext.class,i);
 		}
-		public TerminalNode RBRACK() { return getToken(AntlerScriptParser.RBRACK, 0); }
+		public TerminalNode RGENERIC() { return getToken(AntlerScriptParser.RGENERIC, 0); }
 		public List<TerminalNode> COMMA() { return getTokens(AntlerScriptParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(AntlerScriptParser.COMMA, i);
@@ -4648,7 +4648,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(922);
-			match(LBRACK);
+			match(LGENERIC);
 			setState(923);
 			type();
 			setState(924);
@@ -4672,7 +4672,7 @@ public class AntlerScriptParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(934);
-			match(RBRACK);
+			match(RGENERIC);
 			}
 		}
 		catch (RecognitionException re) {
@@ -6683,14 +6683,14 @@ public class AntlerScriptParser extends Parser {
 				match(RBRACK);
 				setState(1160);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,135,_ctx) ) {
-				case 1:
+				_la = _input.LA(1);
+				if (_la==LGENERIC) {
 					{
 					setState(1159);
 					generic_args();
 					}
-					break;
 				}
+
 				}
 				break;
 			case LPAREN:
@@ -6723,14 +6723,14 @@ public class AntlerScriptParser extends Parser {
 				symbol();
 				setState(1170);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,137,_ctx) ) {
-				case 1:
+				_la = _input.LA(1);
+				if (_la==LGENERIC) {
 					{
 					setState(1169);
 					generic_args();
 					}
-					break;
 				}
+
 				}
 				break;
 			case NULL_ACCESS:
@@ -6743,14 +6743,14 @@ public class AntlerScriptParser extends Parser {
 				symbol();
 				setState(1175);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,138,_ctx) ) {
-				case 1:
+				_la = _input.LA(1);
+				if (_la==LGENERIC) {
 					{
 					setState(1174);
 					generic_args();
 					}
-					break;
 				}
+
 				}
 				break;
 			default:
@@ -7202,6 +7202,7 @@ public class AntlerScriptParser extends Parser {
 	public final Expression_atomContext expression_atom() throws RecognitionException {
 		Expression_atomContext _localctx = new Expression_atomContext(_ctx, getState());
 		enterRule(_localctx, 168, RULE_expression_atom);
+		int _la;
 		try {
 			setState(1225);
 			_errHandler.sync(this);
@@ -7214,14 +7215,14 @@ public class AntlerScriptParser extends Parser {
 				symbol();
 				setState(1201);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,144,_ctx) ) {
-				case 1:
+				_la = _input.LA(1);
+				if (_la==LGENERIC) {
 					{
 					setState(1200);
 					generic_args();
 					}
-					break;
 				}
+
 				}
 				break;
 			case 2:
@@ -7395,14 +7396,14 @@ public class AntlerScriptParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class Generic_argsContext extends ParserRuleContext {
-		public TerminalNode LBRACK() { return getToken(AntlerScriptParser.LBRACK, 0); }
+		public TerminalNode LGENERIC() { return getToken(AntlerScriptParser.LGENERIC, 0); }
 		public List<TypeContext> type() {
 			return getRuleContexts(TypeContext.class);
 		}
 		public TypeContext type(int i) {
 			return getRuleContext(TypeContext.class,i);
 		}
-		public TerminalNode RBRACK() { return getToken(AntlerScriptParser.RBRACK, 0); }
+		public TerminalNode RGENERIC() { return getToken(AntlerScriptParser.RGENERIC, 0); }
 		public List<TerminalNode> COMMA() { return getTokens(AntlerScriptParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(AntlerScriptParser.COMMA, i);
@@ -7426,7 +7427,7 @@ public class AntlerScriptParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(1227);
-			match(LBRACK);
+			match(LGENERIC);
 			setState(1228);
 			type();
 			setState(1233);
@@ -7446,7 +7447,7 @@ public class AntlerScriptParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(1236);
-			match(RBRACK);
+			match(RGENERIC);
 			}
 		}
 		catch (RecognitionException re) {
@@ -7536,7 +7537,7 @@ public class AntlerScriptParser extends Parser {
 			setState(1243);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==LBRACK) {
+			if (_la==LGENERIC) {
 				{
 				setState(1242);
 				generic_args();
@@ -10586,9 +10587,9 @@ public class AntlerScriptParser extends Parser {
 		"\u0001\u0000\u0000\u0000\u02d0\u02c9\u0001\u0000\u0000\u0000\u02d0\u02ca"+
 		"\u0001\u0000\u0000\u0000\u02d0\u02cb\u0001\u0000\u0000\u0000\u02d0\u02cc"+
 		"\u0001\u0000\u0000\u0000\u02d1G\u0001\u0000\u0000\u0000\u02d2\u02d9\u0005"+
-		"\r\u0000\u0000\u02d3\u02d4\u0005C\u0000\u0000\u02d4\u02d5\u0003:\u001d"+
+		"\r\u0000\u0000\u02d3\u02d4\u0005G\u0000\u0000\u02d4\u02d5\u0003:\u001d"+
 		"\u0000\u02d5\u02d6\u0005O\u0000\u0000\u02d6\u02d7\u0003h4\u0000\u02d7"+
-		"\u02d8\u0005D\u0000\u0000\u02d8\u02da\u0001\u0000\u0000\u0000\u02d9\u02d3"+
+		"\u02d8\u0005H\u0000\u0000\u02d8\u02da\u0001\u0000\u0000\u0000\u02d9\u02d3"+
 		"\u0001\u0000\u0000\u0000\u02d9\u02da\u0001\u0000\u0000\u0000\u02daI\u0001"+
 		"\u0000\u0000\u0000\u02db\u02de\u0003L&\u0000\u02dc\u02de\u0003N\'\u0000"+
 		"\u02dd\u02db\u0001\u0000\u0000\u0000\u02dd\u02dc\u0001\u0000\u0000\u0000"+
@@ -10697,13 +10698,13 @@ public class AntlerScriptParser extends Parser {
 		"\u0005B\u0000\u0000\u0394c\u0001\u0000\u0000\u0000\u0395\u0396\u0005\u001d"+
 		"\u0000\u0000\u0396\u0397\u0005A\u0000\u0000\u0397\u0398\u00038\u001c\u0000"+
 		"\u0398\u0399\u0005B\u0000\u0000\u0399e\u0001\u0000\u0000\u0000\u039a\u039b"+
-		"\u0005C\u0000\u0000\u039b\u039c\u0003:\u001d\u0000\u039c\u03a3\u0003\u0000"+
+		"\u0005G\u0000\u0000\u039b\u039c\u0003:\u001d\u0000\u039c\u03a3\u0003\u0000"+
 		"\u0000\u0000\u039d\u039e\u0005O\u0000\u0000\u039e\u039f\u0003:\u001d\u0000"+
 		"\u039f\u03a0\u0003\u0000\u0000\u0000\u03a0\u03a2\u0001\u0000\u0000\u0000"+
 		"\u03a1\u039d\u0001\u0000\u0000\u0000\u03a2\u03a5\u0001\u0000\u0000\u0000"+
 		"\u03a3\u03a1\u0001\u0000\u0000\u0000\u03a3\u03a4\u0001\u0000\u0000\u0000"+
 		"\u03a4\u03a6\u0001\u0000\u0000\u0000\u03a5\u03a3\u0001\u0000\u0000\u0000"+
-		"\u03a6\u03a7\u0005D\u0000\u0000\u03a7g\u0001\u0000\u0000\u0000\u03a8\u03a9"+
+		"\u03a6\u03a7\u0005H\u0000\u0000\u03a7g\u0001\u0000\u0000\u0000\u03a8\u03a9"+
 		"\u0003j5\u0000\u03a9i\u0001\u0000\u0000\u0000\u03aa\u03ac\u0005=\u0000"+
 		"\u0000\u03ab\u03aa\u0001\u0000\u0000\u0000\u03ac\u03af\u0001\u0000\u0000"+
 		"\u0000\u03ad\u03ab\u0001\u0000\u0000\u0000\u03ad\u03ae\u0001\u0000\u0000"+
@@ -10875,12 +10876,12 @@ public class AntlerScriptParser extends Parser {
 		"\u0000\u0000\u0000\u04c9\u04c1\u0001\u0000\u0000\u0000\u04c9\u04c2\u0001"+
 		"\u0000\u0000\u0000\u04c9\u04c3\u0001\u0000\u0000\u0000\u04c9\u04c4\u0001"+
 		"\u0000\u0000\u0000\u04c9\u04c5\u0001\u0000\u0000\u0000\u04ca\u00a9\u0001"+
-		"\u0000\u0000\u0000\u04cb\u04cc\u0005C\u0000\u0000\u04cc\u04d1\u0003:\u001d"+
+		"\u0000\u0000\u0000\u04cb\u04cc\u0005G\u0000\u0000\u04cc\u04d1\u0003:\u001d"+
 		"\u0000\u04cd\u04ce\u0005O\u0000\u0000\u04ce\u04d0\u0003:\u001d\u0000\u04cf"+
 		"\u04cd\u0001\u0000\u0000\u0000\u04d0\u04d3\u0001\u0000\u0000\u0000\u04d1"+
 		"\u04cf\u0001\u0000\u0000\u0000\u04d1\u04d2\u0001\u0000\u0000\u0000\u04d2"+
 		"\u04d4\u0001\u0000\u0000\u0000\u04d3\u04d1\u0001\u0000\u0000\u0000\u04d4"+
-		"\u04d5\u0005D\u0000\u0000\u04d5\u00ab\u0001\u0000\u0000\u0000\u04d6\u04d7"+
+		"\u04d5\u0005H\u0000\u0000\u04d5\u00ab\u0001\u0000\u0000\u0000\u04d6\u04d7"+
 		"\u0003H$\u0000\u04d7\u04d8\u0003\u00b0X\u0000\u04d8\u00ad\u0001\u0000"+
 		"\u0000\u0000\u04d9\u04db\u0003b1\u0000\u04da\u04dc\u0003\u00aaU\u0000"+
 		"\u04db\u04da\u0001\u0000\u0000\u0000\u04db\u04dc\u0001\u0000\u0000\u0000"+
