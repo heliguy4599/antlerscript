@@ -1198,32 +1198,58 @@ public class Ast {
 	}
 
 	public static class LoopInfiniteStatement extends LoopStatement {
+		String capture;
+
 		public LoopInfiniteStatement(
 			List<Token> tokens,
-			StatementBlock body
+			StatementBlock body,
+			String capture
 		) {
 			super(tokens, body);
+
+			if (capture != null) {
+				assert !capture.isEmpty();
+			}
+
+			this.capture = capture;
 		}
 
 		@Override
 		public <T> T accept(Visitor<T> visitor) {
 			return visitor.visitLoopInfiniteStatement(this);
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (!super.equals(object)) {
+				return false;
+			}
+
+			var other = (LoopInfiniteStatement) object;
+
+			return Objects.equals(capture, other.capture);
+		}
 	}
 
 	public static class LoopWhileStatement extends LoopStatement {
 		public final Expression test;
+		public final String capture;
 
 		public LoopWhileStatement(
 			List<Token> tokens,
 			StatementBlock body,
-			Expression test
+			Expression test,
+			String capture
 		) {
 			super(tokens, body);
 
 			assert test != null;
+			if (capture != null) {
+				assert !capture.isEmpty();
+			}
 
 			this.test = test;
+			this.capture = capture;
 		}
 
 		@Override
@@ -1239,50 +1265,8 @@ public class Ast {
 
 			var other = (LoopWhileStatement) object;
 
-			return Objects.equals(test, other.test);
-		}
-	}
-
-	public static class LoopIndexStatement extends LoopStatement {
-		public final String capture;
-		public final Expression test;
-		public final TestPosition testPosition;
-
-		public LoopIndexStatement(
-			List<Token> tokens,
-			StatementBlock block,
-			String capture,
-			Expression test,
-			TestPosition testPosition
-		) {
-			super(tokens, block);
-
-			assert capture != null && !capture.isEmpty();
-			if (test != null) {
-				assert testPosition != null;
-			}
-
-			this.capture = capture;
-			this.test = test;
-			this.testPosition = testPosition;
-		}
-
-		@Override
-		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitLoopIndexStatement(this);
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (!super.equals(object)) {
-				return false;
-			}
-
-			var other = (LoopIndexStatement) object;
-
-			return Objects.equals(capture, other.capture)
-				&& Objects.equals(test, other.test)
-				&& testPosition == other.testPosition;
+			return Objects.equals(test, other.test)
+				&& Objects.equals(capture, other.capture);
 		}
 	}
 
@@ -2428,8 +2412,6 @@ public class Ast {
 		T visitLoopInfiniteStatement(LoopInfiniteStatement node);
 
 		T visitLoopWhileStatement(LoopWhileStatement node);
-
-		T visitLoopIndexStatement(LoopIndexStatement node);
 
 		T visitLoopRangeStatement(LoopRangeStatement node);
 

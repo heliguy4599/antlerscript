@@ -1906,11 +1906,11 @@ AntlerScriptParserVisitor<Object> {
 
 		if (ctx.loop_header_inside() == null) {
 			if (ctx.loop_while() == null) {
-				return new Ast.LoopInfiniteStatement(tokens, block);
+				return new Ast.LoopInfiniteStatement(tokens, block, null);
 			}
 
 			Ast.Expression test = visitLoop_while(ctx.loop_while());
-			return new Ast.LoopWhileStatement(tokens, block, test);
+			return new Ast.LoopWhileStatement(tokens, block, test, null);
 		}
 
 		return visitLoopHeaderInside(ctx.loop_header_inside(), tokens, block);
@@ -1936,7 +1936,10 @@ AntlerScriptParserVisitor<Object> {
 		// Infinite loops
 		if (ctx.loop_capture() != null) {
 			String capture = visitLoop_capture(ctx.loop_capture());
-			return new Ast.LoopIndexStatement(tokens, block, capture, test, testPosition);
+			if (test == null) {
+				return new Ast.LoopInfiniteStatement(tokens, block, capture);
+			}
+			return new Ast.LoopWhileStatement(tokens, block, test, capture);
 		}
 
 		// Ranges
