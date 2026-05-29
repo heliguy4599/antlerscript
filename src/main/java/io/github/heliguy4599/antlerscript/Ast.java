@@ -545,7 +545,12 @@ public class Ast {
 		public final List<SymbolChain> classExtends;
 		public final List<ClassMember> members;
 
-		public ClassType(List<Token> tokens, List<GenericParameter> genericParameters, List<SymbolChain> classExtends, List<ClassMember> members) {
+		public ClassType(
+			List<Token> tokens,
+			List<GenericParameter> genericParameters,
+			List<SymbolChain> classExtends,
+			List<ClassMember> members
+		) {
 			super(tokens);
 
 			this.genericParameters = genericParameters != null
@@ -706,7 +711,11 @@ public class Ast {
 		public final List<ConstructorParameter> parameters;
 		public final StatementBlock statementBlock;
 
-		public ConstructorClassMember(List<Token> tokens, List<ConstructorParameter> parameters, StatementBlock statementBlock) {
+		public ConstructorClassMember(
+			List<Token> tokens,
+			List<ConstructorParameter> parameters,
+			StatementBlock statementBlock
+		) {
 			super(tokens);
 
 			assert statementBlock != null;

@@ -1003,6 +1003,82 @@ class AstTest {
 				)
 			);
 		}
+
+		@Test
+		void classEmpty() {
+			testInput(
+				"Class()",
+				"type",
+				new Ast.ClassType(
+					genTokens("Class", "(", ")"),
+					null,
+					null,
+					null
+				)
+			);
+		}
+
+		@Test
+		void classFull() {
+			var genParams = List.of(
+				new Ast.GenericParameter(type("Any"), "T")
+			);
+			var classExtends = List.of(
+				new Ast.SymbolChain(List.of("A"))
+			);
+			List<Ast.ClassMember> constructor = List.of(
+				new Ast.ConstructorClassMember(
+					genTokens(
+						"constructor",
+						"(",
+						")",
+						"{",
+						"}"
+					),
+					null,
+					new Ast.StatementBlock(
+						genTokens("{", "}"),
+						null,
+						false
+					)
+				)
+			);
+			testInput(
+				"Class[Any T](extends A, constructor(){})",
+				"type",
+				new Ast.ClassType(
+					genTokens(
+						"Class",
+						"[",
+						"Any",
+						"T",
+						"]",
+						"(",
+						"extends",
+						"A",
+						",",
+						"constructor",
+						"(",
+						")",
+						"{",
+						"}",
+						")"
+					),
+					genParams,
+					classExtends,
+					constructor
+				)
+			);
+		}
+
+		@Test
+		void self() {
+			testInput(
+				"Self",
+				"type",
+				new Ast.SelfClassType(genTokens("Self"))
+			);
+		}
 	}
 }
 
