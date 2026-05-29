@@ -891,13 +891,21 @@ class AstTest {
 		@Test
 		void indexExpression() {
 			testInput(
-				"list[10]",
+				"list[10]<[T]>",
 				"expression",
 				new Ast.IndexExpression(
-					genTokens("list", "[", "10", "]"),
+					genTokens(
+						"list",
+						"[",
+						"10",
+						"]",
+						"<[",
+						"T",
+						"]>"
+					),
 					sym("list"),
 					num(10),
-					null
+					List.of(type("T"))
 				)
 			);
 		}
@@ -961,17 +969,39 @@ class AstTest {
 
 		@Test
 		void callExpressionWithArgs() {
-			var exprs = new ArrayList<Ast.Argument>();
-			exprs.add(new Ast.Argument(
-				num(10),
-				null,
-				false
-			));
+			var exprs = List.of(
+				new Ast.Argument(
+					num(10),
+					null,
+					false
+				),
+				new Ast.Argument(
+					null,
+					null,
+					true
+				),
+				new Ast.Argument(
+					num(20),
+					"a",
+					false
+				)
+			);
 			testInput(
-				"some_func(10)",
+				"some_func(10, _, a=20)",
 				"expression",
 				new Ast.CallExpression(
-					genTokens("some_func", "(", "10", ")"),
+					genTokens(
+						"some_func",
+						"(",
+						"10",
+						",",
+						"_",
+						",",
+						"a",
+						"=",
+						"20",
+						")"
+					),
 					sym("some_func"),
 					exprs
 				)
@@ -981,9 +1011,18 @@ class AstTest {
 		@Test
 		void symbolExpression() {
 			testInput(
-				"item",
+				"item<[T]>",
 				"expression",
-				sym("item")
+				new Ast.SymbolExpression(
+					genTokens(
+						"item",
+						"<[",
+						"T",
+						"]>"
+					),
+					"item",
+					List.of(type("T"))
+				)
 			);
 		}
 
@@ -995,6 +1034,62 @@ class AstTest {
 				new Ast.YieldExpression(
 					genTokens("yield", "10"),
 					num(10)
+				)
+			);
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"10",
+			"10i64",
+			"1_0",
+			"0xA",
+			"0b1010"
+		})
+		void intExpression(String i) {
+			testInput(
+				i,
+				"expression",
+				new Ast.IntExpression(
+					genTokens(i),
+					10,
+					(byte)64,
+					true
+				)
+			);
+		}
+		void intExpression2() {
+			testInput(
+				"10u16",
+				"expression",
+				new Ast.IntExpression(
+					genTokens("10u16"),
+					10,
+					(byte)16,
+					false
+				)
+			);
+		}
+
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"10.0",
+			"10f64",
+			"10.0e0",
+			"10.0e+0",
+			"10.0e0f64",
+			"10.0e+0f64",
+			"10e0",
+			"10e0f64",
+		})
+		void floatExpression(String f) {
+			testInput(
+				f,
+				"expression",
+				new Ast.FloatExpression(
+					genTokens(f),
+					10.0,
+					(byte)64
 				)
 			);
 		}

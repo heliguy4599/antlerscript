@@ -4,6 +4,8 @@ import org.antlr.v4.runtime.*;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @DisplayName("Testing the ANTLR4-generated lexer")
 class LexerTest {
@@ -37,154 +39,153 @@ class LexerTest {
 		testInput("@", L.DECORATOR);
 	}
 
-	@Test
-	void integerDec() {
-		testInput("123", L.INTEGER);
-		testInput("1_2_3", L.INTEGER);
-
-		// Signed suffix
-		testInput("123i8", L.INTEGER);
-		testInput("123i16", L.INTEGER);
-		testInput("123i32", L.INTEGER);
-		testInput("123i64", L.INTEGER);
-
-		// Unsigned suffix
-		testInput("123u8", L.INTEGER);
-		testInput("123u16", L.INTEGER);
-		testInput("123u32", L.INTEGER);
-		testInput("123u64", L.INTEGER);
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"123",
+		"1_2_3",
+		"123i8",
+		"123i16",
+		"123i32",
+		"123i64",
+		"123u8",
+		"123u16",
+		"123u32",
+		"123u64",
+	})
+	void integerDec(String i) {
+		testInput(i, L.INTEGER);
 	}
 
-	@Test
-	void integerHex() {
-		testInput("0xFF", L.INTEGER);
-		testInput("0xF_F", L.INTEGER);
-
-		// Signed suffix
-		testInput("0xFFi8", L.INTEGER);
-		testInput("0xFFi16", L.INTEGER);
-		testInput("0xFFi32", L.INTEGER);
-		testInput("0xFFi64", L.INTEGER);
-
-		// Unsigned suffix
-		testInput("0xFFu8", L.INTEGER);
-		testInput("0xFFu16", L.INTEGER);
-		testInput("0xFFu32", L.INTEGER);
-		testInput("0xFFu64", L.INTEGER);
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"0xFF",
+		"0xF_F",
+		"0xFFi8",
+		"0xFFi16",
+		"0xFFi32",
+		"0xFFi64",
+		"0xFFu8",
+		"0xFFu16",
+		"0xFFu32",
+		"0xFFu64",
+	})
+	void integerHex(String f) {
+		testInput(f, L.INTEGER);
 	}
 
-	@Test
-	void integerBin() {
-		testInput("0b101", L.INTEGER);
-		testInput("0b1_0_1", L.INTEGER);
-
-		// Signed suffix
-		testInput("0b101i8", L.INTEGER);
-		testInput("0b101i16", L.INTEGER);
-		testInput("0b101i32", L.INTEGER);
-		testInput("0b101i64", L.INTEGER);
-
-		// Unsigned suffix
-		testInput("0b101u8", L.INTEGER);
-		testInput("0b101u16", L.INTEGER);
-		testInput("0b101u32", L.INTEGER);
-		testInput("0b101u64", L.INTEGER);
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"0b101",
+		"0b1_0_1",
+		"0b101i8",
+		"0b101i16",
+		"0b101i32",
+		"0b101i64",
+		"0b101u8",
+		"0b101u16",
+		"0b101u32",
+		"0b101u64",
+	})
+	void integerBin(String i) {
+		testInput(i, L.INTEGER);
 	}
 
-	@Test
-	void floatDec() {
-		testInput("3.14", L.FLOAT);
-		testInput("0_3.1_4", L.FLOAT);
-
-		// Suffix
-		testInput("3.14f8", L.FLOAT);
-		testInput("3.14f16", L.FLOAT);
-		testInput("3.14f32", L.FLOAT);
-		testInput("3.14f64", L.FLOAT);
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"3.14",
+		"0_3.1_4",
+		"3f8",
+		"3f16",
+		"3f32",
+		"3f64",
+		"3.14f8",
+		"3.14f16",
+		"3.14f32",
+		"3.14f64",
+	})
+	void floatDec(String f) {
+		testInput(f, L.FLOAT);
 	}
 
-	@Test
-	void floatDecExponent() {
-		testInput("3e10", L.FLOAT);
-		testInput("3e+10", L.FLOAT);
-		testInput("3e-10", L.FLOAT);
-
-		testInput("3.14e10", L.FLOAT);
-		testInput("3.14e+10", L.FLOAT);
-		testInput("3.14e-10", L.FLOAT);
-
-		testInput("0_3.1_4e1_0", L.FLOAT);
-		testInput("0_3.1_4e+1_0", L.FLOAT);
-		testInput("0_3.1_4e-1_0", L.FLOAT);
-
-		testInput("3.14e10f8", L.FLOAT);
-		testInput("3.14e10f16", L.FLOAT);
-		testInput("3.14e10f32", L.FLOAT);
-		testInput("3.14e10f64", L.FLOAT);
-
-		testInput("3.14e+10f8", L.FLOAT);
-		testInput("3.14e+10f16", L.FLOAT);
-		testInput("3.14e+10f32", L.FLOAT);
-		testInput("3.14e+10f64", L.FLOAT);
-
-		testInput("3.14e-10f8", L.FLOAT);
-		testInput("3.14e-10f16", L.FLOAT);
-		testInput("3.14e-10f32", L.FLOAT);
-		testInput("3.14e-10f64", L.FLOAT);
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"3e10",
+		"3e+10",
+		"3e-10",
+		"3.14e10",
+		"3.14e+10",
+		"3.14e-10",
+		"0_3.1_4e1_0",
+		"0_3.1_4e+1_0",
+		"0_3.1_4e-1_0",
+		"3.14e10f8",
+		"3.14e10f16",
+		"3.14e10f32",
+		"3.14e10f64",
+		"3.14e+10f8",
+		"3.14e+10f16",
+		"3.14e+10f32",
+		"3.14e+10f64",
+		"3.14e-10f8",
+		"3.14e-10f16",
+		"3.14e-10f32",
+		"3.14e-10f64",
+	})
+	void floatDecExponent(String f) {
+		testInput(f, L.FLOAT);
 	}
 
-	@Test
-	void floatHex() {
-		testInput("0xF.F", L.FLOAT);
-		testInput("0x0_F.F_0", L.FLOAT);
-
-		testInput("0xF.Ff8", L.FLOAT);
-		testInput("0xF.Ff16", L.FLOAT);
-		testInput("0xF.Ff32", L.FLOAT);
-		testInput("0xF.Ff64", L.FLOAT);
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"0xF.F",
+		"0x0_F.F_0",
+		"0xF.Ff8",
+		"0xF.Ff16",
+		"0xF.Ff32",
+		"0xF.Ff64",
+	})
+	void floatHex(String f) {
+		testInput(f, L.FLOAT);
 	}
 
-	@Test
-	void floatHexExponent() {
-		testInput("0xFe10", L.FLOAT);
-		testInput("0xFe+10", L.FLOAT);
-		testInput("0xFe-10", L.FLOAT);
-
-		testInput("0xF.Fe10", L.FLOAT);
-		testInput("0xF.Fe10f8", L.FLOAT);
-		testInput("0xF.Fe10f16", L.FLOAT);
-		testInput("0xF.Fe10f32", L.FLOAT);
-		testInput("0xF.Fe10f64", L.FLOAT);
-
-		testInput("0xF.Fe+10", L.FLOAT);
-		testInput("0xF.Fe+10f8", L.FLOAT);
-		testInput("0xF.Fe+10f16", L.FLOAT);
-		testInput("0xF.Fe+10f32", L.FLOAT);
-		testInput("0xF.Fe+10f64", L.FLOAT);
-
-		testInput("0xF.Fe-10", L.FLOAT);
-		testInput("0xF.Fe-10f8", L.FLOAT);
-		testInput("0xF.Fe-10f16", L.FLOAT);
-		testInput("0xF.Fe-10f32", L.FLOAT);
-		testInput("0xF.Fe-10f64", L.FLOAT);
-
-		testInput("0xF.Fp10", L.FLOAT);
-		testInput("0xF.Fp10f8", L.FLOAT);
-		testInput("0xF.Fp10f16", L.FLOAT);
-		testInput("0xF.Fp10f32", L.FLOAT);
-		testInput("0xF.Fp10f64", L.FLOAT);
-
-		testInput("0xF.Fp+10", L.FLOAT);
-		testInput("0xF.Fp+10f8", L.FLOAT);
-		testInput("0xF.Fp+10f16", L.FLOAT);
-		testInput("0xF.Fp+10f32", L.FLOAT);
-		testInput("0xF.Fp+10f64", L.FLOAT);
-
-		testInput("0xF.Fp-10", L.FLOAT);
-		testInput("0xF.Fp-10f8", L.FLOAT);
-		testInput("0xF.Fp-10f16", L.FLOAT);
-		testInput("0xF.Fp-10f32", L.FLOAT);
-		testInput("0xF.Fp-10f64", L.FLOAT);
+	@ParameterizedTest
+	@ValueSource(strings = {
+		"0xFe10",
+		"0xFe+10",
+		"0xFe-10",
+		"0xF.Fe10",
+		"0xF.Fe10f8",
+		"0xF.Fe10f16",
+		"0xF.Fe10f32",
+		"0xF.Fe10f64",
+		"0xF.Fe+10",
+		"0xF.Fe+10f8",
+		"0xF.Fe+10f16",
+		"0xF.Fe+10f32",
+		"0xF.Fe+10f64",
+		"0xF.Fe-10",
+		"0xF.Fe-10f8",
+		"0xF.Fe-10f16",
+		"0xF.Fe-10f32",
+		"0xF.Fe-10f64",
+		"0xF.Fp10",
+		"0xF.Fp10f8",
+		"0xF.Fp10f16",
+		"0xF.Fp10f32",
+		"0xF.Fp10f64",
+		"0xF.Fp+10",
+		"0xF.Fp+10f8",
+		"0xF.Fp+10f16",
+		"0xF.Fp+10f32",
+		"0xF.Fp+10f64",
+		"0xF.Fp-10",
+		"0xF.Fp-10f8",
+		"0xF.Fp-10f16",
+		"0xF.Fp-10f32",
+		"0xF.Fp-10f64",
+	})
+	void floatHexExponent(String f) {
+		testInput(f, L.FLOAT);
 	}
 
 	@Test
