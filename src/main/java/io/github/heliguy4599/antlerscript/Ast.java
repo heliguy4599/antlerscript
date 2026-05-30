@@ -1932,8 +1932,14 @@ public class Ast {
 	public static class SelectExpression extends Expression {
 		public final Expression match;
 		public final List<KeyValuePair> branches;
+		public final Expression elseClause;
 
-		public SelectExpression(List<Token> tokens, Expression match, List<KeyValuePair> branches) {
+		public SelectExpression(
+			List<Token> tokens,
+			Expression match,
+			List<KeyValuePair> branches,
+			Expression elseClause
+		) {
 			super(tokens);
 
 			assert branches != null;
@@ -1941,6 +1947,7 @@ public class Ast {
 
 			this.match = match;
 			this.branches = branches;
+			this.elseClause = elseClause;
 		}
 
 		@Override
@@ -1957,7 +1964,8 @@ public class Ast {
 			var other = (SelectExpression) object;
 
 			return Objects.equals(match, other.match)
-				&& Objects.equals(branches, other.branches);
+				&& Objects.equals(branches, other.branches)
+				&& Objects.equals(elseClause, other.elseClause);
 		}
 	}
 
@@ -1994,43 +2002,6 @@ public class Ast {
 			return Objects.equals(keyType, other.keyType)
 				&& Objects.equals(valueType, other.valueType)
 				&& Objects.equals(keyValuePairs, other.keyValuePairs);
-		}
-	}
-
-	public static class NewListExpression extends Expression {
-		public final Type type;
-		public final List<Argument> elements;
-
-		public NewListExpression(
-			List<Token> tokens,
-			Type type,
-			List<Argument> elements
-		) {
-			super(tokens);
-
-			assert type != null;
-
-			this.type = type;
-			this.elements = elements != null
-				? elements
-				: new ArrayList<>();
-		}
-
-		@Override
-		public <T> T accept(Visitor<T> visitor) {
-			return visitor.visitNewListExpression(this);
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (!super.equals(object)) {
-				return false;
-			}
-
-			var other = (NewListExpression) object;
-
-			return Objects.equals(type, other.type)
-				&& Objects.equals(elements, other.elements);
 		}
 	}
 
@@ -2455,8 +2426,6 @@ public class Ast {
 		T visitSelectExpression(SelectExpression node);
 
 		T visitNewMapExpression(NewMapExpression node);
-
-		T visitNewListExpression(NewListExpression node);
 
 		T visitNewArrayExpression(NewArrayExpression node);
 

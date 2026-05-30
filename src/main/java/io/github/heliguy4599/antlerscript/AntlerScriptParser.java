@@ -7623,9 +7623,9 @@ public class AntlerScriptParser extends Parser {
 		public TerminalNode MAP() { return getToken(AntlerScriptParser.MAP, 0); }
 		public TerminalNode LCURLY() { return getToken(AntlerScriptParser.LCURLY, 0); }
 		public TerminalNode RCURLY() { return getToken(AntlerScriptParser.RCURLY, 0); }
-		public TerminalNode LBRACK() { return getToken(AntlerScriptParser.LBRACK, 0); }
+		public TerminalNode LGENERIC() { return getToken(AntlerScriptParser.LGENERIC, 0); }
 		public TerminalNode COMMA() { return getToken(AntlerScriptParser.COMMA, 0); }
-		public TerminalNode RBRACK() { return getToken(AntlerScriptParser.RBRACK, 0); }
+		public TerminalNode RGENERIC() { return getToken(AntlerScriptParser.RGENERIC, 0); }
 		public Keypair_list_mapContext keypair_list_map() {
 			return getRuleContext(Keypair_list_mapContext.class,0);
 		}
@@ -7658,10 +7658,10 @@ public class AntlerScriptParser extends Parser {
 			setState(1261);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==LBRACK) {
+			if (_la==LGENERIC) {
 				{
 				setState(1255);
-				match(LBRACK);
+				match(LGENERIC);
 				setState(1256);
 				((New_map_instanceContext)_localctx).key = type();
 				setState(1257);
@@ -7669,7 +7669,7 @@ public class AntlerScriptParser extends Parser {
 				setState(1258);
 				((New_map_instanceContext)_localctx).value = type();
 				setState(1259);
-				match(RBRACK);
+				match(RGENERIC);
 				}
 			}
 
@@ -10890,9 +10890,9 @@ public class AntlerScriptParser extends Parser {
 		"\u0006X\uffff\uffff\u0000\u04e1\u04e3\u0003\u00a4R\u0000\u04e2\u04e1\u0001"+
 		"\u0000\u0000\u0000\u04e2\u04e3\u0001\u0000\u0000\u0000\u04e3\u04e4\u0001"+
 		"\u0000\u0000\u0000\u04e4\u04e5\u0005F\u0000\u0000\u04e5\u00b1\u0001\u0000"+
-		"\u0000\u0000\u04e6\u04ed\u0005\'\u0000\u0000\u04e7\u04e8\u0005C\u0000"+
+		"\u0000\u0000\u04e6\u04ed\u0005\'\u0000\u0000\u04e7\u04e8\u0005G\u0000"+
 		"\u0000\u04e8\u04e9\u0003:\u001d\u0000\u04e9\u04ea\u0005O\u0000\u0000\u04ea"+
-		"\u04eb\u0003:\u001d\u0000\u04eb\u04ec\u0005D\u0000\u0000\u04ec\u04ee\u0001"+
+		"\u04eb\u0003:\u001d\u0000\u04eb\u04ec\u0005H\u0000\u0000\u04ec\u04ee\u0001"+
 		"\u0000\u0000\u0000\u04ed\u04e7\u0001\u0000\u0000\u0000\u04ed\u04ee\u0001"+
 		"\u0000\u0000\u0000\u04ee\u04ef\u0001\u0000\u0000\u0000\u04ef\u04f0\u0005"+
 		"E\u0000\u0000\u04f0\u04f2\u0006Y\uffff\uffff\u0000\u04f1\u04f3\u0003\u00bc"+

@@ -509,7 +509,7 @@ object_instantiation_args
 	;
 
 new_map_instance
-	: MAP ( '[' key=type ',' value=type ']' )?
+	: MAP ( '<[' key=type ',' value=type ']>' )?
 	'{'
 	{
 		AntlerScriptLexer lexer = (AntlerScriptLexer)_input.getTokenSource();

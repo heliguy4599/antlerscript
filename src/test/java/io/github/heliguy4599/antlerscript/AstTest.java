@@ -1354,6 +1354,144 @@ class AstTest {
 				)
 			);
 		}
+
+		@Test
+		void selectExpression() {
+			var values = List.of(
+				new Ast.KeyValuePair(num(1), num(1)),
+				new Ast.KeyValuePair(num(1), num(1))
+			);
+			testInput(
+				"select 1 (1:1, 1:1, else: 1)",
+				"expression",
+				new Ast.SelectExpression(
+					genTokens(
+						"select",
+						"1",
+						"(",
+						"1",
+						":",
+						"1",
+						",",
+						"1",
+						":",
+						"1",
+						",",
+						"else",
+						":",
+						"1",
+						")"
+					),
+					num(1),
+					values,
+					num(1)
+				)
+			);
+		}
+
+		@Test
+		void newInferredMapExpression() {
+			var values = List.of(
+				new Ast.KeyValuePair(num(1), num(1)),
+				new Ast.KeyValuePair(num(1), num(1))
+			);
+			testInput(
+				"Map{1:1, 1:1}",
+				"expression",
+				new Ast.NewMapExpression(
+					genTokens(
+						"Map",
+						"{",
+						"1",
+						":",
+						"1",
+						",",
+						"1",
+						":",
+						"1",
+						"}"
+					),
+					null,
+					null,
+					values
+				)
+			);
+		}
+
+		@Test
+		void newInferredMapEmptyExpression() {
+			testInput(
+				"Map{}",
+				"expression",
+				new Ast.NewMapExpression(
+					genTokens(
+						"Map",
+						"{",
+						"}"
+					),
+					null,
+					null,
+					null
+				)
+			);
+		}
+
+		@Test
+		void newMapExpression() {
+			var values = List.of(
+				new Ast.KeyValuePair(num(1), num(1)),
+				new Ast.KeyValuePair(num(1), num(1))
+			);
+			testInput(
+				"Map<[T1, T2]>{1:1, 1:1}",
+				"expression",
+				new Ast.NewMapExpression(
+					genTokens(
+						"Map",
+						"<[",
+						"T1",
+						",",
+						"T2",
+						"]>",
+						"{",
+						"1",
+						":",
+						"1",
+						",",
+						"1",
+						":",
+						"1",
+						"}"
+					),
+					type("T1"),
+					type("T2"),
+					values
+				)
+			);
+		}
+
+		@Test
+		void newMapEmptyExpression() {
+			testInput(
+				"Map<[T1, T2]>{}",
+				"expression",
+				new Ast.NewMapExpression(
+					genTokens(
+						"Map",
+						"<[",
+						"T1",
+						",",
+						"T2",
+						"]>",
+						"{",
+						"}"
+					),
+					type("T1"),
+					type("T2"),
+					null
+				)
+			);
+		}
 	}
 
 	@Nested
