@@ -280,11 +280,13 @@ class AstTest {
 
 	static Ast.StatementBlock block(Ast.Statement statement)  {
 		List<Token> tokens = genTokens("{");
-		tokens.addAll(statement.tokens);
+		if (statement != null) {
+			tokens.addAll(statement.tokens);
+		}
 		tokens.addAll(genTokens("}"));
 		return new Ast.StatementBlock(
 			tokens,
-			List.of(statement),
+			statement != null ? List.of(statement) : null,
 			false
 		);
 	}
@@ -302,7 +304,126 @@ class AstTest {
 	@Nested
 	@DisplayName("Classes")
 	class ClassTests {
+		@Test
+		void castMember() {
+			testInput(
+				"cast(Int) { 10 }",
+				"class_member",
+				new Ast.CastClassMember(
+					genTokens("cast", "(", "Int", ")", "{", "10", "}"),
+					type("Int"),
+					block(exprStatement(num(10)))
+				)
+			);
+		}
 
+		@Test
+		void declarationMember() {
+			testInput(
+				"let i = 10",
+				"class_member",
+				new Ast.DeclarationClassMember(
+					genTokens("let", "i", "=", "10"),
+					decl(false, null, "i", false, false, num(10))
+				)
+			);
+			testInput(
+				"let Int i",
+				"class_member",
+				new Ast.DeclarationClassMember(
+					genTokens("let", "Int", "i"),
+					decl(false, type("Int"), "i", false, false, null)
+				)
+			);
+		}
+
+		@Test
+		void operatorMember() {
+			testInput(
+				"operator+(Int other : Int) { other }",
+				"class_member",
+				new Ast.OperatorOverloadClassMember(
+					genTokens("operator", "+", "(", "Int", "other", ":", "Int", ")", "{", "other", "}"),
+					Ast.OperatorOverloadClassMember.Kind.PLUS,
+					type("Int"),
+					"other",
+					type("Int"),
+					block(exprStatement(sym("other")))
+				)
+			);
+			testInput(
+				"operator+(Int other : Int)",
+				"class_member",
+				new Ast.OperatorOverloadClassMember(
+					genTokens("operator", "+", "(", "Int", "other", ":", "Int", ")"),
+					Ast.OperatorOverloadClassMember.Kind.PLUS,
+					type("Int"),
+					"other",
+					type("Int"),
+					null
+				)
+			);
+		}
+
+		@Test
+		void constructorMember() {
+			testInput(
+				"constructor(Int i, j, String ... s) {}",
+				"class_member",
+				new Ast.ConstructorClassMember(
+					genTokens("constructor", "(", "Int", "i", ",", "j", ",", "String", "...", "s", ")", "{", "}"),
+					Arrays.asList(
+						new Ast.ConstructorParameter(type("Int"), "i", null, false),
+						new Ast.ConstructorParameter(null, "j", null, false),
+						new Ast.ConstructorParameter(type("String"), "s", null, true)
+					),
+					block(null)
+				)
+			);
+		}
+
+		@Test
+		void aliasMember() {
+			testInput(
+				"alias(One).i -> j = 10",
+				"class_member",
+				new Ast.AliasClassMember(
+					genTokens("alias", "(", "One", ")", ".", "i", "->", "j", "=", "10"),
+					new Ast.SymbolChain(List.of("One")),
+					"i",
+					null,
+					new Ast.ExtendsAssignClassMember(
+						genTokens("j", "=", "10"),
+						"j",
+						num(10)
+					)
+				)
+			);
+			testInput(
+				"alias(One).i -> j",
+				"class_member",
+				new Ast.AliasClassMember(
+					genTokens("alias", "(", "One", ")", ".", "i", "->", "j"),
+					new Ast.SymbolChain(List.of("One")),
+					"i",
+					"j",
+					null
+				)
+			);
+		}
+
+		@Test
+		void extendsAssignMember() {
+			testInput(
+				"i = 10",
+				"class_member",
+				new Ast.ExtendsAssignClassMember(
+					genTokens("i", "=", "10"),
+					"i",
+					num(10)
+				)
+			);
+		}
 	}
 
 	@Nested
