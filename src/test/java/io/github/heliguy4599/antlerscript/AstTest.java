@@ -295,6 +295,15 @@ class AstTest {
 		return new Ast.ExpressionStatement(expr.tokens, expr, false);
 	}
 
+	static Ast.ClassType emptyClass() {
+		return new Ast.ClassType(
+			genTokens("Class", "(", ")"),
+			null,
+			null,
+			null
+		);
+	}
+
 	@Nested
 	@DisplayName("Program")
 	class ProgamTests {
