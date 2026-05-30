@@ -616,7 +616,7 @@ decorator
 	;
 
 decorator_chain
-	: decorator ( semicolon decorator )* semicolon
+	: decorator ( semicolon* decorator )* semicolon*
 	;
 
 declaration

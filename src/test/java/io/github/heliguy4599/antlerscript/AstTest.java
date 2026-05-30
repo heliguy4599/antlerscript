@@ -425,13 +425,122 @@ class AstTest {
 		}
 
 		@Test
+		void decoratorFull() {
+			var decorator = List.of(
+				new Ast.Decorator(
+					new Ast.SymbolChain(
+						List.of("my_namespace", "dec")
+					),
+					List.of(
+						new Ast.Argument(
+							num(10),
+							null,
+							false
+						)
+					)
+				)
+			);
+
+			testInput(
+				"@my_namespace.dec(10) let i = 10",
+				"class_member",
+				new Ast.DeclarationClassMember(
+					genTokens(
+						"@",
+						"my_namespace",
+						".",
+						"dec",
+						"(",
+						"10",
+						")",
+						"let",
+						"i",
+						"=",
+						"10"
+					),
+					new Ast.VariableDeclaration(
+						genTokens(
+							"@",
+							"my_namespace",
+							".",
+							"dec",
+							"(",
+							"10",
+							")",
+							"let",
+							"i",
+							"=",
+							"10"
+						),
+						false,
+						false,
+						false,
+						null,
+						"i",
+						num(10),
+						decorator
+					)
+				)
+			);
+		}
+
+		@Test
+		void decorator() {
+			var decorator = List.of(
+				new Ast.Decorator(
+					new Ast.SymbolChain(List.of("dec")),
+					null
+				)
+			);
+
+			testInput(
+				"@dec let i = 10",
+				"class_member",
+				new Ast.DeclarationClassMember(
+					genTokens(
+						"@",
+						"dec",
+						"let",
+						"i",
+						"=",
+						"10"
+					),
+					new Ast.VariableDeclaration(
+						genTokens(
+							"@",
+							"dec",
+							"let",
+							"i",
+							"=",
+							"10"
+						),
+						false,
+						false,
+						false,
+						null,
+						"i",
+						num(10),
+						decorator
+					)
+				)
+			);
+		}
+
+		@Test
 		void declarationMember() {
 			testInput(
 				"let i = 10",
 				"class_member",
 				new Ast.DeclarationClassMember(
 					genTokens("let", "i", "=", "10"),
-					decl(false, null, "i", false, false, num(10))
+					decl(
+						false,
+						null,
+						"i",
+						false,
+						false,
+						num(10)
+					)
 				)
 			);
 			testInput(
