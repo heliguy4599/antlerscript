@@ -1179,6 +1179,8 @@ class AstTest {
 				)
 			);
 		}
+
+		@Test
 		void intExpression2() {
 			testInput(
 				"10u16",
@@ -1242,17 +1244,114 @@ class AstTest {
 			);
 		}
 
-		@Test
-		void booleanExpression() {
+		@ParameterizedTest
+		@ValueSource(strings = {
+			"true",
+			"false",
+		})
+		void booleanExpression(String b) {
 			testInput(
-				"false",
+				b,
 				"expression",
-				new Ast.BooleanExpression(genTokens("false"), false)
+				bool(Objects.equals(b, "true"))
 			);
+		}
+
+		@Test
+		void stringExpression() {
+			String str = "\"string\\\"\\\n\"";
 			testInput(
-				"true",
+				str,
 				"expression",
-				new Ast.BooleanExpression(genTokens("true"), true)
+				new Ast.StringExpression(
+					genTokens(str),
+					str.substring(1, str.length() - 1),
+					false
+				)
+			);
+		}
+
+		@Test
+		void stringRawExpression() {
+			String str = "`\"\nstring`";
+			testInput(
+				str,
+				"expression",
+				new Ast.StringExpression(
+					genTokens(str),
+					str.substring(1, str.length() - 1),
+					true
+				)
+			);
+		}
+
+		@Test
+		void lambdaExpression() {
+			testInput(
+				"Func(){}",
+				"expression",
+				new Ast.LambdaExpression(
+					genTokens(
+						"Func",
+						"(",
+						")",
+						"{",
+						"}"
+					),
+					new Ast.InferredFunctionType(
+						genTokens(
+							"Func",
+							"(",
+							")"
+						),
+						null,
+						null,
+						false
+					),
+					new Ast.StatementBlock(
+						genTokens(
+							"{",
+							"}"
+						),
+						null,
+						false
+					)
+				)
+			);
+		}
+
+		@Test
+		void coroutineExpression() {
+			testInput(
+				"Coroutine(){}",
+				"expression",
+				new Ast.CoroutineExpression(
+					genTokens(
+						"Coroutine",
+						"(",
+						")",
+						"{",
+						"}"
+					),
+					new Ast.InferredCoroutineType(
+						genTokens(
+							"Coroutine",
+							"(",
+							")"
+						),
+						null,
+						null,
+						false
+					),
+					new Ast.StatementBlock(
+						genTokens(
+							"{",
+							"}"
+						),
+						null,
+						false
+					)
+				)
 			);
 		}
 	}
