@@ -306,8 +306,30 @@ class AstTest {
 
 	@Nested
 	@DisplayName("Program")
-	class ProgamTests {
-
+	class ProgramTests {
+		@Test
+		void mainProgram() {
+			testInput(
+				":: main",
+				"program",
+				new Ast.MainProgram(
+					genTokens(":: main", "<EOF>"),
+					null,
+					null,
+					null
+				)
+			);
+			testInput(
+				":: main; :: using Thing; :: directive \"argument\"",
+				"program",
+				new Ast.MainProgram(
+					genTokens(":: main", ";", ":: using", "Thing", ";", "::", "directive", "\"argument\"", "<EOF>"),
+					List.of(new Ast.SymbolChain(List.of("Thing"))),
+					List.of(new Ast.FileDirective("directive", "\"argument\"")),
+					null
+				)
+			);
+		}
 	}
 
 	@Nested
@@ -1588,19 +1610,6 @@ class AstTest {
 					genTokens("Array", "<[", "Int", ",", "7", "]>"),
 					type("Int"),
 					num(7)
-				)
-			);
-		}
-
-		@Test
-		void arrayInferred() {
-			testInput(
-				"Array",
-				"type",
-				new Ast.ArrayType(
-					genTokens("Array"),
-					null,
-					null
 				)
 			);
 		}

@@ -131,6 +131,7 @@ public class Ast {
 			super(tokens, using, directives);
 
 			assert className != null && !className.isEmpty();
+			assert topLevel != null;
 
 			this.namespace = namespace;
 			this.className = className;
@@ -2193,7 +2194,7 @@ public class Ast {
 
 	public record FileDirective(
 		String name,
-		String argument
+		String argument // argument string must have quotations in it (e.g: `"\"argument\""`)
 	) {
 		public FileDirective {
 			assert name != null && !name.isEmpty();
