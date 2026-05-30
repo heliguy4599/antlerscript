@@ -320,7 +320,7 @@ AntlerScriptParserVisitor<Object> {
 			: visitNamespace_directive(ctx.namespace_directive());
 		String classname = visitClassname_directive(ctx.classname_directive());
 		Ast.ClassType topLevel = ctx.class_top_level() == null
-			? new Ast.ClassType(getTokens(ctx), null, null, null)
+			? new Ast.ClassType(new ArrayList<>(), null, null, null)
 			: visitClass_top_level(ctx.class_top_level());
 
 		List<Object> directives = ctx.repeatable_directive().stream().map(this::visitRepeatable_directive).toList();

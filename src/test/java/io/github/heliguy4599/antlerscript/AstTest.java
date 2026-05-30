@@ -330,6 +330,82 @@ class AstTest {
 				)
 			);
 		}
+
+		@Test
+		void classProgram() {
+			testInput(
+				":: classname MyClass",
+				"program",
+				new Ast.ClassProgram(
+					genTokens(":: classname", "MyClass", "<EOF>"),
+					null,
+					null,
+					null,
+					"MyClass",
+					new Ast.ClassType(
+						new ArrayList<>(),
+						null,
+						null,
+						null
+					)
+				)
+			);
+		}
+
+		@Test
+		void classProgramAll() {
+			testInput(
+				":: namespace MyNamespace; :: classname MyClass; :: using Stuff; :: descriptor \"argument\"; constructor() {}",
+				"program",
+				new Ast.ClassProgram(
+					genTokens(":: namespace", "MyNamespace", ";", ":: classname", "MyClass", ";", ":: using", "Stuff", ";", "::", "descriptor", "\"argument\"", ";", "constructor", "(", ")", "{", "}", "<EOF>"),
+					List.of(new Ast.SymbolChain(List.of("Stuff"))),
+					List.of(new Ast.FileDirective("descriptor", "\"argument\"")),
+					"MyNamespace",
+					"MyClass",
+					new Ast.ClassType(
+						genTokens("constructor", "(", ")", "{", "}"),
+						null,
+						null,
+						List.of(new Ast.ConstructorClassMember(
+							genTokens("constructor", "(", ")", "{", "}"),
+							null,
+							block(null)
+						))
+					)
+				)
+			);
+		}
+
+		@Test
+		void namespaceProgram() {
+			testInput(
+				":: namespace MyNamespace",
+				"program",
+				new Ast.NamespaceProgram(
+					genTokens(":: namespace", "MyNamespace", "<EOF>"),
+					null,
+					null,
+					"MyNamespace",
+					null
+				)
+			);
+		}
+
+		@Test
+		void namespaceProgramFull() {
+			testInput(
+				":: namespace MyNamespace; :: using Stuff; :: directive \"argument\"; let x = 10",
+				"program",
+				new Ast.NamespaceProgram(
+					genTokens(":: namespace", "MyNamespace", ";", ":: using", "Stuff", ";", "::", "directive", "\"argument\"", ";", "let", "x", "=", "10", "<EOF>"),
+					List.of(new Ast.SymbolChain(List.of("Stuff"))),
+					List.of(new Ast.FileDirective("directive", "\"argument\"")),
+					"MyNamespace",
+					List.of(new Ast.NamespaceDeclaration(decl(false, null, "x", false, false, num(10))))
+				)
+			);
+		}
 	}
 
 	@Nested
