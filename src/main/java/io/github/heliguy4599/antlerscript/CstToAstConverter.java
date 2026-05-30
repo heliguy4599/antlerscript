@@ -219,17 +219,10 @@ AntlerScriptParserVisitor<Object> {
 	}
 
 	@Override
-	public List<List<String>> visitUsing_directive(AntlerScriptParser.Using_directiveContext ctx) {
+	public List<Ast.SymbolChain> visitUsing_directive(AntlerScriptParser.Using_directiveContext ctx) {
 		assert ctx != null;
 
-		List<Ast.SymbolChain> symbolChains = ctx.symbol_chain().stream().map(this::visitSymbol_chain).toList();
-
-		List<List<String>> ret = new ArrayList<>();
-		for (Ast.SymbolChain symbolChain : symbolChains) {
-			ret.add(symbolChain.symbols());
-		}
-
-		return ret;
+		return ctx.symbol_chain().stream().map(this::visitSymbol_chain).toList();
 	}
 
 	@Override
@@ -283,7 +276,11 @@ AntlerScriptParserVisitor<Object> {
 		return new Ast.FileDirective(ctx.MAIN_DIRECTIVE().getText(), null);
 	}
 
-	public static void segregateDirectives(List<Object> inDirectives, List<Ast.SymbolChain> outUsing, List<Ast.FileDirective> outOther) {
+	public static void segregateDirectives(
+		List<Object> inDirectives,
+		List<Ast.SymbolChain> outUsing,
+		List<Ast.FileDirective> outOther
+	) {
 		assert inDirectives != null;
 		assert outUsing != null;
 		assert outOther != null;
@@ -293,7 +290,8 @@ AntlerScriptParserVisitor<Object> {
 				outOther.add((Ast.FileDirective) directive);
 			} else { // List<SymbolChain> (using directive)
 				@SuppressWarnings("unchecked")
-				List<Ast.SymbolChain> usingDirective = (List<Ast.SymbolChain>) directive;
+				List<Ast.SymbolChain> usingDirective
+					= (List<Ast.SymbolChain>) directive;
 				outUsing.addAll(usingDirective);
 			}
 		}
@@ -689,14 +687,13 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.ArrayType visitArray_header(AntlerScriptParser.Array_headerContext ctx) {
 		assert ctx != null;
 
-		Ast.Type type = null;
-		Ast.Expression size = null;
-
-		if (ctx.type() != null) {
-			assert ctx.expression() != null;
-			type = visitType(ctx.type());
-			size = visitExpression(ctx.expression());
+		if (ctx.type() == null) {
+			assert ctx.expression() == null;
+			return null;
 		}
+
+		Ast.Type type = visitType(ctx.type());
+		Ast.Expression size = visitExpression(ctx.expression());
 
 		return new Ast.ArrayType(getTokens(ctx), type, size);
 	}
