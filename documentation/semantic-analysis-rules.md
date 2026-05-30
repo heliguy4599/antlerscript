@@ -1,0 +1,32 @@
+* Directives
+1. The same classname file cannot be visible in multiple namespaces (including gobal)
+2. the using directive can only reference existing namespaces
+3. the using directive cannot reference the current namespace
+4. the using directive cannot reference the same symbol twice in one file
+5. custom directives cannot have duplicate keys
+6. There can only be at most one file with the main directive
+* Declarations
+* Functions
+** Body
+ 1. declarations must always include a default value
+ 2. declaration initial values cannot reference any symbol that are declared later in the scope
+* Classes
+** Extends
+ 1. cannot extend non-class type (including namespaces)
+ 2. cannot extend classes that do not exist
+ 3. cannot extend Self
+ 4. cannot extend the same class more than once (including extend of extended classes)
+** Constructor
+ 1. there can only be at most one constructor per class
+ 2. shorthand paramters must reference existing fields in the class
+ 3. the constructor must leave no field uninitialized (either in shorthands, or body)
+ 4. the following statements are not allowed in constructor bodies directly:
+    1. return (with a value)
+    2. throw
+    3. certain expression statements:
+       1. yield
+       2. self
+       3. super
+       4. try without else
+** Declarations
+ 1. cannot declare a field that has been declared in an extended class
