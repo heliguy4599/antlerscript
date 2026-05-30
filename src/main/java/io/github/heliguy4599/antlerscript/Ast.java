@@ -281,7 +281,6 @@ public class Ast {
 	}
 
 	public static class ArrayType extends Type {
-		// Null items and size means inferred
 		public final Type items;
 		public final Expression size;
 
@@ -292,10 +291,8 @@ public class Ast {
 		) {
 			super(tokens);
 
-			if (items != null || size != null) {
-				assert items != null;
-				assert size != null;
-			}
+			assert items != null;
+			assert size != null;
 
 			this.items = items;
 			this.size = size;
@@ -2016,8 +2013,6 @@ public class Ast {
 			List<Argument> elements
 		) {
 			super(tokens);
-
-			assert type != null;
 
 			this.type = type;
 			this.elements = elements != null

@@ -1523,6 +1523,279 @@ class AstTest {
 				)
 			);
 		}
+
+		@Test
+		void newInferredArrayExpression() {
+			testInput(
+				"Array{}",
+				"expression",
+				new Ast.NewArrayExpression(
+					genTokens(
+						"Array",
+						"{",
+						"}"
+					),
+					null,
+					null
+				)
+			);
+		}
+
+		@Test
+		void newArrayExpression() {
+			testInput(
+				"Array<[T, 1]>{}",
+				"expression",
+				new Ast.NewArrayExpression(
+					genTokens(
+						"Array",
+						"<[",
+						"T",
+						",",
+						"1",
+						"]>",
+						"{",
+						"}"
+					),
+					new Ast.ArrayType(
+						genTokens(
+							"Array",
+							"<[",
+							"T",
+							",",
+							"1",
+							"]>"
+						),
+						type("T"),
+						num(1)
+					),
+					null
+				)
+			);
+		}
+
+		@Test
+		void compositeEmptyExpression() {
+			testInput(
+				"MyType{}",
+				"expression",
+				new Ast.CompositeExpression(
+					genTokens("MyType", "{", "}"),
+					null,
+					null
+				)
+			);
+		}
+
+		@Test
+		void compositeGenericEmptyExpression() {
+			testInput(
+				"MyType<[T1, T2]>{}",
+				"expression",
+				new Ast.CompositeExpression(
+					genTokens(
+						"MyType",
+						"<[",
+						"T1",
+						",",
+						"T2",
+						"]>",
+						"{",
+						"}"
+					),
+					List.of(type("T1"), type("T2")),
+					null
+				)
+			);
+		}
+
+		@Test
+		void compositeGenericExpression() {
+			testInput(
+				"MyType<[T1, T2]>{}",
+				"expression",
+				new Ast.CompositeExpression(
+					genTokens(
+						"MyType",
+						"<[",
+						"T1",
+						",",
+						"T2",
+						"]>",
+						"{",
+						"}"
+					),
+					List.of(type("T1"), type("T2")),
+					null
+				)
+			);
+		}
+
+		@Test
+		void compositeListExpression() {
+			var one = new Ast.Argument(
+				num(1),
+				null,
+				false
+			);
+			testInput(
+				"MyType{1, 1, 1}",
+				"expression",
+				new Ast.CompositeExpression(
+					genTokens(
+						"MyType",
+						"{",
+						"1",
+						",",
+						"1",
+						",",
+						"1",
+						"}"
+					),
+					null,
+					new Ast.ListArgs(List.of(one, one, one))
+				)
+			);
+		}
+
+		@Test
+		void compositeKeyValueExpression() {
+			var one = new Ast.KeyValuePair(num(1), num(1));
+			testInput(
+				"MyType{1:1, 1:1}",
+				"expression",
+				new Ast.CompositeExpression(
+					genTokens(
+						"MyType",
+						"{",
+						"1",
+						":",
+						"1",
+						",",
+						"1",
+						":",
+						"1",
+						"}"
+					),
+					null,
+					new Ast.ListKeyValuePairs(
+						List.of(one, one)
+					)
+				)
+			);
+		}
+
+		@Test
+		void classInstanceEmptyExpression() {
+			testInput(
+				"Class(){}",
+				"expression",
+				new Ast.NewClassInstance(
+					genTokens(
+						"Class",
+						"(",
+						")",
+						"{",
+						"}"
+					),
+					emptyClass(),
+					null,
+					null
+				)
+			);
+		}
+
+		@Test
+		void classInstanceExpression() {
+			var one = new Ast.Argument(num(1), null, false);
+			testInput(
+				"Class()<[T]>{1, 1, 1}",
+				"expression",
+				new Ast.NewClassInstance(
+					genTokens(
+						"Class",
+						"(",
+						")",
+						"<[",
+						"T",
+						"]>",
+						"{",
+						"1",
+						",",
+						"1",
+						",",
+						"1",
+						"}"
+					),
+					emptyClass(),
+					List.of(type("T")),
+					List.of(one, one, one)
+				)
+			);
+		}
+
+		@Test
+		void newObjectLiteralExpression() {
+			var tokens = genTokens("object", "{", "}");
+			testInput(
+				"object{}",
+				"expression",
+				new Ast.NewObjectLiteralExpression(
+					tokens,
+					new Ast.ClassType(
+						tokens,
+						null,
+						null,
+						null
+					)
+				)
+			);
+		}
+
+		@Test
+		void tryElseNoCatchExpression() {
+			testInput(
+				"try f()",
+				"expression",
+				new Ast.TryElseExpression(
+					genTokens("try", "f", "(", ")"),
+					new Ast.CallExpression(
+						genTokens("f", "(", ")"),
+						sym("f"),
+						null
+					),
+					null,
+					null
+				)
+			);
+		}
+
+		@Test
+		void tryElseExpression() {
+			testInput(
+				"try f() else err {}",
+				"expression",
+				new Ast.TryElseExpression(
+					genTokens(
+						"try",
+						"f",
+						"(",
+						")",
+						"else",
+						"err",
+						"{",
+						"}"
+					),
+					new Ast.CallExpression(
+						genTokens("f", "(", ")"),
+						sym("f"),
+						null
+					),
+					"err",
+					block(null)
+				)
+			);
+		}
 	}
 
 	@Nested
@@ -1917,12 +2190,7 @@ class AstTest {
 			testInput(
 				"Class()",
 				"type",
-				new Ast.ClassType(
-					genTokens("Class", "(", ")"),
-					null,
-					null,
-					null
-				)
+				emptyClass()
 			);
 		}
 
@@ -2046,5 +2314,9 @@ class DummyToken implements Token {
 	public int getType() {
 		assert false;
 		return 0;
+	}
+
+	public String toString() {
+		return text;
 	}
 }
