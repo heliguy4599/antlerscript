@@ -2213,10 +2213,19 @@ public class Ast {
 
 	public record FileDirective(
 		@NonNull String name,
-		String argument // argument string must have quotations in it (e.g: `"\"argument\""`)
+		@NonNull Optional<String> argument // argument string must have quotations in it (e.g: `"\"argument\""`)
 	) {
+		public FileDirective(@NonNull String name) {
+			this(name, Optional.empty());
+		}
+
+		public FileDirective(@NonNull String name, @NonNull String argument) {
+			this(name, Optional.of(argument));
+		}
+
 		public FileDirective {
 			assert name != null && !name.isEmpty();
+			assert argument != null;
 		}
 	}
 
@@ -2226,6 +2235,7 @@ public class Ast {
 
 	record NamespaceTypedef(Typedef typedef) implements NamespaceMember {}
 
+	// TODO
 	public record ConstructorParameter(
 		Type type,
 		@NonNull String symbol,
@@ -2262,6 +2272,7 @@ public class Ast {
 		}
 	}
 
+	// TODO
 	public record FunctionParameter(
 		@NonNull Type type,
 		@NonNull String symbol,
@@ -2280,29 +2291,38 @@ public class Ast {
 	}
 
 	public record Argument(
-		Expression value,
-		String keyword,
+		@NonNull Optional<Expression> value,
+		@NonNull Optional<String> keyword,
 		boolean isBlank
 	) {
 		public Argument {
+			assert value != null;
+			assert keyword != null;
 			assert (
-				value != null && !isBlank
+				!value.isEmpty() && !isBlank
 			) || (
-				value == null && keyword == null && isBlank
+				value.isEmpty() && keyword.isEmpty() && isBlank
 			);
+		}
+
+		public Argument() {
+			this(Optional.empty(), Optional.empty(), true);
+		}
+
+		public Argument(@NonNull Expression value, String keyword) {
+			this(Optional.of(value), Optional.ofNullable(keyword), false);
 		}
 	}
 
 	public record Decorator(
 		@NonNull SymbolChain symbolChain,
-		List<Argument> arguments
+		@NonNull List<Argument> arguments
 	) {
-		public Decorator {
+		public Decorator(@NonNull SymbolChain symbolChain, List<Argument> arguments) {
 			assert symbolChain != null;
 
-			if (arguments == null) {
-				arguments = new ArrayList<>();
-			}
+			this.symbolChain = symbolChain;
+			this.arguments = arguments != null ? arguments : new ArrayList<>();
 		}
 	}
 

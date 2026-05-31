@@ -44,11 +44,13 @@ class AstTest {
 
 		List<Token> tokens = new ArrayList<>();
 
-		if (arg.keyword() != null && !arg.keyword().isEmpty()) {
-			tokens.addAll(genTokens(arg.keyword(), "="));
+		if (arg.keyword().isPresent() && !arg.keyword().get().isEmpty()) {
+			tokens.addAll(genTokens(arg.keyword().get(), "="));
 		}
 
-		tokens.addAll(arg.value().tokens);
+		if (arg.value().isPresent()) {
+			tokens.addAll(arg.value().get().tokens);
+		}
 
 		return tokens;
 	}
@@ -434,8 +436,7 @@ class AstTest {
 					List.of(
 						new Ast.Argument(
 							num(10),
-							null,
-							false
+							null
 						)
 					)
 				)
@@ -1309,18 +1310,12 @@ class AstTest {
 			var exprs = List.of(
 				new Ast.Argument(
 					num(10),
-					null,
-					false
+					null
 				),
-				new Ast.Argument(
-					null,
-					null,
-					true
-				),
+				new Ast.Argument(),
 				new Ast.Argument(
 					num(20),
-					"a",
-					false
+					"a"
 				)
 			);
 			testInput(
@@ -1820,8 +1815,7 @@ class AstTest {
 		void compositeListExpression() {
 			var one = new Ast.Argument(
 				num(1),
-				null,
-				false
+				null
 			);
 			testInput(
 				"MyType{1, 1, 1}",
@@ -1892,7 +1886,7 @@ class AstTest {
 
 		@Test
 		void classInstanceExpression() {
-			var one = new Ast.Argument(num(1), null, false);
+			var one = new Ast.Argument(num(1), null);
 			testInput(
 				"Class()<[T]>{1, 1, 1}",
 				"expression",

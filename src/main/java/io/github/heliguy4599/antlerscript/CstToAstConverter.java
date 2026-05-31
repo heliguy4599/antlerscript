@@ -252,7 +252,7 @@ AntlerScriptParserVisitor<Object> {
 			assert string.charAt(string.length() - 1) == '`';
 		}
 
-		return new Ast.FileDirective(ctx.symbol().getText(), string);
+		return new Ast.FileDirective(ctx.symbol().getText(), Optional.ofNullable(string));
 	}
 
 	@Override
@@ -273,7 +273,7 @@ AntlerScriptParserVisitor<Object> {
 	public Ast.FileDirective visitMain_directive(AntlerScriptParser.Main_directiveContext ctx) {
 		assert ctx != null;
 
-		return new Ast.FileDirective(ctx.MAIN_DIRECTIVE().getText(), null);
+		return new Ast.FileDirective(ctx.MAIN_DIRECTIVE().getText());
 	}
 
 	public static void segregateDirectives(
@@ -286,8 +286,8 @@ AntlerScriptParserVisitor<Object> {
 		assert outOther != null;
 
 		for (Object directive : inDirectives) {
-			if (directive instanceof Ast.FileDirective) {
-				outOther.add((Ast.FileDirective) directive);
+			if (directive instanceof Ast.FileDirective fileDirective) {
+				outOther.add(fileDirective);
 			} else { // List<SymbolChain> (using directive)
 				@SuppressWarnings("unchecked")
 				List<Ast.SymbolChain> usingDirective
@@ -1492,7 +1492,7 @@ AntlerScriptParserVisitor<Object> {
 
 	@Override
 	public Ast.Argument visitDiscardArgument(AntlerScriptParser.DiscardArgumentContext _ctx) {
-		return new Ast.Argument(null, null, true);
+		return new Ast.Argument();
 	}
 
 	@Override
@@ -1501,7 +1501,7 @@ AntlerScriptParserVisitor<Object> {
 
 		String symbol = ctx.symbol() == null ? null : ctx.symbol().getText();
 
-		return new Ast.Argument(visitExpression(ctx.expression()), symbol, false);
+		return new Ast.Argument(visitExpression(ctx.expression()), symbol);
 	}
 
 	@Override
