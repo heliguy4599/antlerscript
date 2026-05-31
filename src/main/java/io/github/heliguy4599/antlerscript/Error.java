@@ -1,10 +1,12 @@
 package io.github.heliguy4599.antlerscript;
 
 import java.util.*;
+import java.util.stream.*;
+import java.util.stream.Collectors;
+import java.nio.file.*;
+import java.io.*;
 
 import org.antlr.v4.runtime.Token;
-
-// TODO: add @NonNull
 
 public interface Error {
 	String toString();
@@ -48,34 +50,80 @@ record SimpleError(String message, Optional<Error> cause) implements Error {
 
 record SyntaxError(
 	String message,
-	Token token,
+	Token startToken,
+	Token endToken,
 	Optional<Error> cause
 ) implements Error{
 	public String toString() {
 		return String.format(
-			"%s:%d:%d:",
+			"%s\n  -> %s:%d:%d\n",
 			message,
-			token.getLine(),
-			token.getCharPositionInLine()
+			startToken.getInputStream().getSourceName(),
+			startToken.getLine(),
+			startToken.getCharPositionInLine()
 		);
 	}
 	public Optional<Error> unwrap() { return cause; }
 
-	public SyntaxError(String message, Token token, Optional<Error> cause) {
+	public SyntaxError(
+		String message,
+		Token startToken,
+		Token endToken,
+		Optional<Error> cause
+	) {
 		assert message != null;
-		assert token != null;
+		assert startToken != null;
+		assert endToken != null;
 		assert cause != null;
 
 		this.message = message;
-		this.token = token;
+		this.startToken = startToken;
+		this.endToken = endToken;
 		this.cause = cause;
 	}
 
-	public SyntaxError(String message, Token token) {
-		this(message, token, Optional.empty());
+	public SyntaxError(String message, Token startToken, Token endToken) {
+		this(message, startToken, endToken, Optional.empty());
 	}
 
-	public SyntaxError(String message, Token token, Error cause) {
-		this(message, token, Optional.of(cause));
+	public SyntaxError(
+		String message,
+		Token startToken,
+		Token endToken,
+		Error cause
+	) {
+		this(message, startToken, endToken, Optional.of(cause));
+	}
+}
+
+record FatalError(Error err) {
+	public String toString() {
+		return "error: " + err;
+	}
+
+	public Optional<Error> unwrap() {
+		return Optional.of(err);
+	}
+
+	public FatalError(Error err) {
+		assert err != null;
+
+		this.err = err;
+	}
+}
+
+record WarningError(Error err) {
+	public String toString() {
+		return "warning: " + err;
+	}
+
+	public Optional<Error> unwrap() {
+		return Optional.of(err);
+	}
+
+	public WarningError(Error err) {
+		assert err != null;
+
+		this.err = err;
 	}
 }
