@@ -1455,15 +1455,15 @@ public class Ast {
 			EXPONENT,
 		}
 
-		public final Kind operation;
-		public final Expression left;
-		public final Expression right;
+		public final @NonNull Kind operation;
+		public final @NonNull Expression left;
+		public final @NonNull Expression right;
 
 		public BinaryExpression(
 			@NonNull List<Token> tokens,
-			Kind operation,
-			Expression left,
-			Expression right
+			@NonNull Kind operation,
+			@NonNull Expression left,
+			@NonNull Expression right
 		) {
 			super(tokens);
 
@@ -1500,13 +1500,13 @@ public class Ast {
 			NOT, BIT_NOT, PLUS, MINUS,
 		}
 
-		public final Kind operation;
-		public final Expression operand;
+		public final @NonNull Kind operation;
+		public final @NonNull Expression operand;
 
 		public UnaryExpression(
 			@NonNull List<Token> tokens,
-			Kind operation,
-			Expression operand
+			@NonNull Kind operation,
+			@NonNull Expression operand
 		) {
 			super(tokens);
 
@@ -1536,14 +1536,14 @@ public class Ast {
 	}
 
 	public static class IndexExpression extends Expression {
-		public final Expression base;
-		public final Expression index;
-		public final List<Type> genericCast;
+		public final @NonNull Expression base;
+		public final @NonNull Expression index;
+		public final @NonNull List<Type> genericCast;
 
 		public IndexExpression(
 			@NonNull List<Token> tokens,
-			Expression base,
-			Expression index,
+			@NonNull Expression base,
+			@NonNull Expression index,
 			List<Type> genericCast
 		) {
 			super(tokens);
@@ -1578,15 +1578,15 @@ public class Ast {
 	}
 
 	public static class AccessExpression extends Expression {
-		public final Expression object;
-		public final String member;
+		public final @NonNull Expression object;
+		public final @NonNull String member;
 		public final boolean optional;
-		public final List<Type> genericCast;
+		public final @NonNull List<Type> genericCast;
 
 		public AccessExpression(
 			@NonNull List<Token> tokens,
-			Expression object,
-			String member,
+			@NonNull Expression object,
+			@NonNull String member,
 			boolean optional,
 			List<Type> genericCast
 		) {
@@ -1624,10 +1624,10 @@ public class Ast {
 	}
 
 	public static class CallExpression extends Expression {
-		public final Expression function;
-		public final List<Argument> arguments;
+		public final @NonNull Expression function;
+		public final @NonNull List<Argument> arguments;
 
-		public CallExpression(@NonNull List<Token> tokens, Expression function, List<Argument> arguments) {
+		public CallExpression(@NonNull List<Token> tokens, @NonNull Expression function, List<Argument> arguments) {
 			super(tokens);
 
 			assert function != null;
@@ -1655,18 +1655,17 @@ public class Ast {
 	}
 
 	public static class SymbolExpression extends Expression {
-		public final String symbol;
-		public final List<Type> genericCast;
+		public final @NonNull String symbol;
+		public final @NonNull List<Type> genericCast;
 
 		public SymbolExpression(
 			@NonNull List<Token> tokens,
-			String symbol,
+			@NonNull String symbol,
 			List<Type> genericCast
 		) {
 			super(tokens);
 
-			assert symbol != null;
-			assert !symbol.isEmpty();
+			assert symbol != null && !symbol.isEmpty();
 
 			this.symbol = symbol;
 			this.genericCast = genericCast != null
@@ -1693,12 +1692,12 @@ public class Ast {
 	}
 
 	public static class YieldExpression extends Expression {
-		public final Expression yieldOut;
+		public final @NonNull Optional<Expression> yieldOut;
 
 		public YieldExpression(@NonNull List<Token> tokens, Expression yieldOut) {
 			super(tokens);
 
-			this.yieldOut = yieldOut;
+			this.yieldOut = Optional.ofNullable(yieldOut);
 		}
 
 		@Override
@@ -1842,10 +1841,10 @@ public class Ast {
 	}
 
 	public static class StringExpression extends Expression {
-		public final String value;
+		public final @NonNull String value;
 
 		// Will unescape string if not raw
-		public StringExpression(@NonNull List<Token> tokens, String value, boolean raw) {
+		public StringExpression(@NonNull List<Token> tokens, @NonNull String value, boolean raw) {
 			super(tokens);
 
 			assert value != null;
@@ -1875,10 +1874,10 @@ public class Ast {
 	}
 
 	public static class LambdaExpression extends Expression {
-		public final FunctionType type;
-		public final StatementBlock body;
+		public final @NonNull FunctionType type;
+		public final @NonNull StatementBlock body;
 
-		public LambdaExpression(@NonNull List<Token> tokens, FunctionType type, StatementBlock body) {
+		public LambdaExpression(@NonNull List<Token> tokens, @NonNull FunctionType type, @NonNull StatementBlock body) {
 			super(tokens);
 
 			assert type != null;
@@ -1907,13 +1906,13 @@ public class Ast {
 	}
 
 	public static class CoroutineExpression extends Expression {
-		public final CoroutineType type;
-		public final StatementBlock body;
+		public final @NonNull CoroutineType type;
+		public final @NonNull StatementBlock body;
 
 		public CoroutineExpression(
 			@NonNull List<Token> tokens,
-			CoroutineType type,
-			StatementBlock body
+			@NonNull CoroutineType type,
+			@NonNull StatementBlock body
 		) {
 			super(tokens);
 
@@ -1943,24 +1942,23 @@ public class Ast {
 	}
 
 	public static class SelectExpression extends Expression {
-		public final Expression match;
-		public final List<KeyValuePair> branches;
-		public final Expression elseClause;
+		public final @NonNull Optional<Expression> match;
+		public final @NonNull List<KeyValuePair> branches;
+		public final @NonNull Optional<Expression> elseClause;
 
 		public SelectExpression(
 			@NonNull List<Token> tokens,
 			Expression match,
-			List<KeyValuePair> branches,
+			@NonNull List<KeyValuePair> branches,
 			Expression elseClause
 		) {
 			super(tokens);
 
-			assert branches != null;
-			assert !branches.isEmpty();
+			assert branches != null && !branches.isEmpty();
 
-			this.match = match;
+			this.match = Optional.ofNullable(match);
 			this.branches = branches;
-			this.elseClause = elseClause;
+			this.elseClause = Optional.ofNullable(elseClause);
 		}
 
 		@Override
@@ -1983,19 +1981,24 @@ public class Ast {
 	}
 
 	public static class NewMapExpression extends Expression {
-		public final Type keyType;
-		public final Type valueType;
-		public final List<KeyValuePair> keyValuePairs;
+		public final @NonNull Optional<Type> keyType;
+		public final @NonNull Optional<Type> valueType;
+		public final @NonNull List<KeyValuePair> keyValuePairs;
 
-		public NewMapExpression(@NonNull List<Token> tokens, Type keyType, Type valueType, List<KeyValuePair> keyValuePairs) {
+		public NewMapExpression(
+			@NonNull List<Token> tokens,
+			Type keyType,
+			Type valueType,
+			List<KeyValuePair> keyValuePairs
+		) {
 			super(tokens);
 
 			if (keyType != null || valueType != null) {
 				assert keyType != null && valueType != null;
 			}
 
-			this.keyType = keyType;
-			this.valueType = valueType;
+			this.keyType = Optional.ofNullable(keyType);
+			this.valueType = Optional.ofNullable(valueType);
 			this.keyValuePairs = keyValuePairs != null ? keyValuePairs : new ArrayList<>();
 		}
 
@@ -2019,8 +2022,8 @@ public class Ast {
 	}
 
 	public static class NewArrayExpression extends Expression {
-		public final ArrayType type;
-		public final List<Argument> elements;
+		public final @NonNull Optional<ArrayType> type;
+		public final @NonNull List<Argument> elements;
 
 		public NewArrayExpression(
 			@NonNull List<Token> tokens,
@@ -2029,7 +2032,7 @@ public class Ast {
 		) {
 			super(tokens);
 
-			this.type = type;
+			this.type = Optional.ofNullable(type);
 			this.elements = elements != null
 				? elements
 				: new ArrayList<>();
@@ -2054,8 +2057,8 @@ public class Ast {
 	}
 
 	public static class CompositeExpression extends Expression {
-		public final List<Type> genericCast;
-		public final ListArgsOrKeyValuePairs list;
+		public final @NonNull List<Type> genericCast;
+		public final @NonNull Optional<ListArgsOrKeyValuePairs> list;
 
 		public CompositeExpression(
 			@NonNull List<Token> tokens,
@@ -2067,7 +2070,7 @@ public class Ast {
 			this.genericCast = genericCast != null
 				? genericCast
 				: new ArrayList<>();
-			this.list = list;
+			this.list = Optional.ofNullable(list);
 		}
 
 		@Override
@@ -2089,9 +2092,9 @@ public class Ast {
 	}
 
 	public static class NewClassInstance extends Expression {
-		public final ClassType classType;
-		public final List<Type> genericCast;
-		public final List<Argument> arguments;
+		public final @NonNull Optional<ClassType> classType;
+		public final @NonNull List<Type> genericCast;
+		public final @NonNull List<Argument> arguments;
 
 		public NewClassInstance(
 			@NonNull List<Token> tokens,
@@ -2103,7 +2106,7 @@ public class Ast {
 
 			assert classType != null;
 
-			this.classType = classType;
+			this.classType = Optional.ofNullable(classType);
 			this.genericCast = genericCast != null
 				? genericCast
 				: new ArrayList<>();
@@ -2130,11 +2133,11 @@ public class Ast {
 	}
 
 	public static class NewObjectLiteralExpression extends Expression {
-		public final ClassType classType;
+		public final @NonNull ClassType classType;
 
 		public NewObjectLiteralExpression(
 			@NonNull List<Token> tokens,
-			ClassType classType
+			@NonNull ClassType classType
 		) {
 			super(tokens);
 
@@ -2161,11 +2164,16 @@ public class Ast {
 	}
 
 	public static class TryElseExpression extends Expression {
-		public final Expression call;
-		public final String caught;
-		public final StatementBlock block;
+		public final @NonNull Expression call;
+		public final @NonNull Optional<String> caught;
+		public final @NonNull Optional<StatementBlock> block;
 
-		public TryElseExpression(@NonNull List<Token> tokens, Expression call, String caught, StatementBlock block) {
+		public TryElseExpression(
+			@NonNull List<Token> tokens,
+			@NonNull Expression call,
+			String caught,
+			StatementBlock block
+		) {
 			super(tokens);
 
 			assert call != null;
@@ -2175,8 +2183,8 @@ public class Ast {
 			}
 
 			this.call = call;
-			this.caught = caught;
-			this.block = block;
+			this.caught = Optional.ofNullable(caught);
+			this.block = Optional.ofNullable(block);
 		}
 
 		@Override
@@ -2201,9 +2209,10 @@ public class Ast {
 	// ====================
 	// UTILITIES
 	// ====================
+	// TODO: Provide better NonNull and Optional usage. Requires helpers constructors and converter changes.
 
 	public record FileDirective(
-		String name,
+		@NonNull String name,
 		String argument // argument string must have quotations in it (e.g: `"\"argument\""`)
 	) {
 		public FileDirective {
@@ -2219,13 +2228,12 @@ public class Ast {
 
 	public record ConstructorParameter(
 		Type type,
-		String symbol,
+		@NonNull String symbol,
 		Expression initialValue,
 		boolean isVarArgs
 	) {
 		public ConstructorParameter {
-			assert symbol != null;
-			assert !symbol.isEmpty();
+			assert symbol != null && !symbol.isEmpty();
 
 			if (type == null) {
 				assert !isVarArgs;
@@ -2237,17 +2245,16 @@ public class Ast {
 	}
 
 	public record SymbolChain(
-		List<String> symbols
+		@NonNull List<String> symbols
 	) {
 		public SymbolChain {
-			assert symbols != null;
-			assert !symbols.isEmpty();
+			assert symbols != null && !symbols.isEmpty();
 		}
 	}
 
 	public record GenericParameter(
-		Type type,
-		String string
+		@NonNull Type type,
+		@NonNull String string
 	) {
 		public GenericParameter {
 			assert type != null;
@@ -2256,8 +2263,8 @@ public class Ast {
 	}
 
 	public record FunctionParameter(
-		Type type,
-		String symbol,
+		@NonNull Type type,
+		@NonNull String symbol,
 		Expression initialValue,
 		boolean isVarArgs
 	) {
@@ -2267,8 +2274,7 @@ public class Ast {
 
 		public FunctionParameter {
 			assert type != null;
-			assert symbol != null;
-			assert !symbol.isEmpty();
+			assert symbol != null && !symbol.isEmpty();
 			assert (isVarArgs && initialValue == null) || !isVarArgs;
 		}
 	}
@@ -2288,7 +2294,7 @@ public class Ast {
 	}
 
 	public record Decorator(
-		SymbolChain symbolChain,
+		@NonNull SymbolChain symbolChain,
 		List<Argument> arguments
 	) {
 		public Decorator {
@@ -2300,26 +2306,27 @@ public class Ast {
 		}
 	}
 
-	public record ClassName(List<String> symbols) {
-		public ClassName {
-			assert symbols != null;
-			assert !symbols.isEmpty();
-		}
+	// TODO: Should we remove this?
+	// public record ClassName(List<String> symbols) {
+	// 	public ClassName {
+	// 		assert symbols != null;
+	// 		assert !symbols.isEmpty();
+	// 	}
+	//
+	// 	@Override
+	// 	public String toString() {
+	// 		return String.join(".", symbols);
+	// 	}
+	// }
 
-		@Override
-		public String toString() {
-			return String.join(".", symbols);
-		}
-	}
-
-	public record KeyValuePair(Expression left, Expression right) {
+	public record KeyValuePair(@NonNull Expression left, @NonNull Expression right) {
 		public KeyValuePair {
 			assert left != null;
 			assert right != null;
 		}
 	}
 
-	sealed interface ListArgsOrKeyValuePairs permits ListArgs, ListKeyValuePairs {}
+	public sealed interface ListArgsOrKeyValuePairs permits ListArgs, ListKeyValuePairs {}
 
 	public record ListArgs(List<Argument> args) implements ListArgsOrKeyValuePairs {}
 	public record ListKeyValuePairs(List<KeyValuePair> pairs) implements ListArgsOrKeyValuePairs {}
