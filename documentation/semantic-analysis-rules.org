@@ -28,5 +28,16 @@
        2. self
        3. super
        4. try without else
-** Declarations
+** Declarations (cont.)
  1. cannot declare a field that has been declared in an extended class
+** Cast
+ 1. the casted type must exist
+ 2. the statement block must return an expression of the same type as the cast
+ 3. there cannot be multiple casts of the same type in the same class (not counting extends)
+ 4. the following statements are not allowed in cast bodies directly:
+    1. return (without a value)
+    2. throw
+    3. certain expression statements:
+       1. yield
+       2. try without else
+** Alias
